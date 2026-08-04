@@ -21,8 +21,8 @@ Después sí, los pasos. Si un tema da para más, ofrecer profundizar en vez de 
 
 **Modo de ejecución: mixto.**
 - **Consola web** para lo visual y para lo que se entrega con capturas (los labs de AWS Academy suelen pedir eso). Acá el asistente guía paso a paso: menú, botón, campo, valor.
-- **CloudShell** para automatizar, verificar y sobre todo para el **checklist de apagado**. El asistente escribe el script, el usuario lo pega. CloudShell ya viene con AWS CLI + boto3 y las credenciales del lab cargadas.
-- ⚠️ **No hay AWS CLI instalado en la PC local** (sí hay Python y Git). Nada de asumir `aws` local: todo comando CLI se escribe **para pegar en CloudShell**.
+- **CloudShell** para automatizar, verificar y sobre todo para el **checklist de apagado**. El asistente escribe el script, el usuario lo pega. CloudShell ya viene con AWS CLI + boto3 y las credenciales del lab cargadas. **Es la vía por defecto**: no depende de credenciales locales ni de que estén vigentes.
+- **AWS CLI local** (instalado, v2) para iterar más rápido cuando hace falta. Requiere cargar antes las credenciales temporales del lab con `scripts/cargar-credenciales.ps1`.
 
 **Regla de seguridad innegociable:** el asistente **nunca** apaga, termina ni borra un recurso AWS por su cuenta — ni con automatización de navegador, ni con CLI. Siempre propone el comando/paso y **espera confirmación explícita**. Los scripts que genere son de **sólo lectura** por defecto; los comandos destructivos se entregan aparte, para copiar a mano.
 
@@ -46,7 +46,25 @@ Después sí, los pasos. Si un tema da para más, ofrecer profundizar en vez de 
 - La sesión del lab dura unas **~4 horas** (mirar el contador arriba en el panel del lab). Al vencerse, las credenciales dejan de servir aunque los recursos sigan vivos y **cobrando**.
 - El botón **AWS Details → AWS CLI** muestra las credenciales temporales (`aws_access_key_id`, `aws_secret_access_key`, **`aws_session_token`**). Son de corta duración: **nunca** hardcodearlas en un script ni guardarlas en un archivo del repo.
 - **CloudShell** ya tiene esas credenciales inyectadas → es la vía por defecto para cualquier CLI. No hace falta `aws configure`.
+- Para usar el **AWS CLI local**: copiar el bloque de `AWS Details → AWS CLI` y correr `.\scripts\cargar-credenciales.ps1`. Las carga como variables de entorno **sólo en esa terminal**; al cerrarla desaparecen. **No usar `aws configure`**: deja las claves en texto plano en `~/.aws/credentials`, dentro del perfil de usuario que además se sincroniza a OneDrive.
 - En scripts para CloudShell conviene arrancar con `export AWS_PAGER=""` para que la salida no quede atrapada en el pager.
+
+## 💻 Entorno local (ya instalado)
+
+| Herramienta | Dónde / cómo |
+|---|---|
+| AWS CLI v2 | `C:\Program Files\Amazon\AWSCLIV2\aws.exe` (ya en el PATH) |
+| Python 3.11 + venv | `C:\Users\pipel\venvs\bigdata` — **a propósito fuera de OneDrive**: un venv son miles de archivos chicos y sincronizarlos es lento e inútil |
+| Paquetes | `duckdb`, `pyarrow`, `pandas`, `boto3`, `awswrangler`, `ipykernel` |
+| VS Code | + AWS Toolkit, Python, Jupyter |
+| Git + GitHub CLI | repo privado `Pipelol0723/bigdata-ing-datos` |
+
+**Regla de oro para cuidar el presupuesto — desarrollar local, ejecutar en AWS:**
+- Athena cobra **$5 por TB escaneado**. Depurar el SQL con **DuckDB** sobre los mismos Parquet cuesta **$0**; recién cuando la query funciona, correrla en Athena.
+- Convertir CSV → **Parquet con `pyarrow` localmente** antes de subir a S3: baja el costo de Athena uno o dos órdenes de magnitud.
+- Un error de sintaxis o un `SELECT *` de prueba no deberían costar plata.
+
+Activar el venv: `C:\Users\pipel\venvs\bigdata\Scripts\Activate.ps1`
 
 ---
 
@@ -153,14 +171,26 @@ S3, Athena, Glue, Glue DataBrew, Kinesis, DynamoDB, EMR, Redshift, Step Function
 ## 📁 Estructura del repo
 
 ```
-bigdata e ing de datos/
-├── CLAUDE.md            ← este archivo (se carga solo en cada sesión)
-├── scripts/             ← bash/boto3 para pegar en CloudShell
-│   └── auditar-recursos.sh   ← sólo lectura: qué tengo prendido
-├── cloudformation/      ← templates .yaml (forma preferida de levantar entornos)
-├── notas/               ← apuntes y explicaciones de cada tema
-└── entregas/            ← trabajos prácticos por unidad
+bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
+├── CLAUDE.md                    ← este archivo (se carga solo en cada sesión)
+├── .gitignore                   ← bloquea credenciales, .pem, .env y datasets
+├── .gitattributes               ← fuerza LF en .sh (si no, fallan en CloudShell)
+├── scripts/
+│   ├── auditar-recursos.sh      ← sólo lectura: qué tengo prendido y cobrando
+│   └── cargar-credenciales.ps1  ← credenciales del lab en memoria, no en disco
+├── cloudformation/              ← templates .yaml (forma preferida de levantar entornos)
+├── notas/                       ← apuntes y explicaciones de cada tema
+└── entregas/                    ← trabajos prácticos por unidad
 ```
+
+### Respaldo (3 capas)
+1. **OneDrive** — sincroniza solo, pero *sync ≠ backup*: si borrás algo, se propaga. Cubre 30 días de papelera.
+2. **Git local** — historial real, permite volver atrás.
+3. **GitHub privado** — `Pipelol0723/bigdata-ing-datos`. Sobrevive a perder la PC.
+
+⚠️ **Nunca commitear credenciales de AWS.** El `.gitignore` las bloquea, pero la regla es no escribirlas en ningún archivo del repo. GitHub escanea claves y las revoca automáticamente.
+
+💡 Lo que de verdad hay que preservar no son los scripts (se regeneran) sino **este `CLAUDE.md` y la carpeta `notas/`**: son el contexto acumulado que permite retomar el trabajo en una sesión nueva sin volver a explicar todo. Commitear seguido.
 
 ---
 
