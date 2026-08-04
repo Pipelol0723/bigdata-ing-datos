@@ -1,0 +1,46 @@
+# =============================================================
+#  NUNCA subir credenciales de AWS
+#  Las del Learner Lab son temporales, pero igual: cero excepciones.
+#  GitHub escanea y revoca, y un leak en un repo publico es nota 0.
+# =============================================================
+.aws/
+credentials
+*.pem
+*.ppk
+vockey*
+*credentials*
+*.env
+.env*
+*secret*
+*_rsa
+config.ini
+
+# Entornos de Python (el venv vive fuera de OneDrive, pero por las dudas)
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Datos: pesados y regenerables. Van a S3, no a git.
+datos/
+data/
+*.csv
+*.parquet
+*.json.gz
+*.zip
+*.gz
+*.db
+*.duckdb
+
+# Salidas de trabajo
+salidas/
+output/
+*.log
+
+# Windows / OneDrive
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.tmp
