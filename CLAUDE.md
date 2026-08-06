@@ -49,6 +49,8 @@ Después sí, los pasos. Si un tema da para más, ofrecer profundizar en vez de 
 - Para usar el **AWS CLI local**: copiar el bloque de `AWS Details → AWS CLI` y correr `.\scripts\cargar-credenciales.ps1`. Las carga como variables de entorno **sólo en esa terminal**; al cerrarla desaparecen. **No usar `aws configure`**: deja las claves en texto plano en `~/.aws/credentials`, dentro del perfil de usuario que además se sincroniza a OneDrive.
 - En scripts para CloudShell conviene arrancar con `export AWS_PAGER=""` para que la salida no quede atrapada en el pager.
 
+⚠️ **Trampa de PowerShell 5.1:** al invocar ejecutables nativos (`ssh.exe`, `aws.exe`) **se come las comillas dobles internas** de los argumentos. Un `ssh host 'cmd -H "Header: x"'` llega al destino con el header roto, y el error resultante no lo delata. Para comandos remotos con comillas anidadas, usar **Git Bash**, no PowerShell.
+
 ## 💻 Entorno local (ya instalado)
 
 | Herramienta | Dónde / cómo |
@@ -205,7 +207,10 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 
 | Recurso | Detalle | Costo | Estado |
 |---|---|---|---|
-| EC2 `t3.micro` (Ubuntu 26.04) | `ec2-54-90-158-108.compute-1.amazonaws.com` · us-east-1 · key `vockey` · 2 vCPU / 908 MB RAM | ~$0.0104/h (~$7.5/mes si queda prendida) | **RUNNING — pendiente de terminar** |
+| EC2 `t3.micro` (Ubuntu 26.04) | `i-082829eaed67d7086` · us-east-1a · key `vockey` · 2 vCPU / 908 MB RAM / sin swap | ~$0.0104/h (~$7.5/mes si queda prendida) | **RUNNING — pendiente de terminar** |
+
+**IDs para el checklist de baja:**
+`instancia i-082829eaed67d7086` · `SG sg-06269c038daa2d634 (launch-wizard-1)` · `VPC vpc-099e92d8e5feb8b90` · `subnet subnet-0e44e937b437991a7`
 
 **Acceso:** alias `ec2-bigdata` en `~/.ssh/config` → `ssh ec2-bigdata`, o VS Code Remote-SSH.
 ⚠️ El DNS/IP **cambia cada vez que la instancia se reinicia** → hay que reescribir el alias con `scripts/conectar-ec2.ps1 -ConfigurarVSCode`.
