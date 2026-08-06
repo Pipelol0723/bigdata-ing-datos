@@ -124,7 +124,9 @@ Host $alias
         if (Test-Path $config) { $previo = Get-Content $config -Raw }
         # saca cualquier bloque anterior con el mismo alias (la IP cambia al reiniciar)
         $previo = [regex]::Replace($previo, "(?ms)^Host\s+$alias\s*$.*?(?=^Host\s|\z)", "")
-        Set-Content -Path $config -Value ($previo.TrimEnd() + "`r`n`r`n" + $bloque) -Encoding utf8
+        # WriteAllText escribe UTF8 SIN BOM. Ojo: 'Set-Content -Encoding utf8'
+        # en PowerShell 5.1 agrega BOM, y ssh no parsea bien el config con BOM.
+        [System.IO.File]::WriteAllText($config, ($previo.TrimEnd() + "`r`n`r`n" + $bloque).TrimStart())
         Write-Host "  [ok] Alias '$alias' escrito en ~/.ssh/config" -ForegroundColor Green
         Write-Host "       VS Code: F1 -> 'Remote-SSH: Connect to Host' -> $alias"
         Write-Host "       Terminal: ssh $alias"

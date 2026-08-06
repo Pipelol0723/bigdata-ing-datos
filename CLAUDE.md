@@ -198,6 +198,15 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- **Estado actual:** sin entrega activa todavía. Entorno y convenciones preparados; falta arrancar con la primera unidad.
-- **Recursos AWS vivos:** ninguno registrado.
-- **Última auditoría:** aún no se corrió.
+- **Estado actual:** entorno local y repo listos. Primera EC2 creada y accesible por SSH desde local.
+- **Última auditoría:** aún no se corrió `auditar-recursos.sh`.
+
+### ⚠️ Recursos AWS vivos
+
+| Recurso | Detalle | Costo | Estado |
+|---|---|---|---|
+| EC2 `t3.micro` (Ubuntu 26.04) | `ec2-54-90-158-108.compute-1.amazonaws.com` · us-east-1 · key `vockey` · 2 vCPU / 908 MB RAM | ~$0.0104/h (~$7.5/mes si queda prendida) | **RUNNING — pendiente de terminar** |
+
+**Acceso:** alias `ec2-bigdata` en `~/.ssh/config` → `ssh ec2-bigdata`, o VS Code Remote-SSH.
+⚠️ El DNS/IP **cambia cada vez que la instancia se reinicia** → hay que reescribir el alias con `scripts/conectar-ec2.ps1 -ConfigurarVSCode`.
+⚠️ Con 908 MB de RAM **no entra Spark ni un dataset mediano en pandas**. Para procesamiento real: EMR, o DuckDB local.
