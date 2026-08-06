@@ -200,7 +200,7 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- **Estado actual:** entorno local y repo listos. Primera EC2 creada y accesible por SSH desde local.
+- **Estado actual:** práctico de **EC2 + Apache terminado y entregado**. Trabajo preservado en `entregas/ec2-apache/` (incluye la receta para recrearlo desde cero). Instancia pendiente de terminar.
 - **Última auditoría:** aún no se corrió `auditar-recursos.sh`.
 
 ### ⚠️ Recursos AWS vivos
