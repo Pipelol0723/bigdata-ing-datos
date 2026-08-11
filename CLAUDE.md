@@ -200,21 +200,26 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- **Estado actual:** EC2 + Apache entregado (`entregas/ec2-apache/`). Sobre la misma instancia se montó **FastAPI** detrás de Apache como reverse proxy, instalado con `scripts/instalar-fastapi.sh`.
-- **Última auditoría:** aún no se corrió `auditar-recursos.sh`.
+- **Estado actual:** EC2 + Apache **entregado** (`entregas/ec2-apache/`). Se montó FastAPI detrás de Apache como reverse proxy — receta en `scripts/instalar-fastapi.sh`. **La EC2 ya fue terminada.** Próximo tema: app web + versión móvil (responsive/PWA), con RDS MySQL como base.
+- **Última auditoría:** cierre de sesión hecho a mano; falta correr `auditar-recursos.sh` al abrir la próxima.
 
-### ⚠️ Recursos AWS vivos
+### Recursos AWS
 
 | Recurso | Detalle | Costo | Estado |
 |---|---|---|---|
-| EC2 `t3.micro` (Ubuntu 26.04) | `i-082829eaed67d7086` · us-east-1a · key `vockey` · 2 vCPU / 908 MB RAM / sin swap · Python 3.14 | ~$0.0104/h (~$7.5/mes si queda prendida) | **RUNNING — pendiente de terminar** |
+| ~~EC2 `i-082829eaed67d7086`~~ | t3.micro Ubuntu 26.04 | — | ✅ **TERMINADA** |
+| RDS `db-service` | `db.t4g.micro` · MySQL · 1 AZ · `db-service.cvbllouimnrr.us-east-1.rds.amazonaws.com:3306` · SG propio, VPC default | ~$0.016/h encendida · **~$2.30/mes de storage aunque esté detenida** | ⏸️ **STOPPED** |
 
-**Qué corre en la instancia:** Apache en el `:80` (sirve `/` y proxea `/api/`) + FastAPI en `127.0.0.1:8000` como servicio systemd `fastapi.service`. Código en `/home/ubuntu/api/main.py`.
+⚠️ **La RDS se reinicia sola a los 7 días de detenida** (regla de AWS, no del lab). Si no se va a usar en ese plazo: borrarla con `--final-db-snapshot-identifier`, o guardar el esquema en un `.sql` y borrarla sin snapshot.
 
-⚠️ **El servicio usa la instalación `pip --user`** (`~/.local/lib/python3.14/site-packages`), no el venv. El venv de `~/api/.venv` quedó sin uso (91 MB). El unit anterior está respaldado en `/etc/systemd/system/fastapi.service.venv-bak`.
-⚠️ `scripts/instalar-fastapi.sh` **sigue armando el venv** — si se recrea la instancia con ese script, queda la configuración original, no ésta.
+**Pendiente cuando se retome:** la EC2 nunca llegó a conectarse a la RDS — falta la regla de entrada al **3306 en el SG de la base, con origen el SG de la EC2** (no una IP). En la consola de RDS, *Acciones → Configurar la conexión de EC2* lo hace automático.
 
-⚠️ **La IP pública cambia en cada stop/start.** Histórico: `54.90.158.108` → `50.17.68.3`. Al arrancarla, regenerar el alias con `scripts/conectar-ec2.ps1 -ConfigurarVSCode`.
+### Notas de la instancia que se terminó (para recrearla)
+- Apache en el `:80` sirviendo `/` y proxeando `/api/` a FastAPI en `127.0.0.1:8000`, como servicio systemd. Así **no hace falta abrir ningún puerto extra**.
+- Ubuntu 26.04 trae **Python 3.14 con PEP 668**: `pip install` a secas falla. Va con venv o `pip install --user --break-system-packages`.
+- Drivers que hicieron falta para MySQL: `pymysql`, `sqlalchemy`.
+- ⚠️ **La IP pública cambia en cada stop/start** (pasó dos veces: `54.90.158.108` → `50.17.68.3`). Regenerar el alias SSH con `scripts/conectar-ec2.ps1 -ConfigurarVSCode`.
+- El alias `ec2-bigdata` en `~/.ssh/config` quedó apuntando a una instancia que ya no existe.
 
 **IDs para el checklist de baja:**
 `instancia i-082829eaed67d7086` · `SG sg-06269c038daa2d634 (launch-wizard-1)` · `VPC vpc-099e92d8e5feb8b90` · `subnet subnet-0e44e937b437991a7`
