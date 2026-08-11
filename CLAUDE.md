@@ -200,14 +200,18 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- **Estado actual:** práctico de **EC2 + Apache terminado y entregado**. Trabajo preservado en `entregas/ec2-apache/` (incluye la receta para recrearlo desde cero). Instancia pendiente de terminar.
+- **Estado actual:** EC2 + Apache entregado (`entregas/ec2-apache/`). Sobre la misma instancia se montó **FastAPI** detrás de Apache como reverse proxy, instalado con `scripts/instalar-fastapi.sh`.
 - **Última auditoría:** aún no se corrió `auditar-recursos.sh`.
 
 ### ⚠️ Recursos AWS vivos
 
 | Recurso | Detalle | Costo | Estado |
 |---|---|---|---|
-| EC2 `t3.micro` (Ubuntu 26.04) | `i-082829eaed67d7086` · us-east-1a · key `vockey` · 2 vCPU / 908 MB RAM / sin swap | ~$0.0104/h (~$7.5/mes si queda prendida) | **RUNNING — pendiente de terminar** |
+| EC2 `t3.micro` (Ubuntu 26.04) | `i-082829eaed67d7086` · us-east-1a · key `vockey` · 2 vCPU / 908 MB RAM / sin swap · Python 3.14 | ~$0.0104/h (~$7.5/mes si queda prendida) | **RUNNING — pendiente de terminar** |
+
+**Qué corre en la instancia:** Apache en el `:80` (sirve `/` y proxea `/api/`) + FastAPI en `127.0.0.1:8000` como servicio systemd `fastapi.service`. Código en `/home/ubuntu/api/`, venv en `/home/ubuntu/api/.venv`.
+
+⚠️ **La IP pública cambia en cada stop/start.** Histórico: `54.90.158.108` → `50.17.68.3`. Al arrancarla, regenerar el alias con `scripts/conectar-ec2.ps1 -ConfigurarVSCode`.
 
 **IDs para el checklist de baja:**
 `instancia i-082829eaed67d7086` · `SG sg-06269c038daa2d634 (launch-wizard-1)` · `VPC vpc-099e92d8e5feb8b90` · `subnet subnet-0e44e937b437991a7`
