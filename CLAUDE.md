@@ -209,7 +209,10 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 |---|---|---|---|
 | EC2 `t3.micro` (Ubuntu 26.04) | `i-082829eaed67d7086` · us-east-1a · key `vockey` · 2 vCPU / 908 MB RAM / sin swap · Python 3.14 | ~$0.0104/h (~$7.5/mes si queda prendida) | **RUNNING — pendiente de terminar** |
 
-**Qué corre en la instancia:** Apache en el `:80` (sirve `/` y proxea `/api/`) + FastAPI en `127.0.0.1:8000` como servicio systemd `fastapi.service`. Código en `/home/ubuntu/api/`, venv en `/home/ubuntu/api/.venv`.
+**Qué corre en la instancia:** Apache en el `:80` (sirve `/` y proxea `/api/`) + FastAPI en `127.0.0.1:8000` como servicio systemd `fastapi.service`. Código en `/home/ubuntu/api/main.py`.
+
+⚠️ **El servicio usa la instalación `pip --user`** (`~/.local/lib/python3.14/site-packages`), no el venv. El venv de `~/api/.venv` quedó sin uso (91 MB). El unit anterior está respaldado en `/etc/systemd/system/fastapi.service.venv-bak`.
+⚠️ `scripts/instalar-fastapi.sh` **sigue armando el venv** — si se recrea la instancia con ese script, queda la configuración original, no ésta.
 
 ⚠️ **La IP pública cambia en cada stop/start.** Histórico: `54.90.158.108` → `50.17.68.3`. Al arrancarla, regenerar el alias con `scripts/conectar-ec2.ps1 -ConfigurarVSCode`.
 
