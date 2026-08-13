@@ -235,7 +235,12 @@ Arreglo — crear un parameter group propio (familia `mysql8.4`), poner `log_bin
 
 Verificar qué falta con `SHOW FUNCTION STATUS WHERE Db='sakila';` y `SHOW TRIGGERS FROM sakila;` (Sakila trae 3 funciones y 6 triggers).
 
-⚠️ **Cloud9: no terminar la instancia EC2 directamente** — rompe el entorno. Detenerla, o borrar el entorno completo desde la consola de Cloud9.
+### ⚠️ Trampas de Cloud9 (aprendidas a los golpes)
+
+- **No terminar la instancia EC2 directamente** — rompe el entorno y no se recupera. Detenerla, o borrar el entorno completo desde la consola de Cloud9.
+- **Con la pestaña del IDE abierta, la instancia NO se puede detener:** Cloud9 detecta que su entorno se apaga y **la vuelve a encender sola**. Pasó: `stop-instances` devolvió `stopping` y minutos después estaba en `running` otra vez. **Hay que cerrar todas las pestañas de Cloud9 antes de detenerla.**
+- Por eso el **timeout de hibernación por inactividad** no es un detalle de comodidad sino el mecanismo principal de control de costo. Verificarlo en la consola de Cloud9 (la API `describe-environments` **no** devuelve ese campo — comprobado).
+- `managedCredentialsStatus: ENABLED_BY_OWNER` es lo que hace que el `aws` CLI funcione en Cloud9 sin configurar credenciales.
 
 ⚠️ **La RDS se reinicia sola a los 7 días de detenida** (regla de AWS, no del lab). Si no se va a usar en ese plazo: borrarla con `--final-db-snapshot-identifier`, o guardar el esquema en un `.sql` y borrarla sin snapshot.
 
