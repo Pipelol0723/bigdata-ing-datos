@@ -217,7 +217,25 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 ⚠️ AWS cerró Cloud9 a clientes nuevos en 2024. Sirve para el curso, pero no basar nada a largo plazo en él.
 ⚠️ El *Preview* de Cloud9 **no es una URL pública**: para que el profesor vea la app hay que abrir el puerto en el Security Group.
 
-**Conexión a la base ya resuelta:** DBeaver instalado y conectando. MySQL Shell 26.7 instalado local (`mysqlsh`). El cliente clásico `mysql.exe` **no** está — MySQL Shell no lo incluye, viene con el paquete de MySQL Server.
+**Conexión a la base ya resuelta:** DBeaver instalado y conectando. MySQL Shell 26.7 instalado local (`mysqlsh`). El cliente clásico `mysql.exe` **no** está en Windows — MySQL Shell no lo incluye, viene con el paquete de MySQL Server. En Cloud9 sí está (`mysql`).
+
+**Base cargada:** esquema **Sakila** (dataset público de MySQL) en la RDS, usuario `pipe`, motor MySQL 8.4.9. Cargado desde Cloud9 con `wget` + `unzip` + `source`.
+
+### 🔧 Pendiente para la próxima sesión
+
+**Las funciones y triggers de Sakila NO se crearon.** Al correr `sakila-schema.sql` aparecieron ~8 veces:
+
+```
+ERROR 1419: You do not have the SUPER privilege and binary logging is enabled
+```
+
+Causa: RDS tiene binlog siempre activo y **nunca otorga `SUPER`**, ni al usuario maestro. Sin `SUPER`, MySQL no deja crear funciones ni triggers. Las tablas y los datos sí entraron.
+
+Arreglo — crear un parameter group propio (familia `mysql8.4`), poner `log_bin_trust_function_creators=1`, asociarlo a `db-service`, **reiniciar la instancia** (asociar un parameter group nuevo lo exige) y volver a correr `sakila-schema.sql`.
+
+Verificar qué falta con `SHOW FUNCTION STATUS WHERE Db='sakila';` y `SHOW TRIGGERS FROM sakila;` (Sakila trae 3 funciones y 6 triggers).
+
+⚠️ **Cloud9: no terminar la instancia EC2 directamente** — rompe el entorno. Detenerla, o borrar el entorno completo desde la consola de Cloud9.
 
 ⚠️ **La RDS se reinicia sola a los 7 días de detenida** (regla de AWS, no del lab). Si no se va a usar en ese plazo: borrarla con `--final-db-snapshot-identifier`, o guardar el esquema en un `.sql` y borrarla sin snapshot.
 
