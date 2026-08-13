@@ -208,7 +208,16 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 | Recurso | Detalle | Costo | Estado |
 |---|---|---|---|
 | ~~EC2 `i-082829eaed67d7086`~~ | t3.micro Ubuntu 26.04 | — | ✅ **TERMINADA** |
-| RDS `db-service` | `db.t4g.micro` · MySQL · 1 AZ · `db-service.cvbllouimnrr.us-east-1.rds.amazonaws.com:3306` · SG propio, VPC default | ~$0.016/h encendida · **~$2.30/mes de storage aunque esté detenida** | ⏸️ **STOPPED** |
+| **Cloud9 `i-0490df2bd01dfaafe`** | `t3.small` (2 vCPU / 2 GB) · entorno `aws-cloud9-my-env-5521f907b4ed4cfba8188eaba6c1ff1a` | **~$0.0208/h** (el doble que una micro) | ▶️ **RUNNING** |
+| RDS `db-service` | `db.t4g.micro` · MySQL · 1 AZ · `db-service.cvbllouimnrr.us-east-1.rds.amazonaws.com:3306` · **públicamente accesible**, 3306 abierto a la IP del alumno | ~$0.016/h encendida · **~$2.30/mes de storage aunque esté detenida** | ▶️ **RUNNING** |
+
+**Quema combinada con todo prendido: ~$0.90–1.00 por día.**
+
+**Cloud9 = una EC2 con IDE en el navegador.** Cobra como cualquier EC2. Su ventaja: **hibernación automática por inactividad** (verificar que esté en 30 min, no en "Never"). Su límite: en el Learner Lab las instancias detenidas **se reinician solas** en la sesión siguiente, así que la hibernación protege dentro de una sesión, no entre sesiones.
+⚠️ AWS cerró Cloud9 a clientes nuevos en 2024. Sirve para el curso, pero no basar nada a largo plazo en él.
+⚠️ El *Preview* de Cloud9 **no es una URL pública**: para que el profesor vea la app hay que abrir el puerto en el Security Group.
+
+**Conexión a la base ya resuelta:** DBeaver instalado y conectando. MySQL Shell 26.7 instalado local (`mysqlsh`). El cliente clásico `mysql.exe` **no** está — MySQL Shell no lo incluye, viene con el paquete de MySQL Server.
 
 ⚠️ **La RDS se reinicia sola a los 7 días de detenida** (regla de AWS, no del lab). Si no se va a usar en ese plazo: borrarla con `--final-db-snapshot-identifier`, o guardar el esquema en un `.sql` y borrarla sin snapshot.
 
