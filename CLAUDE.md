@@ -221,19 +221,21 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 
 **Base cargada:** esquema **Sakila** (dataset público de MySQL) en la RDS, usuario `pipe`, motor MySQL 8.4.9. Cargado desde Cloud9 con `wget` + `unzip` + `source`.
 
-### 🔧 Pendiente para la próxima sesión
+### Sobre los errores de Sakila (cerrado)
 
-**Las funciones y triggers de Sakila NO se crearon.** Al correr `sakila-schema.sql` aparecieron ~8 veces:
+Al correr `sakila-schema.sql` aparecieron ~8 veces:
 
 ```
 ERROR 1419: You do not have the SUPER privilege and binary logging is enabled
 ```
 
-Causa: RDS tiene binlog siempre activo y **nunca otorga `SUPER`**, ni al usuario maestro. Sin `SUPER`, MySQL no deja crear funciones ni triggers. Las tablas y los datos sí entraron.
+Consecuencia: **las 3 funciones y los 6 triggers de Sakila no se crearon.** Las tablas, las vistas y los datos sí entraron completos.
 
-Arreglo — crear un parameter group propio (familia `mysql8.4`), poner `log_bin_trust_function_creators=1`, asociarlo a `db-service`, **reiniciar la instancia** (asociar un parameter group nuevo lo exige) y volver a correr `sakila-schema.sql`.
+Causa: RDS tiene binlog siempre activo y **nunca otorga `SUPER`**, ni al usuario maestro. Sin `SUPER`, MySQL no deja crear funciones ni triggers. Es el precio concreto de usar una base gestionada.
 
-Verificar qué falta con `SHOW FUNCTION STATUS WHERE Db='sakila';` y `SHOW TRIGGERS FROM sakila;` (Sakila trae 3 funciones y 6 triggers).
+✅ **El profesor dijo que no importa, que se deje así.** Ya no es un pendiente.
+
+Si alguna vez hicieran falta: parameter group propio (familia `mysql8.4`) con `log_bin_trust_function_creators=1`, asociarlo a `db-service`, reiniciar la instancia y volver a correr `sakila-schema.sql`. Verificar con `SHOW FUNCTION STATUS WHERE Db='sakila';` y `SHOW TRIGGERS FROM sakila;`.
 
 ### ⚠️ Trampas de Cloud9 (aprendidas a los golpes)
 
