@@ -159,3 +159,34 @@ SELECT * FROM film_list LIMIT 10;
 --      inventory_held_by_customer(...)
 --  Todo lo de arriba usa SQL puro y anda sin problema.
 -- =============================================================
+
+
+-- =============================================================
+--  CONSIGNA: listar el nombre de las peliculas por su idioma
+-- =============================================================
+
+-- Version pedida: una fila por pelicula, con su idioma
+SELECT l.name  AS idioma,
+       f.title AS pelicula
+FROM film f
+JOIN language l ON l.language_id = f.language_id
+ORDER BY l.name, f.title;
+
+-- ⚠️ OJO: en Sakila las 1000 peliculas tienen language_id = 1,
+-- o sea que TODAS figuran en ingles. El resultado no esta mal:
+-- el dataset de ejemplo se cargo asi. Esta consulta lo demuestra.
+SELECT l.language_id, l.name AS idioma, COUNT(f.film_id) AS peliculas
+FROM language l
+LEFT JOIN film f ON f.language_id = l.language_id   -- LEFT: muestra
+GROUP BY l.language_id, l.name                      -- los idiomas
+ORDER BY peliculas DESC;                            -- con 0 peliculas
+
+-- Variante compacta: un renglon por idioma con los titulos juntos.
+-- Requiere subir group_concat_max_len o trunca en 1024 caracteres.
+SET SESSION group_concat_max_len = 1000000;
+SELECT l.name AS idioma,
+       COUNT(*) AS cantidad,
+       GROUP_CONCAT(f.title ORDER BY f.title SEPARATOR ', ') AS peliculas
+FROM film f
+JOIN language l ON l.language_id = f.language_id
+GROUP BY l.name;
