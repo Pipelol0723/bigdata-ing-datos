@@ -221,6 +221,23 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 
 **Base cargada:** esquema **Sakila** (dataset público de MySQL) en la RDS, usuario `pipe`, motor MySQL 8.4.9. Cargado desde Cloud9 con `wget` + `unzip` + `source`.
 
+### MySQL Server local en Cloud9 (tarea, hecha)
+
+`scripts/instalar-mysql-server.sh` · **MySQL 8.0.46 sobre Ubuntu 22.04**, activo como servicio systemd. Sakila cargada **sin un solo error**.
+
+**El contraste que demuestra el ejercicio:**
+
+| | RDS `db-service` | MySQL local en Cloud9 |
+|---|---|---|
+| Funciones de Sakila | **0** | **3** |
+| Triggers de Sakila | **0** | **6** |
+| Privilegio `SUPER` | nunca | sí (sos admin) |
+| Backups y parches | AWS | tu problema |
+
+Es IaaS vs servicio gestionado en una sola captura.
+
+💡 Cloud9 corre **Ubuntu 22.04**, no 26.04 como la EC2 vieja → **no tiene PEP 668**, así que `pip install` funciona sin `--break-system-packages`.
+
 ### Sobre los errores de Sakila (cerrado)
 
 Al correr `sakila-schema.sql` aparecieron ~8 veces:
