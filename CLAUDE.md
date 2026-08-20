@@ -203,6 +203,26 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 - **Estado actual:** EC2 + Apache **entregado** (`entregas/ec2-apache/`). Se montó FastAPI detrás de Apache como reverse proxy — receta en `scripts/instalar-fastapi.sh`. **La EC2 ya fue terminada.** Próximo tema: app web + versión móvil (responsive/PWA), con RDS MySQL como base.
 - **Última auditoría:** cierre de sesión hecho a mano; falta correr `auditar-recursos.sh` al abrir la próxima.
 
+### 🔧 PENDIENTE — recordárselo al alumno al abrir la próxima sesión
+
+**Cambiar la conexión de DBeaver al MySQL de Cloud9: de exposición directa a túnel SSH.**
+
+Hoy quedó funcionando por el camino rápido: `bind-address = 0.0.0.0`, usuario `'pipe'@'%'`, y el **puerto 3306 abierto en `sg-092fd67032a5fbdee`** a la IP del alumno. Funciona, pero deja MySQL escuchando en una interfaz pública — comprobado en clase: se pudo leer el banner de versión (`8.0.46-0ubuntu0.22.04.3`, `caching_sha2_password`) **desde la PC del alumno sin autenticarse**.
+
+El profesor había pedido SSH. Lo dio por válido igual, pero conviene hacerlo:
+
+1. Sacar la clave pública: `ssh-keygen -y -f C:\Users\pipel\.ssh\vockey.pem`
+2. Agregarla a `~/.ssh/authorized_keys` en Cloud9 (`chmod 700 ~/.ssh`, `chmod 600 authorized_keys`)
+3. Abrir el **22** en el SG a la IP del momento
+4. En DBeaver: pestaña **SSH** → *Use SSH Tunnel* (host = IP pública de Cloud9, user `ubuntu`, Public Key = `vockey.pem`). En la pestaña **Main**, host pasa a ser `127.0.0.1`
+5. Una vez andando, **cerrar el 3306** (comando destructivo → entregarlo, no ejecutarlo):
+   `aws ec2 revoke-security-group-ingress --group-id sg-092fd67032a5fbdee --protocol tcp --port 3306 --cidr <IP>/32 --region us-east-1`
+6. Opcional: volver `bind-address` a `127.0.0.1` y reiniciar MySQL — con el túnel ya no hace falta que escuche hacia afuera
+
+**El argumento de fondo:** con el túnel la base es segura *por diseño* (no escucha en una interfaz pública); con el método actual es segura *por configuración* (depende de que una regla del SG siga siendo correcta).
+
+⚠️ **La IP del alumno rota** (`192.144.114.66` → `.77` en una semana) y **la IP pública de Cloud9 cambia en cada reinicio**. Cualquiera de los dos métodos exige actualizar la regla del SG y el host en DBeaver cada clase.
+
 ### Recursos AWS
 
 | Recurso | Detalle | Costo | Estado |
