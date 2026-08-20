@@ -233,7 +233,9 @@ El profesor había pedido SSH. Lo dio por válido igual, pero conviene hacerlo:
 
 **Quema combinada con todo prendido: ~$0.90–1.00 por día.** Con ambas detenidas: ~$0.10/día (sólo storage).
 
-📌 **Cierre 2026-08-18:** Cloud9 y RDS detenidas y verificadas en `stopping`. MySQL Server local quedó instalado en la instancia de Cloud9 con Sakila completa — **detener conserva el disco, borrar el entorno lo destruye.**
+📌 **Última sesión:** DBeaver conectado al MySQL local de Cloud9 por el 3306 (método directo, no túnel — ver PENDIENTE arriba). Sakila verificada con funciones y triggers presentes, a diferencia de la RDS. Consultas de clase en `consultas/`. Al cierre: Cloud9 detenida, RDS ya estaba detenida.
+
+⚠️ **La RDS se reinicia sola a los 7 días de detenida.** Si no se usa en ese plazo, borrarla: Sakila se recarga en un minuto y se ahorran ~$2.30/mes de storage.
 
 **Cloud9 = una EC2 con IDE en el navegador.** Cobra como cualquier EC2. Su ventaja: **hibernación automática por inactividad** (verificar que esté en 30 min, no en "Never"). Su límite: en el Learner Lab las instancias detenidas **se reinician solas** en la sesión siguiente, así que la hibernación protege dentro de una sesión, no entre sesiones.
 ⚠️ AWS cerró Cloud9 a clientes nuevos en 2024. Sirve para el curso, pero no basar nada a largo plazo en él.
