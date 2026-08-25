@@ -1,14 +1,4 @@
 # Contexto del proyecto: Big Data e Ingeniería de Datos (AWS Learner Lab)
-### 💰 Control de presupuesto
-
-| Fecha | Consumido | Nota |
-|---|---|---|
-| 2026-08-25 | **$3.20 / $50** | ~19 días de curso · ~$0.17/día promedio · no incluye la clase de ese día (~$1 más) |
-
-Ritmo actual: **sano**. Días sin clase ~$0.10 (sólo storage), días de clase con todo prendido ~$1.
-
-⚠️ **El margen es para lo que viene, no para gastarlo ahora.** Con el saldo restante: EMR de 3 nodos dura ~5 días; Redshift de 2 nodos, **menos de 2**. Un Redshift olvidado un fin de semana (~$78) supera el presupuesto entero.
-
 
 ## Sobre este proyecto
 Materia universitaria **"Big Data e Ingeniería de Datos"**. Todo el trabajo práctico se hace en un **AWS Academy Learner Lab**, un sandbox educativo con presupuesto de **50 USD**. Cualquier script o comando que se genere acá debe asumir que corre contra ese entorno, no contra una cuenta AWS normal.
@@ -207,6 +197,16 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 ---
 
 ## 📌 Bitácora del curso
+
+### 💰 Control de presupuesto
+
+| Fecha | Consumido | Nota |
+|---|---|---|
+| 2026-08-25 | **$3.20 / $50** | ~19 días de curso · ~$0.17/día promedio · no incluye la clase de ese día (~$1 más) |
+
+Ritmo actual: **sano**. Días sin clase ~$0.10 (sólo storage), días de clase con todo prendido ~$1.
+
+⚠️ **El margen es para lo que viene, no para gastarlo ahora.** Con el saldo restante: EMR de 3 nodos dura ~5 días; Redshift de 2 nodos, **menos de 2**. Un Redshift olvidado un fin de semana (~$78) supera el presupuesto entero.
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
