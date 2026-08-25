@@ -303,4 +303,33 @@ Si alguna vez hicieran falta: parameter group propio (familia `mysql8.4`) con `l
 
 **Acceso:** alias `ec2-bigdata` en `~/.ssh/config` → `ssh ec2-bigdata`, o VS Code Remote-SSH.
 ⚠️ El DNS/IP **cambia cada vez que la instancia se reinicia** → hay que reescribir el alias con `scripts/conectar-ec2.ps1 -ConfigurarVSCode`.
-⚠️ Con 908 MB de RAM **no entra Spark ni un dataset mediano en pandas**. Para procesamiento real: EMR, o DuckDB local.
+### 🔵 Glue conectado a la RDS (hecho)
+
+Pipeline armado y funcionando. **Nada de esto cobra en reposo**, así que puede quedar entre clases.
+
+| Recurso | ID / nombre |
+|---|---|
+| Conexión JDBC | `Jdbc connection` → `jdbc:mysql://db-service.cvbllouimnrr.us-east-1.rds.amazonaws.com:3306/sakila` |
+| SG de Glue | `sg-0a705241afac09be5` (con **regla auto-referenciada**, obligatoria) |
+| VPC Endpoint S3 | `vpce-09b60424dc9c1f1cf` — tipo **Gateway, gratis** |
+| Database del catálogo | `sakila_catalog` |
+| Crawler | `crawler-sakila-rds`, `Include path = sakila/%` |
+| VPC / Subnet | `vpc-099e92d8e5feb8b90` / `subnet-0e44e937b437991a7` (us-east-1a) |
+| Cuenta | `936980625651` → rol `arn:aws:iam::936980625651:role/LabRole` |
+
+**Las cuatro trampas que costaron tiempo, para no repetirlas:**
+
+1. **La URL JDBC va con dos puntos**, no punto: `jdbc:mysql://…`, y **con el puerto** `:3306`.
+2. **El SG de Glue necesita una regla auto-referenciada** (todo el tráfico con origen el propio grupo). Sin eso la conexión falla sin explicar por qué.
+3. **Sin VPC Endpoint de S3, el crawler da timeout**: los workers corren dentro de la VPC sin IP pública. El endpoint Gateway es **gratis**; el NAT Gateway resuelve lo mismo a **$0.045/h** — no usarlo.
+4. **`Service is unable to assume provided role`** = se eligió un rol que no es `LabRole`. Hay ~25 roles en la cuenta y es fácil errarle; `LabRole` sí tiene `glue.amazonaws.com` en su trust policy (verificado).
+
+⚠️ **El crawler cobra por ejecución** (~$0.10-0.15). Dejarlo **On demand**, nunca con schedule: programado cada hora son ~$3.50/día catalogando una base que no cambia.
+
+⚠️ **Athena todavía no puede consultar estas tablas.** El catálogo apunta a una conexión JDBC, y Athena lee de S3. Falta el paso siguiente: un **ETL job** que escriba Parquet a S3.
+
+```
+RDS ──crawler──▶ Catálogo ──ETL job──▶ S3 (Parquet) ──▶ Athena
+                  (acá estamos)
+```
+
