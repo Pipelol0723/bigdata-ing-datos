@@ -233,7 +233,7 @@ El profesor había pedido SSH. Lo dio por válido igual, pero conviene hacerlo:
 
 **Quema combinada con todo prendido: ~$0.90–1.00 por día.** Con ambas detenidas: ~$0.10/día (sólo storage).
 
-📌 **Última sesión:** DBeaver conectado al MySQL local de Cloud9 por el 3306 (método directo, no túnel — ver PENDIENTE arriba). Sakila verificada con funciones y triggers presentes, a diferencia de la RDS. Consultas de clase en `consultas/`. Al cierre: Cloud9 detenida, RDS ya estaba detenida.
+📌 **Última sesión:** **Glue conectado a la RDS** — conexión JDBC, SG con regla auto-referenciada, VPC Endpoint de S3 y crawler sobre Sakila. Todo funcionando. Ver la sección de Glue más abajo. La IP del alumno era `192.144.114.69` (rota cada semana).
 
 ⚠️ **La RDS se reinicia sola a los 7 días de detenida.** Si no se usa en ese plazo, borrarla: Sakila se recarga en un minuto y se ahorran ~$2.30/mes de storage.
 
@@ -303,6 +303,7 @@ Si alguna vez hicieran falta: parameter group propio (familia `mysql8.4`) con `l
 
 **Acceso:** alias `ec2-bigdata` en `~/.ssh/config` → `ssh ec2-bigdata`, o VS Code Remote-SSH.
 ⚠️ El DNS/IP **cambia cada vez que la instancia se reinicia** → hay que reescribir el alias con `scripts/conectar-ec2.ps1 -ConfigurarVSCode`.
+⚠️ Con 908 MB de RAM **no entra Spark ni un dataset mediano en pandas**. Para procesamiento real: EMR, o DuckDB local.
 ### 🔵 Glue conectado a la RDS (hecho)
 
 Pipeline armado y funcionando. **Nada de esto cobra en reposo**, así que puede quedar entre clases.
