@@ -65,18 +65,43 @@ Categorías de NFR: `PERF` (performance), `CONC` (consistencia y concurrencia),
 
 ---
 
-## Restricción específica del equipo (§3)
+## La restricción del equipo y la defensa oral
 
-⏳ **Pendiente de asignación.**
+**Lo que se comunicó (01/09):** el día de la sustentación el profesor plantea un cambio,
+mejora o problema, y hay que proponer una solución **en el momento**, basada en cómo está
+construido el sistema. No hay nada extra que implementar.
 
-Cuando llegue, se integra en las secciones marcadas con el bloque
-`## Impacto de la restricción específica (§3)` que ya existe en cada archivo.
+⚠️ **Pendiente de confirmar con el profesor.** Eso describe la **sección 7** del enunciado
+—la defensa oral, que aplica a todos los equipos—. La **sección 3** es otra cosa: una
+restricción confidencial y distinta por equipo que debe quedar **integrada por escrito** en
+requisitos, modelo de datos y arquitectura antes de entregar. Puede ser que el profesor haya
+decidido que la §3 de este equipo *sea* recibirla en la defensa, o puede ser que falte.
+Importa porque la rúbrica de requisitos funcionales pone en el nivel Sobresaliente
+*"…e integran la restricción específica del equipo"*.
 
-Mitigación adoptada mientras tanto: las reglas de negocio sensibles se modelan como
-**políticas parametrizables**, no como invariantes rígidos. Ejemplo concreto: la capacidad
-vendible se define como `f(capacidad_física, política_comercial)` en vez de fijarla igual a
-la capacidad del avión. Así, una restricción del tipo "se permite overbooking del 5%" entra
-como configuración y justificación nueva, no como rediseño.
+### Qué implica para el diseño
+
+No cambia **qué** se construye, cambia **qué se evalúa**: la capacidad del diseño de absorber
+un cambio no previsto. Si ante *"ahora se permite overbooking del 5%"* la respuesta es
+*"cambio un parámetro de política y se propaga solo"*, el diseño aprobó. Si es *"habría que
+rehacer el modelo"*, no.
+
+Y esa diferencia se decide **al diseñar, no al defender**. Tres decisiones ya tomadas apuntan ahí:
+
+| Decisión | Para qué sirve el día de la defensa |
+|---|---|
+| Columna **"alternativa descartada"** en cada tabla `DEC-` | Banco de respuestas precalculado: *"lo consideramos; acá está la alternativa y esto es lo que habría que tocar"* |
+| **Trazabilidad** `FR-`/`NFR-` en cada decisión | *"¿Qué parte del diseño se ve afectada?"* se contesta siguiendo los enlaces hacia atrás, no improvisando |
+| **Políticas parametrizables** en vez de invariantes rígidos | `capacidad_vendible = f(capacidad_física, política_comercial)`: una regla nueva entra como configuración, no como rediseño |
+
+### Mapa de impacto
+
+Cada sección del documento cierra con un bloque **"Defensa: qué se rompe si esto cambia"**.
+Completarlos es lo que convierte la sustentación en una lectura y no en una improvisación.
+
+Banco de variaciones a ensayar el 09/09: overbooking · programa de viajero frecuente ·
+cambio de fecha con penalidad · codeshare con otra aerolínea · volumen ×100 · caída del
+proveedor de pagos · derecho al olvido sobre los datos de un pasajero.
 
 ---
 

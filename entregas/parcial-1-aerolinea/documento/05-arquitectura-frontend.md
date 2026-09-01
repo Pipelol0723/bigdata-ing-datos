@@ -18,6 +18,13 @@
 | ID | Decisión | Alternativa descartada | Requisito que la sustenta | Justificación |
 |---|---|---|---|---|
 
-## Impacto de la restricción específica (§3)
+## Defensa: qué se rompe si esto cambia (§7)
 
-⏳ Pendiente de asignación.
+El día de la sustentación el profesor plantea un cambio, mejora o problema no cubierto en el
+documento, y hay que responder **en el momento** qué parte del diseño se ve afectada. Esta
+tabla es la respuesta preparada para esta sección.
+
+| Si cambia… | Qué decisiones o entidades se tocan | Costo del cambio | Alternativa ya considerada |
+|---|---|---|---|
+
+> Sobre la restricción específica de equipo (§3), pendiente de confirmar: ver el README.
