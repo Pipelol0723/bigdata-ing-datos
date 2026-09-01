@@ -203,49 +203,48 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 | Fecha | Consumido | Nota |
 |---|---|---|
 | 2026-08-25 | **$3.20 / $50** | ~19 días de curso · ~$0.17/día promedio · no incluye la clase de ese día (~$1 más) |
+| 2026-09-01 | **$4.90 / $50** | ~26 días de curso · ~$0.19/día promedio · $1.70 en la semana, de los cuales ~$0.77 fue storage de recursos que nadie usó |
 
-Ritmo actual: **sano**. Días sin clase ~$0.10 (sólo storage), días de clase con todo prendido ~$1.
+Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el piso diario baja de ~$0.11 a **casi cero** entre clases.
+
+💡 **La lección de la semana 25/08 → 01/09:** de $1.70 consumidos, ~$0.77 fue *storage idle*. Parece nada, pero proyectado a fin de semestre son ~$11 — el **22% del saldo restante** — por almacenar una base con Sakila que ya no se iba a tocar. **El gasto peligroso no es el pico, es el piso.**
 
 ⚠️ **El margen es para lo que viene, no para gastarlo ahora.** Con el saldo restante: EMR de 3 nodos dura ~5 días; Redshift de 2 nodos, **menos de 2**. Un Redshift olvidado un fin de semana (~$78) supera el presupuesto entero.
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- **Estado actual:** EC2 + Apache **entregado** (`entregas/ec2-apache/`). Se montó FastAPI detrás de Apache como reverse proxy — receta en `scripts/instalar-fastapi.sh`. **La EC2 ya fue terminada.** Próximo tema: app web + versión móvil (responsive/PWA), con RDS MySQL como base.
-- **Última auditoría:** cierre de sesión hecho a mano; falta correr `auditar-recursos.sh` al abrir la próxima.
+- 🔴 **Estado actual (01/09): Parcial 1 en curso — entrega jueves 10/09.** Sistema de reservas de una aerolínea. Ver `entregas/parcial-1-aerolinea/README.md`. Rama: `parcial-1-aerolinea`. Es **individual** y la defensa oral es **eliminatoria por sección**.
+- **Cuenta AWS vacía (01/09):** se dieron de baja Cloud9 y la RDS `db-service`. **No queda ningún recurso cobrando cómputo.** El parcial arranca con infraestructura nueva.
+- **Trabajo anterior, ya entregado:** EC2 + Apache (`entregas/ec2-apache/`) con FastAPI como reverse proxy (`scripts/instalar-fastapi.sh`), Sakila en RDS, MySQL local en Cloud9 y Glue conectado a la RDS.
+- ⏳ **Bloqueante del parcial:** falta que asignen la **restricción específica del equipo (§3)** — una regla extra que debe integrarse coherentemente en requisitos, modelo de datos y arquitectura, y que se defiende oralmente. Mientras no llegue, las reglas de negocio sensibles se modelan como **políticas parametrizables** en vez de invariantes rígidos, para que entre como configuración y no como rediseño.
 
-### 🔧 PENDIENTE — recordárselo al alumno al abrir la próxima sesión
+### 🔒 CERRADO — el túnel SSH de DBeaver
 
-**Cambiar la conexión de DBeaver al MySQL de Cloud9: de exposición directa a túnel SSH.**
+**Por qué se cierra:** el 01/09 se dieron de baja Cloud9 y la RDS `db-service`. El instructivo paso a paso (abrir el 22, `authorized_keys`, reconfigurar DBeaver) ya no aplica a ningún recurso existente, y los IDs que mencionaba están muertos. Se borra el procedimiento y se conserva **la lección**, que es lo único que sobrevive al recurso.
 
-Hoy quedó funcionando por el camino rápido: `bind-address = 0.0.0.0`, usuario `'pipe'@'%'`, y el **puerto 3306 abierto en `sg-092fd67032a5fbdee`** a la IP del alumno. Funciona, pero deja MySQL escuchando en una interfaz pública — comprobado en clase: se pudo leer el banner de versión (`8.0.46-0ubuntu0.22.04.3`, `caching_sha2_password`) **desde la PC del alumno sin autenticarse**.
+**El caso:** la conexión quedó funcionando por el camino rápido — `bind-address = 0.0.0.0`, usuario `'pipe'@'%'`, y el 3306 abierto en el Security Group a la IP del alumno. Comprobado en clase: se podía leer el banner de versión de MySQL **desde afuera, sin autenticarse**. El profesor lo dio por válido, pero había pedido SSH.
 
-El profesor había pedido SSH. Lo dio por válido igual, pero conviene hacerlo:
+**La lección:** con un túnel SSH la base es segura **por diseño** — no escucha en una interfaz pública. Con el puerto abierto en el SG es segura **por configuración** — depende de que una regla siga siendo correcta. La primera falla cerrada, la segunda falla abierta.
 
-1. Sacar la clave pública: `ssh-keygen -y -f C:\Users\pipel\.ssh\vockey.pem`
-2. Agregarla a `~/.ssh/authorized_keys` en Cloud9 (`chmod 700 ~/.ssh`, `chmod 600 authorized_keys`)
-3. Abrir el **22** en el SG a la IP del momento
-4. En DBeaver: pestaña **SSH** → *Use SSH Tunnel* (host = IP pública de Cloud9, user `ubuntu`, Public Key = `vockey.pem`). En la pestaña **Main**, host pasa a ser `127.0.0.1`
-5. Una vez andando, **cerrar el 3306** (comando destructivo → entregarlo, no ejecutarlo):
-   `aws ec2 revoke-security-group-ingress --group-id sg-092fd67032a5fbdee --protocol tcp --port 3306 --cidr <IP>/32 --region us-east-1`
-6. Opcional: volver `bind-address` a `127.0.0.1` y reiniciar MySQL — con el túnel ya no hace falta que escuche hacia afuera
+⚠️ Y el motivo práctico por el que el camino rápido además es incómodo: **la IP del alumno rota** (`192.144.114.66` → `.77` en una semana) y **la IP pública de una instancia cambia en cada reinicio**. Cualquier método basado en IP exige reescribir la regla del SG cada clase.
 
-**El argumento de fondo:** con el túnel la base es segura *por diseño* (no escucha en una interfaz pública); con el método actual es segura *por configuración* (depende de que una regla del SG siga siendo correcta).
-
-⚠️ **La IP del alumno rota** (`192.144.114.66` → `.77` en una semana) y **la IP pública de Cloud9 cambia en cada reinicio**. Cualquiera de los dos métodos exige actualizar la regla del SG y el host en DBeaver cada clase.
+> 📌 **Aplica directo al parcial:** si las RDS nuevas se hacen públicamente accesibles, es exactamente la misma deuda. Es una decisión a tomar y justificar en `NFR-SEG-` (sección 5.2).
 
 ### Recursos AWS
 
-| Recurso | Detalle | Costo | Estado |
-|---|---|---|---|
-| ~~EC2 `i-082829eaed67d7086`~~ | t3.micro Ubuntu 26.04 | — | ✅ **TERMINADA** |
-| **Cloud9 `i-0490df2bd01dfaafe`** | `t3.small` (2 vCPU / 2 GB) · entorno `aws-cloud9-my-env-5521f907b4ed4cfba8188eaba6c1ff1a` | **~$0.0208/h** (el doble que una micro) | ▶️ **RUNNING** |
-| RDS `db-service` | `db.t4g.micro` · MySQL · 1 AZ · `db-service.cvbllouimnrr.us-east-1.rds.amazonaws.com:3306` · **públicamente accesible**, 3306 abierto a la IP del alumno | ~$0.016/h encendida · **~$2.30/mes de storage aunque esté detenida** | ▶️ **RUNNING** |
+**Estado al 01/09: la cuenta no tiene ningún recurso cobrando cómputo.** Todo lo de las prácticas anteriores fue dado de baja para arrancar el parcial con infraestructura nueva — decisión del alumno: reutilizar obligaba a explicar en la defensa por qué un componente venía prestado de otra práctica, y la coherencia del trabajo pesa más que ~$2 de ahorro.
 
-**Quema combinada con todo prendido: ~$0.90–1.00 por día.** Con ambas detenidas: ~$0.10/día (sólo storage).
+| Recurso | Detalle | Estado |
+|---|---|---|
+| ~~EC2 `i-082829eaed67d7086`~~ | t3.micro Ubuntu 26.04 | ✅ **TERMINADA** |
+| ~~Cloud9 `i-0490df2bd01dfaafe`~~ | `t3.small` · entorno `aws-cloud9-my-env-5521f907b4ed4cfba8188eaba6c1ff1a` | ✅ **BORRADO 01/09** |
+| ~~RDS `db-service`~~ | `db.t4g.micro` · MySQL 8.4.9 · Sakila cargada | ✅ **BORRADA 01/09** |
 
-📌 **Última sesión:** **Glue conectado a la RDS** — conexión JDBC, SG con regla auto-referenciada, VPC Endpoint de S3 y crawler sobre Sakila. Todo funcionando. Ver la sección de Glue más abajo. La IP del alumno era `192.144.114.69` (rota cada semana).
+⚠️ **Quedan objetos de Glue huérfanos** — conexión JDBC, crawler `crawler-sakila-rds` y database `sakila_catalog` apuntando a una RDS que ya no existe. **No cobran en reposo**, pero conviene borrarlos antes de que el profesor mire el catálogo del parcial.
 
-⚠️ **La RDS se reinicia sola a los 7 días de detenida.** Si no se usa en ese plazo, borrarla: Sakila se recarga en un minuto y se ahorran ~$2.30/mes de storage.
+📌 **Recursos del parcial:** dos instancias RDS PostgreSQL nuevas (OLTP + OLAP). Ver `entregas/parcial-1-aerolinea/documento/07-aws-etl-glue-costos.md`.
+
+⚠️ **Una RDS se reinicia sola a los 7 días de detenida** — regla de AWS, no del lab — y cobra storage aunque esté detenida (~$2.30/mes por 20 GB). Para las dos del parcial la consigna es **borrarlas** después de la defensa, no detenerlas: el esquema y el script de bootstrap quedan en el repo.
 
 **Cloud9 = una EC2 con IDE en el navegador.** Cobra como cualquier EC2. Su ventaja: **hibernación automática por inactividad** (verificar que esté en 30 min, no en "Never"). Su límite: en el Learner Lab las instancias detenidas **se reinician solas** en la sesión siguiente, así que la hibernación protege dentro de una sesión, no entre sesiones.
 ⚠️ AWS cerró Cloud9 a clientes nuevos en 2024. Sirve para el curso, pero no basar nada a largo plazo en él.
@@ -314,9 +313,9 @@ Si alguna vez hicieran falta: parameter group propio (familia `mysql8.4`) con `l
 **Acceso:** alias `ec2-bigdata` en `~/.ssh/config` → `ssh ec2-bigdata`, o VS Code Remote-SSH.
 ⚠️ El DNS/IP **cambia cada vez que la instancia se reinicia** → hay que reescribir el alias con `scripts/conectar-ec2.ps1 -ConfigurarVSCode`.
 ⚠️ Con 908 MB de RAM **no entra Spark ni un dataset mediano en pandas**. Para procesamiento real: EMR, o DuckDB local.
-### 🔵 Glue conectado a la RDS (hecho)
+### 🔵 Glue conectado a la RDS (histórico — esa RDS ya no existe)
 
-Pipeline armado y funcionando. **Nada de esto cobra en reposo**, así que puede quedar entre clases.
+⚠️ **Los IDs de esta sección son de la práctica de Sakila y apuntan a recursos borrados el 01/09.** Se conserva por **las cuatro trampas de más abajo**, que aplican igual a las conexiones PostgreSQL del parcial y son horas de trabajo ya pagadas. Los recursos en sí son huérfanos.
 
 | Recurso | ID / nombre |
 |---|---|
