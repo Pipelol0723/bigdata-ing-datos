@@ -5,7 +5,29 @@
 
 ---
 
-## 🔴 Resumen ejecutivo
+## 🚨 Lo primero: el Parcial 1 vence en 4 días
+
+**Entrega: jueves 10 de septiembre.** Hoy es sábado 6. Es un proyecto individual —sistema de reservas de una aerolínea— con **defensa oral eliminatoria por sección**.
+
+El andamiaje está en `entregas/parcial-1-aerolinea/` y es bueno: cada sección trae los criterios de la rúbrica, las preguntas guía como checklist y convenciones de trazabilidad (`FR-`, `NFR-`, `DEC-`). **Pero ninguna de las 7 secciones está escrita todavía** — las 9 son plantillas con el plan, no contenido. La 01 dice *"planificado para el miércoles 2/09"* y sigue en ⬜.
+
+| Sección | Peso | Estado |
+|---|---|---|
+| 5.1 Requisitos funcionales | 10 % | ⬜ |
+| 5.2 Requisitos no funcionales | 10 % | ⬜ |
+| 5.3 Modelo entidad-relación | 15 % | ⬜ |
+| 5.4 Arquitectura backend | 15 % | ⬜ |
+| 5.5 Arquitectura frontend | (en el 15 %) | ⬜ |
+| 5.6 Primera implementación backend | 10 % | ⬜ |
+| 5.7 **AWS: ETL, catálogo y costos** | **20 %** | ⬜ |
+| Prompt log (anexo obligatorio) | — | 🟡 |
+| Claridad y trazabilidad | 10 % | transversal |
+
+**Esto pesa más que todo el backlog de tareas semanales junto**, y tiene fecha inamovible. Cualquier plan razonable lo pone primero.
+
+---
+
+## 🔴 El backlog de tareas semanales
 
 **De 13 entregas ya vencidas, sólo 1 está enviada.** La única con envío registrado es *Session 2 — Assignment* (venció el 6 de agosto).
 
@@ -40,7 +62,7 @@ En el listado, las semanas 1-2 figuran como **"No entregado"** y las 3-5 como **
 | 4 | Session 7 — Assignment | 24 ago | ❌ Sin entrega |
 | 4 | **Session 8 — CHECKPOINT 1** | 27 ago | ❌ Sin entrega |
 | 4 | Module 4 — Design Principles for Pipelines | 28 ago | ❌ Sin entrega |
-| 5 | **Parcial 1** | sin fecha | ❌ No entregado |
+| 5 | **Parcial 1** | **10 sep** | 🚨 **EN CURSO — 4 días** (ver arriba) |
 
 Ninguna tiene calificación asignada todavía (columna vacía en todas, incluida la enviada).
 
@@ -119,7 +141,25 @@ Son tres piezas, y dos son documentación pura — no requieren gastar presupues
 
 ## 🗺️ Plan propuesto
 
+### 🚨 Prioridad 0 — Parcial 1 (vence el 10/09, en 4 días)
+
+Todo lo demás espera. Orden sugerido, de mayor peso y mayor dependencia hacia abajo:
+
+| Día | Secciones | Por qué en ese orden |
+|---|---|---|
+| **Sáb 6** | 00 contexto + supuestos · **5.1 FR** · **5.2 NFR** | Todo lo demás cita estos IDs. Sin `FR-`/`NFR-` escritos, ninguna decisión posterior es trazable — y la trazabilidad vale 10 % |
+| **Dom 7** | **5.3 Modelo ER** (15 %) + diagrama Crow's Foot | Es el corazón del trabajo y de lo que se defiende oralmente |
+| **Lun 8** | **5.4 backend** + **5.5 frontend** (15 %) | Salen casi solas si el ER está firme |
+| **Mar 9** | **5.7 AWS ETL/catálogo/costos** (20 %) — **la de mayor peso** · **5.6 implementación** (10 %) | Acá se reusa lo ya aprendido: Glue, crawler, JDBC, la tabla de costos del `CLAUDE.md` |
+| **Mié 10** | Prompt log · mapas de impacto *"qué se rompe si esto cambia"* · revisión de trazabilidad | Cierre y control de calidad |
+
+**La ventaja acumulada:** la sección de mayor peso (5.7, AWS) es justamente el terreno recorrido. Conexión JDBC de Glue, crawler, Data Catalog, Security Groups grupo-a-grupo, endpoint de S3 y la tabla de costos ya están hechos y documentados en el `CLAUDE.md`. Es reescribir en formato de informe, no investigar.
+
+⚠️ **Antes de que el profesor mire el catálogo:** quedan objetos de Glue huérfanos de la práctica de Sakila (conexión JDBC, `crawler-sakila-rds`, database `sakila_catalog`) apuntando a una RDS borrada. No cobran, pero ensucian el catálogo del parcial.
+
 ### Prioridad 1 — Checkpoint 1 (nota de proyecto, 15 %)
+
+*Después del parcial.*
 
 Es lo más valioso y lo más cerca de estar listo. Faltan tres piezas:
 
@@ -139,7 +179,7 @@ Son 4 vencidos (M1 a M4) y viven en la plataforma de AWS Academy, no en Moodle. 
 
 ### Prioridad 4 — Parcial 1
 
-Aparece sin fecha de apertura ni cierre. **Preguntar si es presencial, si ya pasó, o si está por venir.**
+Ya no es una incógnita: vence el 10/09 y es lo más urgente del curso. Ver arriba.
 
 ---
 
@@ -148,7 +188,7 @@ Aparece sin fecha de apertura ni cierre. **Preguntar si es presencial, si ya pas
 1. **¿Cómo se entregan las tareas?** Moodle no muestra botón de envío. ¿Es en clase, por Teams, por correo?
 2. **¿Siguen aceptándose entregas atrasadas?** Y si sí, ¿con penalización?
 3. **¿Qué pedía cada assignment de sesión?** Los enunciados no están en Moodle.
-4. **Parcial 1** — ¿pendiente, ya pasado, presencial?
+4. ~~Parcial 1 — ¿pendiente?~~ ✅ Resuelto: vence el **10/09**, es individual, con defensa oral eliminatoria. Andamiaje en `entregas/parcial-1-aerolinea/`.
 5. **¿Los módulos de AWS Academy se validan solos** al completarlos en esa plataforma, o hay que reportarlos en Moodle?
 
 ---
