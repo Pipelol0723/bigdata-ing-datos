@@ -25,9 +25,9 @@ del enunciado y declara explícitamente qué requisito origina cada decisión.
 
 | # | Sección | Peso | Archivo | Estado |
 |---|---|---|---|---|
-| — | Contexto y supuestos | — | `documento/00-contexto-y-supuestos.md` | ⬜ |
-| 5.1 | Requisitos funcionales | 10% | `documento/01-requisitos-funcionales.md` | ⬜ |
-| 5.2 | Requisitos no funcionales | 10% | `documento/02-requisitos-no-funcionales.md` | ⬜ |
+| — | Contexto y supuestos | — | `documento/00-contexto-y-supuestos.md` | 🟡 borrador 06/09 |
+| 5.1 | Requisitos funcionales | 10% | `documento/01-requisitos-funcionales.md` | 🟡 borrador 06/09 |
+| 5.2 | Requisitos no funcionales | 10% | `documento/02-requisitos-no-funcionales.md` | 🟡 borrador 06/09 |
 | 5.3 | Modelo entidad-relación | 15% | `documento/03-modelo-er.md` | ⬜ |
 | 5.4 | Arquitectura backend | 15% | `documento/04-arquitectura-backend.md` | ⬜ |
 | 5.5 | Arquitectura frontend | (dentro del 15%) | `documento/05-arquitectura-frontend.md` | ⬜ |
