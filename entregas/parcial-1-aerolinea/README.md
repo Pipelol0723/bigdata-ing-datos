@@ -4,6 +4,17 @@
 **Entrega final:** jueves 10 de septiembre de 2026
 **Modalidad:** individual
 **Defensa oral:** eliminatoria por sección
+**Enunciado:** [`enunciado.md`](enunciado.md) — copia íntegra, en el repo
+
+⚠️ **El enunciado (§6) define DOS entregas, no una:**
+
+| Entrega | Contenido |
+|---|---|
+| **Parcial** | Sólo requisitos funcionales y no funcionales (5.1 y 5.2) |
+| **Final** | Documento completo: contexto, FR, NFR, modelo ER, arquitectura backend y frontend, implementación backend (5.6), implementación AWS (5.7) y anexo de prompt log |
+
+En Moodle sólo figura una tarea **"Parcial 1"**, sin fechas de apertura ni cierre.
+**Preguntar si la entrega parcial ya pasó o si las dos se juntan el 10/09.**
 
 ---
 
@@ -71,13 +82,21 @@ Categorías de NFR: `PERF` (performance), `CONC` (consistencia y concurrencia),
 mejora o problema, y hay que proponer una solución **en el momento**, basada en cómo está
 construido el sistema. No hay nada extra que implementar.
 
-⚠️ **Pendiente de confirmar con el profesor.** Eso describe la **sección 7** del enunciado
-—la defensa oral, que aplica a todos los equipos—. La **sección 3** es otra cosa: una
-restricción confidencial y distinta por equipo que debe quedar **integrada por escrito** en
-requisitos, modelo de datos y arquitectura antes de entregar. Puede ser que el profesor haya
-decidido que la §3 de este equipo *sea* recibirla en la defensa, o puede ser que falte.
-Importa porque la rúbrica de requisitos funcionales pone en el nivel Sobresaliente
-*"…e integran la restricción específica del equipo"*.
+✅ **Confirmado con el profesor (06/09): la §3 de este equipo se recibe en la defensa.**
+No hay una restricción escrita que integrar antes de entregar.
+
+⚠️ Vale dejar constancia de la tensión con el texto del enunciado, por si el que corrige
+no es quien lo confirmó. El enunciado separa las dos cosas: la §3 dice que la restricción
+se entrega *"independently and confidentially"* y que debe quedar *"coherently integrated
+into all of the exercise's deliverables: requirements, data model, and architecture"*; la §7
+la menciona aparte, como algo que hay que poder defender. Y la rúbrica de requisitos
+funcionales reserva el nivel Sobresaliente para quien *"integra la restricción específica
+del equipo"*.
+
+**Mitigación (barata):** dejar esta confirmación anotada por escrito en
+`documento/00-contexto-y-supuestos.md` como supuesto declarado, con fecha. Si un corrector
+busca la §3 y no la encuentra, el documento explica por qué no está en vez de parecer un
+olvido. Un supuesto declarado es una decisión; uno no declarado es un agujero.
 
 ### Qué implica para el diseño
 
