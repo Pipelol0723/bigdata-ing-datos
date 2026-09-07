@@ -1,0 +1,55 @@
+{
+  "Rules": [
+    {
+      "ID": "raw-archivar-nunca-borrar",
+      "Status": "Enabled",
+      "Filter": {
+        "Prefix": "raw/"
+      },
+      "Transitions": [
+        {
+          "Days": 90,
+          "StorageClass": "GLACIER_IR"
+        }
+      ],
+      "NoncurrentVersionExpiration": {
+        "NoncurrentDays": 30
+      },
+      "AbortIncompleteMultipartUpload": {
+        "DaysAfterInitiation": 7
+      }
+    },
+    {
+      "ID": "processed-enfriar-regenerable",
+      "Status": "Enabled",
+      "Filter": {
+        "Prefix": "processed/"
+      },
+      "Transitions": [
+        {
+          "Days": 60,
+          "StorageClass": "STANDARD_IA"
+        }
+      ],
+      "NoncurrentVersionExpiration": {
+        "NoncurrentDays": 15
+      },
+      "AbortIncompleteMultipartUpload": {
+        "DaysAfterInitiation": 7
+      }
+    },
+    {
+      "ID": "curated-siempre-consultable",
+      "Status": "Enabled",
+      "Filter": {
+        "Prefix": "curated/"
+      },
+      "NoncurrentVersionExpiration": {
+        "NoncurrentDays": 15
+      },
+      "AbortIncompleteMultipartUpload": {
+        "DaysAfterInitiation": 7
+      }
+    }
+  ]
+}

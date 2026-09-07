@@ -31,15 +31,14 @@ No eran trabajos para hacer en casa durante la semana: eran evidencia del ejerci
 clase, entregada ese día. Eso importa para calibrar qué tan grande tiene que ser cada entrega
 (ver §3).
 
-### Entonces el primer paso no es escribir: es pedir que reabran
+### ✅ Resuelto: se entregan por correo y en clase
 
-Que el profesor las reciba y que **Moodle las acepte** son dos cosas distintas, y la segunda
-sólo la puede destrabar él. Necesita hacer una de estas tres:
+**Decisión del 07/09:** el canal es **correo al profesor + presentación en clase**. No hace falta
+que reabra Moodle. El hallazgo sigue siendo relevante por dos motivos:
 
-1. Mover la fecha de **Cierre** de las 11 tareas, o
-2. Darte una **prórroga individual** (*Anular usuario* → extensión), que es lo más limpio
-   porque no le cambia el plazo al resto del curso, o
-3. Decirte por qué **otro canal** se las mandás (Teams, correo, repositorio).
+- Explica **por qué** no aparecía el botón, en vez de dejarlo como un misterio.
+- Conviene **pedir acuse de recibo** del correo: si la entrega no consta en Moodle, el único
+  registro de que existió es ese mensaje.
 
 ### Borrador del mensaje
 
@@ -85,21 +84,30 @@ mientras trabajás en el parcial.
 
 ---
 
-## 3. Cuánto hay que escribir: la pista del único envío que existe
+## 3. Cuánto hay que escribir — resuelto por el Syllabus
 
-La entrega de la Session 2 —la única hecha— fue **un solo archivo PNG**:
-`imagen_2026-08-06_103138500.png`, subido 13 horas antes del cierre.
+La entrega de la Session 2 —la única hecha— fue **un solo archivo PNG**, lo que sugería que
+alcanzaba con una captura. **El Syllabus dice otra cosa**, y manda.
 
-Sumado a que las tareas abrían y cerraban el mismo día, la lectura más probable es que **lo que
-se pide es evidencia del ejercicio de clase, no un informe**.
+El sistema de evaluación reparte cada corte entre **tres unidades de competencia**, y una de las
+tres es:
 
-**Cómo resolver la ambigüedad sin apostar:** que cada entrega sea **una captura o diagrama que
-se entienda solo**, con **un PDF corto detrás**. Si esperaba una captura, ahí está y es lo
-primero que ve. Si esperaba desarrollo, también está. Cuesta poco más que hacer sólo una de las
-dos y no depende de adivinar.
+> **UC 3.1 — Comunicación Técnica Escrita para Audiencias Especializadas**
 
-📄 **Vale abrir el Syllabus del campus antes de escribir** — puede definir qué se espera de cada
-*Session Assignment*. No lo abrí porque es un archivo para descargar; decime y lo reviso.
+En el corte 1 los talleres valen 3 % + 6 % + 6 % (15 % del total), y la porción más grande está en
+las UC 2.2 y **3.1**. O sea: **la escritura técnica se califica explícitamente.** Una captura sin
+documento deja sin evidencia la unidad de competencia mejor ponderada.
+
+**Conclusión: documentos reales, con las capturas adentro como evidencia.** No al revés.
+
+### Lo otro que aporta el Syllabus
+
+| Hallazgo | Consecuencia |
+|---|---|
+| **ADR #1 es "de esquema de particionado"** | Moodle decía sólo "ADR #1". El tema es específico: particionado, no diseño general del data lake |
+| *"el cuello de botella ya no es escribir el ETL sino decidir qué arquitectura construir, justificarla y validar que el código generado la implemente correctamente"* | Es la tesis del curso. Cada entregable debe mostrar la **decisión**, no sólo el resultado |
+| *"con la condición no negociable de que el estudiante pueda explicar, depurar y modificar manualmente cualquier línea de código generado"* | El bloque *"qué generó la IA y qué corregí"* pasa de buena idea a **requisito** |
+| Resultados de aprendizaje declarados | Cada documento puede citar cuál cubre — trazabilidad barata |
 
 ---
 
