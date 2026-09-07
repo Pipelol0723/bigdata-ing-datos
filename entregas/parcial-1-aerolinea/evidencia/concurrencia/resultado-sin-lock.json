@@ -1,0 +1,174 @@
+{
+  "momento": "2026-09-07T02:49:29.426885+00:00",
+  "etiqueta": "sin-lock",
+  "modo_api": "inseguro",
+  "peticiones": 30,
+  "capacidad_inicial": 1,
+  "respuestas": {
+    "201": 4,
+    "409": 26
+  },
+  "estado_final": {
+    "vendible": 1,
+    "comprometidos": 1,
+    "version": 4,
+    "reservas_vivas": 4
+  },
+  "veredicto": "INCONSISTENTE",
+  "detalle": [
+    {
+      "i": 0,
+      "status": 201,
+      "codigo": "PUZQQM",
+      "intentos": 1
+    },
+    {
+      "i": 1,
+      "status": 201,
+      "codigo": "D0JHSX",
+      "intentos": 1
+    },
+    {
+      "i": 2,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 3,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 4,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 5,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 6,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 7,
+      "status": 201,
+      "codigo": "XMKDTD",
+      "intentos": 1
+    },
+    {
+      "i": 8,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 9,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 10,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 11,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 12,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 13,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 14,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 15,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 16,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 17,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 18,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 19,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 20,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 21,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 22,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 23,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 24,
+      "status": 201,
+      "codigo": "J2KPOD",
+      "intentos": 1
+    },
+    {
+      "i": 25,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 26,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 27,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 28,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    },
+    {
+      "i": 29,
+      "status": 409,
+      "detalle": "{'motivo': 'sin_capacidad', 'mensaje': 'sin capacidad en la instancia 54 (economica)'}"
+    }
+  ]
+}
