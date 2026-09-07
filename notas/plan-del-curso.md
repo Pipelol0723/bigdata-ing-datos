@@ -3,6 +3,11 @@
 > Relevado del campus virtual el **2026-09-06**.
 > Curso `CC-IA-02`, id 3167 · [campus](https://campusvirtual.usergioarboleda.edu.co/course/view.php?id=3167)
 
+> 📌 Este archivo es **el relevamiento**: qué pide el curso y qué falta.
+> El **plan de ejecución** del backlog está aparte, en
+> [`plan-moodle-backlog.md`](plan-moodle-backlog.md) (07/09): calendario, artefactos
+> reutilizables, estimación de esfuerzo y las preguntas que hay que hacerle al profesor.
+
 ---
 
 ## 🚨 Lo primero: el Parcial 1 vence en 4 días
