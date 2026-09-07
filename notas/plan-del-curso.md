@@ -38,16 +38,15 @@ El andamiaje está en `entregas/parcial-1-aerolinea/` y es bueno: cada sección 
 
 Pero el panorama es mejor de lo que ese número sugiere: **buena parte del trabajo técnico de las semanas 4 y 5 ya está hecho** en las sesiones de laboratorio — falta documentarlo y entregarlo, no construirlo.
 
-### ⚠️ Dato clave a verificar con el profesor
+### ✅ RESUELTO (07/09): Moodle cerró los envíos
 
 Al abrir las tareas en Moodle **no aparece ningún botón de "Agregar entrega"**. Sólo está la casilla manual de "Marcar como completado".
 
-Eso admite dos lecturas muy distintas:
+**Verificado el 07/09 entrando a cada tarea:** es la lectura (b) — **la fecha de Cierre ya pasó y Moodle bloquea los envíos**. La prueba es el contraste: la tarea **Parcial 1 sí tiene el botón**, porque no tiene fechas configuradas. Las tareas de sesión abrían y cerraban **el mismo día** (00:00 a 23:59); los módulos tenían una semana.
 
-- **(a)** Las tareas son *offline*: se entregan en clase o por otro canal (Teams, correo, repositorio) y Moodle sólo registra la nota.
-- **(b)** La fecha límite de corte ya pasó y Moodle cerró los envíos.
+⛔ **Consecuencia:** que el profesor acepte las entregas no alcanza — **tiene que reabrir las tareas** (mover el Cierre o dar una prórroga individual) o indicar otro canal. Es el primer paso de todo el plan.
 
-En el listado, las semanas 1-2 figuran como **"No entregado"** y las 3-5 como **"Sin entrega"**. Esa diferencia sugiere la lectura (a) — que están configuradas como actividades sin envío en línea. **Confirmarlo es lo primero**, porque cambia todo el plan.
+📌 Además, la única entrega registrada (Session 2) fue **un solo archivo PNG**, lo que sugiere que se esperaba evidencia del ejercicio de clase, no un informe. Ver `plan-moodle-backlog.md` §3.
 
 ---
 
@@ -190,9 +189,9 @@ Ya no es una incógnita: vence el 10/09 y es lo más urgente del curso. Ver arri
 
 ## ❓ Preguntas abiertas (para el profesor o para verificar)
 
-1. **¿Cómo se entregan las tareas?** Moodle no muestra botón de envío. ¿Es en clase, por Teams, por correo?
-2. **¿Siguen aceptándose entregas atrasadas?** Y si sí, ¿con penalización?
-3. **¿Qué pedía cada assignment de sesión?** Los enunciados no están en Moodle.
+1. ~~**¿Cómo se entregan las tareas?**~~ ✅ **Resuelto (07/09):** por **subida de archivo en Moodle** — así se entregó la Session 2 (un PNG) y así tiene habilitado el botón el Parcial 1. Las vencidas están bloqueadas por fecha de Cierre.
+2. **⛔ ¿Puede reabrir las 11 tareas vencidas** (mover el Cierre o dar prórroga individual), o se entregan por otro canal? **Es el bloqueo principal.** Ver el borrador del mensaje en `plan-moodle-backlog.md` §1.
+3. **¿Qué pedía cada assignment de sesión?** Los enunciados no están en Moodle — sólo el título y las fechas. El tema sale de la descripción de cada sesión. **Falta revisar el Syllabus del campus**, que puede definirlo.
 4. ~~Parcial 1 — ¿pendiente?~~ ✅ Resuelto: vence el **10/09**, es individual, con defensa oral eliminatoria. Andamiaje en `entregas/parcial-1-aerolinea/`.
 5. **¿Los módulos de AWS Academy se validan solos** al completarlos en esa plataforma, o hay que reportarlos en Moodle?
 

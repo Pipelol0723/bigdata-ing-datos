@@ -1,184 +1,260 @@
-# Plan de solución — actividades pendientes de Moodle
+# Plan de solución — todas las actividades pendientes de Moodle
 
-> **Fecha del plan:** 2026-09-07
-> **Base:** el relevamiento del campus del 06/09 (`plan-del-curso.md`).
-> ⚠️ **No pude re-verificar el campus hoy** — la extensión de Claude en Chrome no está
-> instalada en el perfil actual y el campus necesita sesión iniciada. La semana 6 arrancó
-> hoy: puede haber actividades nuevas que este plan no contempla. **Verificar antes de ejecutar.**
+> **Verificado en el campus el 2026-09-07** (no es un plan sobre recuerdos: entré a cada tarea).
+> Curso `CC-IA-02` · [campus](https://campusvirtual.usergioarboleda.edu.co/course/view.php?id=3167)
 
 ---
 
-## 1. Lo primero no es trabajo: es una pregunta
+## 1. ⛔ El hallazgo que cambia todo: Moodle no te deja entregar
 
-Hay **tres preguntas al profesor** que hay que hacer antes de escribir una sola línea. No es
-burocracia: la respuesta a la segunda decide si ~8 horas de trabajo valen algo o no valen nada.
+Abrí las tareas vencidas una por una. **Ninguna tiene el botón "Agregar entrega".** Sólo
+muestran el estado y un contador de atraso:
 
-| # | Pregunta | Qué cambia según la respuesta |
-|---|---|---|
-| 1 | En Moodle las tareas **no muestran botón de envío**, sólo "marcar como completado". ¿Cómo se entregan? | Define el **formato**: archivo por tarea, repositorio, correo, o presentación en clase. Escribir sin saberlo es apostar. |
-| 2 | ¿**Se siguen recibiendo** las entregas de las semanas 1 a 4? ¿Con penalización? | **La pregunta cara.** Si la respuesta es no, los 7 assignments de sesión valen cero y no hay que escribirlos: quedan sólo el Checkpoint 1 y los módulos. Ahorra ~8 h. |
-| 3 | Los módulos de AWS Academy (M1–M4), ¿se validan solos al completarlos allá o hay que reportarlos en Moodle? | Define si hay un paso extra de entrega o alcanza con hacerlos. |
+> *Estado de la entrega: Todavía no se han realizado envíos*
+> *Tiempo restante: La Tarea está retrasada por: 34 días 15 horas*
 
-**Opcional, pero útil:** cómo pesan el Parcial 1 y el Checkpoint 1 dentro del 15 % de
-assignments y el 15 % de proyecto del período 1. Sirve para priorizar el resto del semestre.
+Y la prueba de que no es un problema de permisos generales: **el Parcial 1 sí tiene el botón**.
+Lo verifiqué. La diferencia está en las fechas:
+
+| Tarea | Apertura | Cierre | ¿Se puede entregar? |
+|---|---|---|---|
+| Session 1 — Assignment | lun 3 ago 00:00 | **lun 3 ago 23:59** | ❌ no |
+| Module 1 | lun 3 ago 00:00 | **vie 7 ago 23:59** | ❌ no |
+| Session 8 — Checkpoint | jue 27 ago 00:00 | **jue 27 ago 23:59** | ❌ no |
+| **Parcial 1** | *(sin fecha)* | *(sin fecha)* | ✅ **sí** |
+
+En Moodle, la fecha de **Cierre** es un portón, no una advertencia: pasada esa hora el módulo
+deja de aceptar archivos, y ni el atraso ni la buena voluntad del profesor lo abren solo.
+
+⚠️ **Ojo con el detalle:** las tareas de sesión abren y cierran **el mismo día** (00:00 a 23:59).
+No eran trabajos para hacer en casa durante la semana: eran evidencia del ejercicio de esa
+clase, entregada ese día. Eso importa para calibrar qué tan grande tiene que ser cada entrega
+(ver §3).
+
+### Entonces el primer paso no es escribir: es pedir que reabran
+
+Que el profesor las reciba y que **Moodle las acepte** son dos cosas distintas, y la segunda
+sólo la puede destrabar él. Necesita hacer una de estas tres:
+
+1. Mover la fecha de **Cierre** de las 11 tareas, o
+2. Darte una **prórroga individual** (*Anular usuario* → extensión), que es lo más limpio
+   porque no le cambia el plazo al resto del curso, o
+3. Decirte por qué **otro canal** se las mandás (Teams, correo, repositorio).
 
 ### Borrador del mensaje
 
 > Buenas, profesor. Estoy poniéndome al día con las actividades de las semanas 1 a 4 y quería
-> confirmar tres cosas antes de ponerme a trabajar:
+> avisarle de un detalle técnico: en Moodle esas tareas ya no muestran el botón de "Agregar
+> entrega", porque la fecha de cierre era el mismo día de la sesión. El Parcial 1 sí me deja
+> subir, así que no es un problema de mi usuario.
 >
-> 1. En Moodle las tareas no me muestran botón de envío, sólo la casilla de "marcar como
->    completado". ¿Cómo se entregan? ¿En clase, por Teams, por correo, o con un repositorio?
-> 2. ¿Se siguen recibiendo las entregas atrasadas de esas semanas? ¿Hay alguna penalización?
-> 3. Los módulos de AWS Academy (Module 1 a 4), ¿quedan validados al completarlos en esa
->    plataforma o hay que reportarlos también en Moodle?
+> ¿Podría reabrirlas o darme una prórroga individual para poder subir el trabajo? Si le resulta
+> más cómodo se las hago llegar por Teams o por correo, como prefiera.
 >
-> Gracias.
+> Le confirmo que el Parcial 1 lo entrego el jueves como está previsto.
 
-⏱️ **Cuesta 5 minutos y puede borrar una semana de trabajo innecesario.** Es lo único del
-backlog que conviene hacer antes del jueves.
+⏱️ **Cinco minutos, hoy.** Todo el resto del plan depende de que esto se destrabe, y él necesita
+tiempo para hacerlo. **Reforzalo en persona el jueves**, cuando lo veas para la defensa del
+parcial: por escrito queda constancia, en persona se resuelve.
 
 ---
 
-## 2. El inventario: 11 pendientes, 3 familias
+## 2. El inventario verificado
 
-| Familia | Cuántas | Cuáles | Dónde vive |
+**11 pendientes.** Ni una más: la semana 5 no tiene tareas de sesión (sólo el Parcial 1) y la
+**semana 6 —la actual— tampoco tiene ninguna cargada**. No se está acumulando deuda nueva
+mientras trabajás en el parcial.
+
+| # | Tarea | Venció | Tema de la sesión |
 |---|---|---|---|
-| Assignments de sesión | **7** | S1, S3, S4, S5, S6, S7, S8 | Moodle |
-| Módulos AWS Academy | **4** | M1, M2, M3, M4 | Plataforma de AWS Academy |
-| Checkpoint 1 | (es S8) | nota de **proyecto**, no de assignment | Moodle + defensa oral |
+| 1 | Session 1 — Assignment | 3 ago | Intro a Big Data: las 5 V, casos de uso, ingeniero vs científico vs arquitecto |
+| 2 | Module 1 | 7 ago | Welcome to AWS Academy DE |
+| 3 | Session 3 — Assignment | 10 ago | Diagramar arquitecturas AWS: iconos oficiales, **niveles de abstracción**, anatomía de un ADR |
+| 4 | Session 4 — Assignment | 13 ago | Taller: setup (CLI, LabRole) + **bosquejar 2 arquitecturas alternativas** para un caso simple |
+| 5 | Module 2 | 14 ago | Data-Driven Organizations |
+| 6 | Session 5 — Assignment | 17 ago | Data lake: zonas, particionado, formatos. **ADR #1** |
+| 7 | Session 6 — Assignment | 20 ago | S3 a fondo: clases, versionado, lifecycle. **Política de lifecycle asistida por IA, revisada línea por línea** |
+| 8 | Module 3 | 21 ago | The Elements of Data |
+| 9 | Session 7 — Assignment | 24 ago | Glue Catalog y Crawlers: desacoplar cómputo de metadatos; **gobernanza sin Lake Formation** |
+| 10 | **Session 8 — Checkpoint 1** | 27 ago | Diagrama + ADR + bucket/crawler implementados, **defendido oralmente** |
+| 11 | Module 4 | 28 ago | Design Principles and Patterns for Data Pipelines |
 
-*(S2 ya está enviada. El Parcial 1 va aparte: vence el 10/09 y tiene prioridad absoluta.)*
+*(Session 2 ya está entregada y marcada como hecha.)*
 
-💰 **Todo el backlog cuesta ~$0 de AWS.** La única pieza que toca la nube es un bucket S3, que
-son centavos. Lo caro acá es el tiempo, no el presupuesto — que es una buena noticia, porque
-del presupuesto quedan ~$45 y hay que estirarlos hasta noviembre.
-
----
-
-## 3. La idea central: no son 11 trabajos, son 5 artefactos
-
-Ésta es la parte que cambia el tamaño del problema. Los 7 assignments de sesión no son siete
-trabajos independientes: son **cinco artefactos** que se escriben una vez y se citan varias.
-Y cuatro de los cinco ya están hechos o casi.
-
-| Artefacto | Qué es | Cubre | Insumo que ya existe |
-|---|---|---|---|
-| **A1 · Diagrama de arquitectura** | El pipeline propio con **iconos oficiales de AWS** (draw.io o la librería `diagrams` de Python — Graphviz ya está instalado) | S3 · S4 · **Checkpoint 1** | `parcial-1-aerolinea/diagramas/arquitectura.md` (Mermaid) — hay que reexpresarlo con iconografía oficial |
-| **A2 · ADR #1 — data lake** | Contexto / decisión / alternativas / consecuencias sobre zonas, formatos y particionado | S5 · **Checkpoint 1** | Las decisiones **ya están tomadas y razonadas** en `CLAUDE.md`: por qué RDS y no MySQL en EC2, por qué Glue y no scripts, por qué Parquet, por qué SG grupo-a-grupo |
-| **A3 · Bucket S3 del data lake** | `raw/` `processed/` `curated/` + versionado + una regla de lifecycle | S5 · S6 · **Checkpoint 1** | ❌ **Nunca se creó un bucket.** Es la única pieza de infraestructura que falta en todo el curso |
-| **A4 · Evidencia de Glue** | Catálogo + crawler + conexión JDBC funcionando | S7 · **Checkpoint 1** | ✅ Hecho en clase, pero **la evidencia apunta a una RDS borrada** — hay que recapturarla |
-| **A5 · Ensayo conceptual** | Las 5 V, roles (ingeniero / científico / arquitecto), DW vs data lake, batch vs streaming | S1 | Nada. **Es el único trabajo genuinamente nuevo del backlog** |
-
-Los **módulos M1–M4** no se derivan de nada de esto: son lectura + quiz en otra plataforma.
-
-> 💡 **A3 y A4 se resuelven solos si se aprovecha la sesión de AWS del parcial.** Ya se va a
-> abrir el lab el martes para el 5.7, ya se van a crear crawlers y conexiones JDBC nuevas.
-> Crear el bucket con sus zonas son 10 minutos más y unos centavos. Capturar las pantallas de
-> Glue mientras ya están abiertas, cero. **Hacerlo en una sesión aparte después del 10/09
-> significa abrir el lab una vez más para nada.**
+💰 **Todo el backlog cuesta ~$0 de AWS.** Lo único que toca la nube es un bucket S3: centavos.
 
 ---
 
-## 4. Calendario propuesto
+## 3. Cuánto hay que escribir: la pista del único envío que existe
 
-| Día | Qué | Por qué ahí |
-|---|---|---|
-| **07/09 (hoy)** | Mandar las 3 preguntas al profesor. **Nada más de Moodle.** | La respuesta tarda; que llegue mientras trabajás en el parcial |
-| **08/09** | Sesión de AWS del parcial (~4 h de lab). **Al final, con el parcial ya capturado:** crear el bucket (**A3**) y capturar la evidencia de Glue (**A4**) | Aprovecha una sesión de lab que igual hay que abrir. Costo marginal: centavos |
-| **09/09** | Ensayo de la defensa · revisión de trazabilidad. **Cero Moodle** | Día de margen. La defensa es eliminatoria por sección |
-| **10/09** | 🎓 **Entrega y defensa del Parcial 1** | Fecha inamovible |
-| **11–13/09** | **Módulos M1 a M4** de AWS Academy | Son puntos deterministas, no dependen de la respuesta del profesor y no consumen presupuesto. Empezar por M1 para medir cuánto lleva uno de verdad y recalibrar |
-| **14–19/09** | 🎯 **Semana buffer, sin clase.** A1, A2, A5 + redacción de los 7 documentos + cierre del **Checkpoint 1** | Es **la única ventana grande del semestre** antes del Checkpoint 2 (semana 11). Si el backlog no se cierra acá, no se cierra |
+La entrega de la Session 2 —la única hecha— fue **un solo archivo PNG**:
+`imagen_2026-08-06_103138500.png`, subido 13 horas antes del cierre.
 
-**Después del 19/09 la agenda se pone dura:** semana 7 arranca Spark, semana 8 Glue ETL y EMR,
-semana 10 el ADR #2, semana 11 el Checkpoint 2. El backlog no tiene otro hueco.
+Sumado a que las tareas abrían y cerraban el mismo día, la lectura más probable es que **lo que
+se pide es evidencia del ejercicio de clase, no un informe**.
 
----
+**Cómo resolver la ambigüedad sin apostar:** que cada entrega sea **una captura o diagrama que
+se entienda solo**, con **un PDF corto detrás**. Si esperaba una captura, ahí está y es lo
+primero que ve. Si esperaba desarrollo, también está. Cuesta poco más que hacer sólo una de las
+dos y no depende de adivinar.
 
-## 5. Los bloques, en detalle
-
-### Bloque 0 — La pregunta (07/09, 5 min)
-Ver §1. Bloquea todo lo demás, así que va primero aunque no produzca nada.
-
-### Bloque 1 — Piggyback en la sesión de AWS del parcial (08/09, +25 min)
-
-⚠️ **Regla: esto va AL FINAL, con la evidencia del parcial ya guardada.** El parcial vale más
-que el backlog; si algo sale mal, sale mal en el pedazo barato.
-
-1. Crear el bucket con las tres zonas del data lake (`raw/`, `processed/`, `curated/`).
-2. Activar **versionado** y una regla de **lifecycle** (ej. a Glacier a los 90 días). Son
-   exactamente los dos temas de la sesión 6 — se documentan con la captura de la consola.
-3. Capturar el catálogo, el crawler y la conexión JDBC del parcial → **A4**, que de paso
-   reemplaza la evidencia muerta que apunta a la RDS borrada.
-4. Borrar los objetos de Glue huérfanos de Sakila (`crawler-sakila-rds`, `sakila_catalog`,
-   la conexión JDBC vieja) — pendiente ya anotado en `CLAUDE.md`.
-
-💰 El bucket queda: son centavos al mes y hace falta para el Checkpoint 1 y para casi todo lo
-que viene (Athena, Glue ETL, Redshift COPY). **No borrarlo al cerrar la sesión.**
-
-### Bloque 2 — Módulos AWS Academy (11–13/09)
-M1 Welcome · M2 Data-Driven Organizations · M3 The Elements of Data · M4 Design Principles.
-Lectura + quiz autoevaluado. Verificar primero si la plataforma todavía los acepta.
-
-### Bloque 3 — Los artefactos (14–17/09)
-En este orden, porque cada uno alimenta al siguiente:
-
-1. **A3 documentado** (el bucket ya existe desde el 08/09) → redacción de S6.
-2. **A2 · ADR #1** — casi se escribe solo: las decisiones ya están razonadas en `CLAUDE.md`,
-   falta pasarlas al formato ADR.
-3. **A1 · Diagrama** con iconos oficiales → S3, S4 y Checkpoint 1.
-4. **A5 · Ensayo conceptual** → S1.
-
-### Bloque 4 — Redacción y cierre (18–19/09)
-Los 7 documentos de sesión, cada uno de 1–2 páginas citando los artefactos, más el
-**Checkpoint 1** completo (diagrama + ADR + bucket/crawler + defensa oral preparada).
+📄 **Vale abrir el Syllabus del campus antes de escribir** — puede definir qué se espera de cada
+*Session Assignment*. No lo abrí porque es un archivo para descargar; decime y lo reviso.
 
 ---
 
-## 6. Estimación de esfuerzo
+## 4. El hilo conductor del curso: IA con revisión humana
 
-> Estimaciones, no promesas. La incógnita grande son los módulos.
+Mirando el calendario completo aparece un patrón que no es casual:
+
+| Sesión | Consigna |
+|---|---|
+| **S6** (pendiente) | *"AI-assisted lifecycle policy, **reviewed line by line**"* |
+| S12 (10 sep) | *"**find-the-AI-bug** exercise"* |
+| S14 (24 sep) | *"**hand-written vs. AI-generated** comparison"* |
+| S17 (13 oct) | *"AI-assisted code **+ review**"* |
+| Parcial 1 | anexo obligatorio de **prompt log** |
+
+**Este profesor no evalúa si usaste IA: evalúa si la revisaste.** Así que cada entregable del
+backlog debería cerrar con un bloque corto de *"qué generó la IA / qué corregí y por qué"* —
+igual que el anexo del parcial. En la S6 eso no es un extra: **es literalmente la consigna**.
+
+Ventaja tuya: el `99-prompt-log.md` del parcial ya tiene diez entradas de ese tipo, incluidas
+dos correcciones de fondo (la conexión única, la sobreventa en business). Es material real.
+
+---
+
+## 5. Qué producir, tarea por tarea
+
+Formato de cada carpeta: `entregas/semana-N/sesionM-<tema>/` con el PDF, las capturas y un
+`README.md`. Estructura interna de cada documento:
+
+> **Qué pedía la sesión** · **Caso** · **Desarrollo** · **Evidencia** · **Decisiones y
+> alternativa descartada** · **Qué generó la IA y qué corregí**
+
+### 1 · Session 1 — Las 5 V y los roles · ~45 min
+El único entregable **sin insumo previo**. La jugada: en vez de un ensayo genérico, aplicar las
+5 V **al sistema de reservas que construiste en el parcial**.
+
+| V | Cómo se ve en tu sistema |
+|---|---|
+| Volumen | 8.821 hechos en 30 días de operación simulada → proyección anual |
+| Velocidad | reservas concurrentes; la prueba de 30 peticiones simultáneas |
+| Variedad | OLTP relacional + eventos de pago + logs de aplicación |
+| **Veracidad** | el invariante de no-sobreventa **encontró un bug en el generador que lo alimentaba** |
+| Valor | las tres vistas de negocio (`v_ocupacion_por_ruta`, `v_ingresos_por_tarifa`, `v_patrones_cancelacion`) |
+
+Más una tabla de los tres roles (ingeniero / científico / arquitecto) mapeada a qué hiciste vos
+en cada uno. **Un ensayo genérico sobre las 5 V es intercambiable con el de cualquier compañero;
+uno que usa tu propio sistema no.**
+
+### 2 · Session 3 — Diagramar arquitecturas · ~1,5 h
+⚠️ La consigna dice **"levels of abstraction"**. Un solo diagrama no cumple: hay que entregar
+**el mismo sistema en dos niveles** — vista de contexto (quién habla con qué) y vista de
+componentes (servicios, formatos, flujos). Más media página sobre la anatomía de un ADR.
+
+Insumo: `parcial-1-aerolinea/diagramas/arquitectura.md` (Mermaid) → reexpresar con el **kit
+oficial de iconos AWS**, que el propio curso enlaza como material de la sesión.
+
+### 3 · Session 4 — Setup + dos arquitecturas alternativas · ~1,5 h
+Dos partes:
+- **Setup:** capturas del entorno (AWS CLI v2, LabRole, CloudShell). El inventario ya está en
+  el `CLAUDE.md`.
+- **Dos arquitecturas alternativas** para el mismo caso de negocio, comparadas con criterios y
+  costo. Opciones fuertes, las dos con material propio detrás:
+  - *ingesta batch con Glue* vs *ingesta streaming con Kinesis Firehose*
+  - *RDS → Glue → S3(Parquet) → Athena* vs *RDS → DMS → Redshift*
+
+### 4 · Session 5 — ADR #1 · ~1,5 h
+Usar **la plantilla de ADR que el curso enlaza** en el material de la Session 4, no una
+inventada. Decisión a documentar: el diseño del data lake — tres zonas, Parquet en
+`processed/` y `curated/`, particionado por fecha de vuelo, catálogo con Glue.
+
+Insumo: las decisiones **ya están razonadas** en el `CLAUDE.md` (por qué RDS y no MySQL en EC2,
+por qué Glue y no scripts, por qué Parquet, por qué SG grupo-a-grupo). Es traducción de formato,
+no investigación.
+
+### 5 · Session 6 — S3 a fondo · ~1,5 h + AWS
+El de consigna más específica de los siete. Tres piezas:
+1. El bucket con las tres zonas, **versionado activado** y capturas.
+2. **La política de lifecycle en JSON, generada con IA y revisada línea por línea** — con la
+   tabla *qué propuso / qué corregí / por qué*. La revisión **es** el entregable.
+3. Tabla de clases de almacenamiento (Standard / IA / Glacier) con el cálculo de costo para tu
+   propio dataset, no para uno de ejemplo.
+
+### 6 · Session 7 — Glue Catalog y Crawlers · ~1 h
+Evidencia del crawler y el catálogo corriendo sobre las bases del parcial, más las **cuatro
+trampas** ya documentadas en el `CLAUDE.md` (URL JDBC con `://` y puerto, SG auto-referenciado,
+VPC Endpoint de S3 vs NAT, `LabRole`). Y una sección sobre la consigna: **qué gobernanza se
+alcanza sin Lake Formation** (IAM sobre el catálogo, tags, separación por database) y qué no
+(permisos por fila y por columna).
+
+### 7 · Session 8 — Checkpoint 1 · ~2 h + defensa
+**Es nota de proyecto, no de assignment.** No es trabajo nuevo: es el ensamblado de los cuatro
+anteriores — diagrama (S3) + ADR (S5) + bucket (S6) + crawler (S7) — más preparar la defensa
+oral con el mismo método del parcial: cada decisión con su alternativa descartada.
+
+### 8-11 · Módulos M1 a M4
+Viven en la plataforma de **AWS Academy**, no en Moodle: lectura + quiz. Entregable en Moodle:
+la captura del progreso. **Duración desconocida** — por eso M1 va primero y solo, para medir.
+
+---
+
+## 6. Calendario
+
+| Cuándo | Qué |
+|---|---|
+| **07/09 hoy** | Pedir la reapertura de las 11 tareas. Nada más de Moodle |
+| **08/09** | Sesión de AWS del parcial. **Al final**, con el parcial ya capturado: crear el bucket, versionado, la política de lifecycle y capturar Glue → cubre **S6**, **S7** y el bucket del **Checkpoint 1** |
+| **09/09** | Ensayo de la defensa del parcial |
+| **10/09** | 🎓 Subir el parcial a Moodle (tarea `273082`, tiene botón) + reforzar el pedido en persona |
+| **11–13/09** | Módulos **M1 → M4**. Empezar por M1 solo, cronometrado |
+| **14–19/09** | 🎯 Semana buffer: S1, S3, S4, S5, S6, S7 y el **Checkpoint 1** |
+
+El campus dice explícitamente de la semana buffer: *"No AWS Academy module assignment is due
+this week either; **continue with the previous week's module if not yet finished**"*. Está
+previsto que se use para ponerse al día.
+
+⚠️ **Y después se acaba el aire:** el 21/09 arranca la semana 7 con dos assignments nuevos
+(S13, S14) y el Module 7. Si el backlog no cierra el 19, se superpone.
 
 | Bloque | Horas |
 |---|---|
-| Preguntas al profesor | 0,1 |
-| Piggyback en AWS (08/09) | 0,5 |
-| Módulos M1–M4 | **4–12** ← la gran incógnita, medir con M1 |
-| Artefactos A1, A2, A5 | ~4 |
-| Redacción de 7 documentos | ~3,5 |
-| Cierre del Checkpoint 1 | ~2 |
+| Pedido de reapertura | 0,1 |
+| Piggyback en la sesión de AWS del 08/09 | 0,5 |
+| Módulos M1–M4 | **4–12** ← la incógnita |
+| Los 6 documentos de sesión | ~7,5 |
+| Checkpoint 1 (ensamblado + defensa) | ~2 |
 | **Total** | **~14 a 22 h** |
-
-Entra cómodo en la semana buffer **si los módulos no se desmadran**. Por eso M1 va primero y
-solo: para saber contra qué se juega antes de comprometer el resto del calendario.
 
 ---
 
 ## 7. Riesgos
 
-| Riesgo | Señal temprana | Qué hacer |
-|---|---|---|
-| **El profesor no acepta atrasadas** | Respuesta a la pregunta 2 | Se cae el Bloque 4 entero. Quedan Checkpoint 1 (nota de proyecto, otra bolsa) y los módulos. **Se ahorran ~8 h** |
-| **Los módulos llevan mucho más de lo estimado** | Cuánto tardó M1 | Priorizar: los módulos son puntos seguros; los assignments atrasados quizá no |
-| **La semana 6 trajo actividades nuevas** | Revisar el campus | Este plan no las contempla — **verificar antes de ejecutar** |
-| Meter el bucket en la sesión del parcial y romper algo | — | Por eso va **al final**, con la evidencia del parcial ya guardada |
-| El Checkpoint 1 también se defiende oralmente | El enunciado dice *"defended orally"* | Preparar la defensa como la del parcial: cada decisión con su alternativa descartada |
+| Riesgo | Qué hacer |
+|---|---|
+| **El profesor no reabre las tareas** | Negociar canal alterno y **que quede por escrito** que se entregó. Sin eso, el trabajo existe pero no consta |
+| **Reabre por una ventana corta** | Tener el material listo **antes** de que reabra. Otro motivo para no dejar la escritura para el final |
+| Los módulos llevan mucho más de lo estimado | Medir con M1. Son puntos deterministas: si hay que recortar, se recorta en otro lado |
+| Que lo pedido fuera una captura y entregues informes (o al revés) | El formato mixto de §3 cubre las dos lecturas |
+| El Checkpoint 1 también se defiende oralmente | Prepararlo como el parcial: cada decisión con su alternativa |
 
 ---
 
 ## 8. Decisiones que te tocan a vos
 
-1. **¿El bucket y la evidencia de Glue entran en la sesión del martes 8, o van en una sesión aparte después del 10?**
-   *Recomiendo meterlos*, al final y con el parcial ya capturado: son 25 minutos contra abrir
-   el lab otra vez. El riesgo real es de atención, no técnico.
-2. **¿Mandás las preguntas hoy por escrito, o las hacés el jueves en persona?**
-   *Recomiendo hoy.* Si la respuesta a la 2 es "no se reciben", te enterás antes de invertir
-   la semana buffer, no después.
-3. **¿Un documento por sesión, o un solo cuaderno del curso con una sección por sesión?**
-   Depende de la respuesta 1 del profesor. Si queda a criterio tuyo, *recomiendo uno por
-   sesión* en `entregas/semana-N/` más un índice: si Moodle pide subir archivo por tarea calza
-   directo, y si es un repositorio el índice lo resuelve igual.
-4. **¿Módulos antes que assignments, o al revés?**
-   *Recomiendo módulos primero.* No dependen de lo que conteste el profesor, así que el tiempo
-   invertido no puede perderse.
+1. **¿Un caso de estudio único —el sistema de la aerolínea— para todos los documentos, o cada
+   sesión con su propio caso?**
+   *Recomiendo el único.* Da coherencia, reusa trabajo verificado y podés defenderlo, que es
+   como evalúa este profesor. El riesgo: si esperaba el ejercicio hecho en clase, queda
+   desalineado — se mitiga con una línea al inicio de cada documento diciendo por qué se eligió
+   ese caso.
+2. **¿Herramienta para los diagramas: draw.io o la librería `diagrams` de Python?**
+   `diagrams` es código: versionable en git, reproducible, y cuenta mejor en un curso de
+   ingeniería de datos (Graphviz ya está instalado). draw.io es más rápido y va directo con el
+   kit oficial de iconos. *Me inclino por `diagrams`*, pero es tu llamado.
+3. **¿Pedís la reapertura hoy por escrito, o esperás al jueves en persona?**
+   *Recomiendo las dos:* hoy por escrito para que quede constancia y él tenga tiempo, el jueves
+   en persona para que se resuelva.
+4. **¿Abro el Syllabus para ver si define qué se espera de cada assignment?**
+   Es un archivo para descargar del campus; decime y lo reviso antes de que escribas nada.
