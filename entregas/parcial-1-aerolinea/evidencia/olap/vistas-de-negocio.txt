@@ -1,0 +1,49 @@
+# Salida de las vistas de negocio del OLAP
+# Generado localmente el 2026-09-06 21:55 contra parcial-olap (PostgreSQL 16)
+
+## 1) Ocupación por ruta  (FR-19)
+ ruta_descripcion | origen_ciudad | destino_ciudad | vuelos | asientos_ofrecidos | asientos_vendidos | ocupacion_promedio_pct | ingreso_total 
+------------------+---------------+----------------+--------+--------------------+-------------------+------------------------+---------------
+ CTG-BOG          | Cartagena     | Bogotá         |     30 |               4860 |              1029 |                  21.17 |  562545000.00
+ MDE-BOG          | Medellín      | Bogotá         |     22 |               3564 |               737 |                  20.68 |  325305000.00
+ CLO-BOG          | Cali          | Bogotá         |     30 |               4860 |               988 |                  20.33 |  474515000.00
+ BOG-CTG          | Bogotá        | Cartagena      |     30 |               4860 |               961 |                  19.77 |  525666000.00
+ BOG-CLO          | Bogotá        | Cali           |     30 |               4860 |               916 |                  18.85 |  451912000.00
+ BOG-MDE          | Bogotá        | Medellín       |     22 |               3415 |               615 |                  17.26 |  274832000.00
+ BOG-MIA          | Bogotá        | Miami          |     30 |               4860 |               821 |                  16.89 |  740738000.00
+ BOG-SMR          | Bogotá        | Santa Marta    |     20 |               3240 |               512 |                  15.80 |  300215000.00
+ MDE-CTG          | Medellín      | Cartagena      |     13 |               2106 |               310 |                  14.72 |  160370000.00
+(9 rows)
+
+## 2) Ingresos por tarifa  (FR-19)
+   clase   | ventana_compra | tramos |    ingreso    | ticket_promedio | antelacion_promedio_dias 
+-----------+----------------+--------+---------------+-----------------+--------------------------
+ economica | ultima_hora    |   2763 | 1577073000.00 |       742683.68 |                     22.6
+ economica | intermedia     |   2851 | 1014370000.00 |       454231.85 |                     23.3
+ economica | anticipada     |   2766 |  687172000.00 |       313753.43 |                     23.2
+ business  | ultima_hora    |    414 |  537483000.00 |      1591838.16 |                     22.9
+(4 rows)
+
+## 3) Patrones de cancelación  (FR-19)
+ ruta_descripcion | tipo_canal | vendidos | cancelados | expirados | tasa_cancelacion_pct | antelacion_promedio_cancelados 
+------------------+------------+----------+------------+-----------+----------------------+--------------------------------
+ MDE-BOG          | directo    |      516 |        100 |        65 |                14.68 |                           21.3
+ BOG-MDE          | agencia    |      190 |         36 |        20 |                14.63 |                           26.7
+ MDE-BOG          | agencia    |      221 |         41 |        24 |                14.34 |                           24.3
+ BOG-CLO          | directo    |      631 |        117 |        82 |                14.10 |                           23.3
+ MDE-CTG          | directo    |      216 |         37 |        12 |                13.96 |                           26.8
+ BOG-CTG          | directo    |      653 |        113 |        70 |                13.52 |                           24.5
+ CTG-BOG          | agencia    |      308 |         50 |        26 |                13.02 |                           23.8
+ BOG-MIA          | directo    |      568 |         94 |        67 |                12.89 |                           23.6
+ BOG-MIA          | agencia    |      253 |         43 |        40 |                12.80 |                           23.6
+ BOG-CLO          | agencia    |      285 |         46 |        32 |                12.67 |                           21.3
+ CTG-BOG          | directo    |      721 |        116 |        83 |                12.61 |                           23.5
+ BOG-SMR          | directo    |      369 |         59 |        41 |                12.58 |                           22.2
+ CLO-BOG          | directo    |      700 |        111 |        73 |                12.56 |                           21.8
+ CLO-BOG          | agencia    |      288 |         46 |        33 |                12.53 |                           23.4
+ BOG-MDE          | directo    |      425 |         64 |        48 |                11.92 |                           23.3
+ BOG-SMR          | agencia    |      143 |         18 |        19 |                10.00 |                           29.6
+ BOG-CTG          | agencia    |      308 |         37 |        29 |                 9.89 |                           25.6
+ MDE-CTG          | agencia    |       94 |          7 |         6 |                 6.54 |                           14.1
+(18 rows)
+
