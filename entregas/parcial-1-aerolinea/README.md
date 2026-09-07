@@ -31,9 +31,9 @@ del enunciado y declara explícitamente qué requisito origina cada decisión.
 | 5.3 | Modelo entidad-relación | 15% | `documento/03-modelo-er.md` | 🟡 borrador 06/09 |
 | 5.4 | Arquitectura backend | 15% | `documento/04-arquitectura-backend.md` | 🟡 decisiones cerradas 06/09 |
 | 5.5 | Arquitectura frontend | (dentro del 15%) | `documento/05-arquitectura-frontend.md` | 🟡 borrador 06/09 |
-| 5.6 | Primera implementación backend | 10% | `documento/06-implementacion-backend.md` | ⬜ |
-| 5.7 | AWS: ETL, catálogo y costos | 20% | `documento/07-aws-etl-glue-costos.md` | ⬜ |
-| §4 | Prompt log (anexo) | obligatorio | `documento/99-prompt-log.md` | 🟡 en curso |
+| 5.6 | Primera implementación backend | 10% | `documento/06-implementacion-backend.md` | ✅ implementado y probado |
+| 5.7 | AWS: ETL, catálogo y costos | 20% | `documento/07-aws-etl-glue-costos.md` | 🟡 validado local · falta subir a AWS |
+| §4 | Prompt log (anexo) | obligatorio | `documento/99-prompt-log.md` | 🟡 al día (10 entradas) |
 
 Claridad y trazabilidad del documento: 10% adicional, transversal a todas las secciones.
 
