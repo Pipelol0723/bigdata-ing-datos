@@ -6,15 +6,31 @@
 **Defensa oral:** eliminatoria por sección
 **Enunciado:** [`enunciado.md`](enunciado.md) — copia íntegra, en el repo
 
-⚠️ **El enunciado (§6) define DOS entregas, no una:**
+✅ **Resuelto (06/09): las dos entregas de la §6 se presentan juntas el jueves 10/09.**
 
-| Entrega | Contenido |
-|---|---|
-| **Parcial** | Sólo requisitos funcionales y no funcionales (5.1 y 5.2) |
-| **Final** | Documento completo: contexto, FR, NFR, modelo ER, arquitectura backend y frontend, implementación backend (5.6), implementación AWS (5.7) y anexo de prompt log |
+El enunciado distingue una entrega parcial (sólo 5.1 y 5.2) de una final (todo), pero en
+este curso se unifican. **Hay una sola fecha y una sola entrega**, que incluye el documento
+completo, la implementación y el anexo de prompt log.
 
-En Moodle sólo figura una tarea **"Parcial 1"**, sin fechas de apertura ni cierre.
-**Preguntar si la entrega parcial ya pasó o si las dos se juntan el 10/09.**
+---
+
+## ▶️ Cómo retomar (sesión del 06/09 cerrada)
+
+Los contenedores quedaron **detenidos, con los datos intactos** en sus volúmenes.
+
+```bash
+cd entregas/parcial-1-aerolinea
+docker compose start          # levanta oltp:15432 y olap:15433 con los datos ya cargados
+cd api && uvicorn main:app --port 8010
+```
+
+Si hiciera falta reconstruir desde cero, la guía completa está en
+[`documento/06-implementacion-backend.md`](documento/06-implementacion-backend.md#guía-de-ejecución)
+— verificada de punta a punta el 06/09.
+
+**Lo único pendiente es la sesión de AWS:** plan de 10 pasos en
+[`documento/07-aws-etl-glue-costos.md`](documento/07-aws-etl-glue-costos.md#plan-de-ejecución-en-aws-sesión-única),
+scripts en `infra/`. Costo estimado: ~$0.40 si se borran las instancias al terminar.
 
 ---
 

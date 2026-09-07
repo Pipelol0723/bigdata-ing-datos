@@ -213,7 +213,35 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- 🔴 **Estado actual (01/09): Parcial 1 en curso — entrega jueves 10/09.** Sistema de reservas de una aerolínea. Ver `entregas/parcial-1-aerolinea/README.md`. Rama: `parcial-1-aerolinea`. Es **individual** y la defensa oral es **eliminatoria por sección**.
+- 🔴 **Estado actual (06/09): Parcial 1 — entrega Y DEFENSA el jueves 10/09.** Sistema de reservas de una aerolínea. **Las dos entregas de la §6 se presentan juntas ese día** (confirmado 06/09). Individual, defensa oral **eliminatoria por sección**. Enunciado íntegro en `entregas/parcial-1-aerolinea/enunciado.md`.
+
+### 📊 Avance del parcial al 06/09
+
+| Sección | Peso | Estado |
+|---|---|---|
+| 0 · Contexto y supuestos | — | ✅ redactada (9 supuestos) |
+| 5.1 · Requisitos funcionales | 10 % | ✅ redactada (19 `FR-`) |
+| 5.2 · Requisitos no funcionales | 10 % | ✅ redactada (10 `NFR-`, 7 `RSK-`) |
+| 5.3 · Modelo ER | 15 % | ✅ redactada (14 entidades + diagrama Crow's Foot) |
+| 5.4 · Arquitectura backend | 15 % | ✅ decisiones cerradas (8 `DEC-`) |
+| 5.5 · Arquitectura frontend | (en el 15 %) | ✅ redactada |
+| 5.6 · Implementación backend | 10 % | ✅ **implementada y probada** |
+| 5.7 · AWS ETL/catálogo/costos | **20 %** | 🟡 diseñada y **validada en local** · falta la sesión de AWS |
+| §4 · Prompt log | obligatorio | 🟡 al día, 10 entradas |
+
+**Lo único que falta es la sesión de AWS.** Plan de 10 pasos en `documento/07-aws-etl-glue-costos.md`, scripts en `infra/`.
+
+**Todo el pipeline está funcionando en local** con dos PostgreSQL 16 en Docker (`docker-compose.yml`, puertos **15432/15433** — el 5432 y el 5433 están ocupados por los PostgreSQL nativos 13/17/18 que ya tenía la máquina). Reconstrucción completa desde cero verificada reproducible.
+
+**Resultados verificados que sostienen el documento:**
+- Prueba de concurrencia: **sin lock → 4 reservas sobre 1 asiento** (con el contador diciendo "1"); **con lock → exactamente 1 de 30**, 29 rechazos `409` explícitos. Evidencia en `evidencia/concurrencia/`.
+- ETL: 141 filas de dimensiones + 8.821 de hechos en ~3,3 s.
+- Las tres vistas de negocio de `FR-19` responden con datos interpretables (`evidencia/olap/`).
+
+⚠️ **Para la próxima sesión — plan de AWS (una sola vez, ~$0.40):** crear 2 RDS `db.t3.micro`, cargar los `.sql`, SG auto-referenciado, verificar el VPC Endpoint de S3, 2 conexiones JDBC con `LabRole`, correr los crawlers, ejecutar el job de Glue, **capturar evidencia en `evidencia/glue/`** y **borrar las instancias**. Las 5 trampas ya documentadas aplican igual a PostgreSQL.
+
+⚠️ **Objetos de Glue huérfanos de la práctica de Sakila** (conexión JDBC, `crawler-sakila-rds`, database `sakila_catalog`) apuntan a una RDS borrada. No cobran, pero conviene borrarlos antes de que el profesor mire el catálogo del parcial.
+
 - **Cuenta AWS vacía (01/09):** se dieron de baja Cloud9 y la RDS `db-service`. **No queda ningún recurso cobrando cómputo.** El parcial arranca con infraestructura nueva.
 - **Trabajo anterior, ya entregado:** EC2 + Apache (`entregas/ec2-apache/`) con FastAPI como reverse proxy (`scripts/instalar-fastapi.sh`), Sakila en RDS, MySQL local en Cloud9 y Glue conectado a la RDS.
 - 🎤 **Cómo se evalúa la defensa (dato del 01/09):** el día de la sustentación el profesor plantea un cambio, mejora o problema y hay que proponer la solución **en el momento**, según cómo esté construido el sistema. No hay nada extra que implementar, pero cambia el criterio: lo que se mide es **si el diseño absorbe un cambio no previsto**. Por eso cada decisión se documenta junto a su alternativa descartada, y las reglas de negocio se modelan como **políticas parametrizables** (`capacidad_vendible = f(capacidad_física, política_comercial)`) en vez de invariantes rígidos.
