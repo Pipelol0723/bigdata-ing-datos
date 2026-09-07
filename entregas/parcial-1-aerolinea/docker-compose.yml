@@ -1,0 +1,52 @@
+# =============================================================================
+#  Entorno local del parcial — espeja la topología que va a AWS
+#
+#    oltp (15432)  →  RDS PostgreSQL transaccional   (3NF, modelo de 5.3)
+#    olap (15433)  →  RDS PostgreSQL analítica       (estrella, destino del ETL)
+#
+#  Objetivo: desarrollar y probar TODO acá a costo cero, y recién después
+#  crear las RDS en AWS para ejecutar, capturar evidencia y borrarlas.
+#
+#  ⚠️ Las credenciales de abajo son SÓLO para este entorno local: los puertos
+#     están atados a 127.0.0.1, así que no escuchan hacia la red. Las de AWS
+#     son distintas y no viven en el repo (ver NFR-SEG-01 y el .gitignore).
+# =============================================================================
+
+services:
+  oltp:
+    image: postgres:16-alpine
+    container_name: parcial-oltp
+    environment:
+      POSTGRES_DB: aerolinea
+      POSTGRES_USER: parcial
+      POSTGRES_PASSWORD: parcial_local_dev
+    ports:
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - oltp_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U parcial -d aerolinea"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  olap:
+    image: postgres:16-alpine
+    container_name: parcial-olap
+    environment:
+      POSTGRES_DB: aerolinea_dw
+      POSTGRES_USER: parcial
+      POSTGRES_PASSWORD: parcial_local_dev
+    ports:
+      - "127.0.0.1:15433:5432"
+    volumes:
+      - olap_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U parcial -d aerolinea_dw"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  oltp_data:
+  olap_data:
