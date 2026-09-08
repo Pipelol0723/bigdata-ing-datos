@@ -18,15 +18,16 @@ vencida y el módulo ya no acepta envíos (verificado el 07/09; ver
 | 2 | Session 4 — Setup y dos arquitecturas alternativas | [`semana-02/sesion-04-setup-y-alternativas/`](semana-02/sesion-04-setup-y-alternativas/) | ✅ escrita |
 | 2 | Module 2 — Data-Driven Organizations | [`modulos-aws-academy/`](modulos-aws-academy/) | ⬜ pendiente |
 | 3 | Session 5 — **ADR #1: esquema de particionado** | [`semana-03/sesion-05-adr-01-particionado/`](semana-03/sesion-05-adr-01-particionado/) | ✅ escrita |
-| 3 | Session 6 — S3: clases, versionado y lifecycle | [`semana-03/sesion-06-s3-clases-versionado-lifecycle/`](semana-03/sesion-06-s3-clases-versionado-lifecycle/) | 🟡 escrita · falta aplicar en AWS |
+| 3 | Session 6 — S3: clases, versionado y lifecycle | [`semana-03/sesion-06-s3-clases-versionado-lifecycle/`](semana-03/sesion-06-s3-clases-versionado-lifecycle/) | ✅ **aplicada en AWS (08/09)** |
 | 3 | Module 3 — The Elements of Data | [`modulos-aws-academy/`](modulos-aws-academy/) | ⬜ pendiente |
-| 4 | Session 7 — Glue Data Catalog y Crawlers | [`semana-04/sesion-07-glue-catalog-crawlers/`](semana-04/sesion-07-glue-catalog-crawlers/) | 🟡 escrita · falta evidencia de AWS |
-| 4 | **Checkpoint 1** (nota de proyecto) | [`semana-04/checkpoint-1/`](semana-04/checkpoint-1/) | 🟡 armado · falta ejecutar el bucket y el crawler |
+| 4 | Session 7 — Glue Data Catalog y Crawlers | [`semana-04/sesion-07-glue-catalog-crawlers/`](semana-04/sesion-07-glue-catalog-crawlers/) | ✅ **evidencia capturada (08/09)** |
+| 4 | **Checkpoint 1** (nota de proyecto) | [`semana-04/checkpoint-1/`](semana-04/checkpoint-1/) | ✅ **bucket y crawler ejecutados (08/09)** |
 | 4 | Module 4 — Design Principles for Pipelines | [`modulos-aws-academy/`](modulos-aws-academy/) | ⬜ pendiente |
-| 5 | **Parcial 1** — Sistema de reservas | [`parcial-1-aerolinea/`](parcial-1-aerolinea/) | 🟡 7 de 8 secciones · falta la sesión de AWS |
+| 5 | **Parcial 1** — Sistema de reservas | [`parcial-1-aerolinea/`](parcial-1-aerolinea/) | ✅ **8 de 8 secciones** · falta ensayar la defensa |
 | — | EC2 + Apache (práctica anterior) | [`ec2-apache/`](ec2-apache/) | ✅ entregada |
 
-**Lo único que bloquea a los cinco 🟡 es una sola sesión de AWS.** Todo lo demás está escrito.
+**La sesión de AWS se ejecutó el 08/09 y cerró todo lo que dependía de ella.** Lo único
+pendiente son los **cuatro módulos de AWS Academy**, que viven en otra plataforma.
 
 ---
 
@@ -68,15 +69,31 @@ desincronizan en silencio.
 
 ---
 
-## Pendiente de AWS — una sola sesión
+## ✅ Sesión de AWS — ejecutada el 08/09
 
-Todo lo que sigue se hace en la misma sesión del lab, después de la del Parcial 1:
+Evidencia completa en
+[`parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md`](parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md).
 
-1. `bash semana-04/checkpoint-1/crear-data-lake.sh` — bucket, zonas, versionado, lifecycle.
-2. Capturar `get-bucket-lifecycle-configuration` → evidencia de la **Sesión 6**.
-3. Conexiones JDBC + crawler sobre las bases del parcial → evidencia de la **Sesión 7**.
-4. Una consulta de Athena sobre las tablas catalogadas.
-5. Borrar los objetos de Glue huérfanos de la práctica de Sakila.
+| Recurso | Identificador |
+|---|---|
+| Bucket del data lake | `datalake-aerolinea-936980625651` |
+| RDS OLTP / OLAP | `parcial-oltp` · `parcial-olap` (PostgreSQL 18.3) |
+| SG de Glue (auto-referenciado) | `sg-0b3237efc5e6f8c1e` |
+| SG de las bases | `sg-0a85ff98fa816dff8` |
+| VPC Endpoint de S3 (gratis) | `vpce-09b60424dc9c1f1cf` |
+| Database del catálogo | `aerolinea_catalog` — **8 tablas** |
+| Crawler | `crawler-datalake-aerolinea` |
+| Conexiones JDBC | `conn-parcial-oltp` · `conn-parcial-olap` |
 
-💰 El bucket cuesta centavos y **no se borra**: lo necesitan el Checkpoint 2 y el resto del curso.
-Las RDS sí se borran — cobran storage aunque estén detenidas.
+Tres mediciones que el trabajo local no podía dar:
+
+- **AWS respondió `TransitionDefaultMinimumObjectSize: all_storage_classes_128K`** al aplicar el
+  lifecycle — confirma el análisis de costos de la Sesión 6 desde el propio servicio.
+- **8.893 hechos cayeron en 2 particiones**, no en 60: el ADR #1 acertó el cálculo.
+- **Athena escaneó 4.614 bytes** para consultar esas 8.893 filas. Eso es Parquet columnar.
+
+Costo real de la sesión: **~$0,25**.
+
+💰 El bucket **no se borra**: cuesta centavos y lo necesitan el Checkpoint 2 y el resto del curso.
+Las RDS quedan hasta la sustentación del 10/09 y **se borran ese día** — cobran almacenamiento
+aunque estén detenidas, y AWS las reinicia solas a los 7 días.

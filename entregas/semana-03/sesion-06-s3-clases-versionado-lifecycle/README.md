@@ -60,6 +60,27 @@ mensual del ADR #1. Si fueran de 50 KB:
 **Standard-IA sale ~39 % más caro** que Standard para esos objetos. La clase "barata" cuesta más
 porque el mínimo facturable multiplica el volumen por más de lo que la tarifa lo divide.
 
+> ### ✅ Confirmado por AWS al aplicar la política (08/09)
+>
+> Al ejecutar `put-bucket-lifecycle-configuration`, la API respondió:
+>
+> ```json
+> { "TransitionDefaultMinimumObjectSize": "all_storage_classes_128K" }
+> ```
+>
+> **AWS no transiciona objetos de menos de 128 KB, por defecto y para todas las clases.** O sea
+> que el problema que calculamos arriba está reconocido por el propio servicio, que trae una
+> protección de fábrica contra él.
+>
+> Dos consecuencias concretas:
+>
+> 1. La regla de `processed/` **no va a mover nada** mientras los archivos sigan por debajo de
+>    128 KB. No es un error: es el comportamiento correcto, y significa que la política está
+>    escrita para el volumen que vendrá, no para el actual.
+> 2. Quien quiera forzar el comportamiento viejo puede pasar
+>    `TransitionDefaultMinimumObjectSize=varies_by_storage_class`. **No lo hacemos**: sería pedir
+>    explícitamente que se apliquen las transiciones que acabamos de demostrar que encarecen.
+
 ### Entonces, ¿para qué la política?
 
 Por dos reglas que **sí** importan a cualquier escala, incluso a 300 MB — y no son las
@@ -161,8 +182,14 @@ aws s3api put-bucket-lifecycle-configuration \
 aws s3api get-bucket-lifecycle-configuration --bucket <bucket>
 ```
 
-> ⏳ **Pendiente de la sesión de AWS:** aplicar y capturar la salida de `get-bucket-lifecycle-configuration`.
-> El JSON ya está validado localmente; falta el bucket.
+> ✅ **Aplicado el 08/09** sobre `datalake-aerolinea-936980625651`, junto con el versionado y el
+> bloqueo de acceso público 4/4. La respuesta de AWS está en la §1; evidencia completa en
+> [`../../parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md`](../../parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md).
+>
+> **Y la política resultó aún mejor calibrada de lo previsto:** los objetos reales del data lake
+> pesan entre 3,0 y 81,4 KiB — **ninguno llega a 128 KB**. Con el default de AWS, la regla de
+> transición de `processed/` no moverá nada hasta que el volumen crezca, que es exactamente lo
+> que corresponde.
 
 ---
 

@@ -1,8 +1,26 @@
 # 5.7 Implementación en AWS: ETL, catálogo de datos y costos
 
-> **Estado:** 🟡 diseño cerrado y **validado localmente de punta a punta** — 06/09.
-> Despliegue en AWS pendiente (sesión única prevista, ver *Plan de ejecución*).
+> **Estado:** ✅ **DESPLEGADO Y VERIFICADO EN AWS — 08/09.**
+> Evidencia completa en [`../evidencia/aws/sesion-2026-09-08.md`](../evidencia/aws/sesion-2026-09-08.md).
 > **Peso en la rúbrica:** 20% — **la sección que más pesa**
+
+## Resultado de la ejecución en AWS (08/09)
+
+| Qué | Resultado medido |
+|---|---|
+| 2 × RDS PostgreSQL **18.3** | `parcial-oltp`, `parcial-olap` — los `.sql` escritos contra PG 16 corrieron **sin un solo cambio** |
+| Carga de los 4 `.sql` | OK · el generador de actividad tardó **2,4 s** |
+| Invariante de no-sobreventa sobre RDS | **0 violaciones** |
+| ETL OLTP → OLAP contra las RDS | **141 dimensiones + 9.121 hechos en 1,64 s** |
+| Data lake en S3 | 13 objetos, 147 KiB, Parquet particionado `year=/month=` |
+| Catálogo de Glue | **8 tablas**, particiones `year`/`month` detectadas solas |
+| Athena | 8.893 filas consultadas escaneando **4.614 bytes** |
+| Costo real de la sesión | **~$0,25** |
+
+**El ETL se ejecutó desde CloudShell contra las RDS**, no como job de Glue. Fue una decisión de
+alcance: el job de Glue es la evolución prevista —tiene sentido cuando la recarga completa deje
+de entrar en la ventana de proceso— y agregarlo hoy no cambia ningún resultado del documento.
+El mismo script apuntó a AWS sin editar una línea, sólo cambiando `DSN_OLTP` y `DSN_OLAP`.
 
 ## Por qué se validó primero en local
 

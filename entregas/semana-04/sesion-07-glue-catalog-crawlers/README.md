@@ -120,12 +120,20 @@ permisos se puede *diseñar* y justificar, pero no demostrar en este entorno.
 
 ## 5. Evidencia
 
-| Elemento | Estado |
-|---|---|
-| Conexión JDBC a la base OLTP | ⏳ sesión de AWS |
-| Conexión JDBC a la base OLAP | ⏳ sesión de AWS |
-| Crawler ejecutado y tablas en el catálogo | ⏳ sesión de AWS |
-| Consulta de Athena sobre las tablas catalogadas | ⏳ sesión de AWS |
+> ✅ **Ejecutado el 08/09.** Salidas completas en
+> [`../../parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md`](../../parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md).
+
+| Elemento | Estado | Resultado |
+|---|---|---|
+| Conexión JDBC a la base OLTP | ✅ | `conn-parcial-oltp` |
+| Conexión JDBC a la base OLAP | ✅ | `conn-parcial-olap` |
+| Crawler ejecutado y tablas en el catálogo | ✅ | `crawler-datalake-aerolinea` → **8 tablas** en `aerolinea_catalog` |
+| Particiones detectadas automáticamente | ✅ | claves `year`/`month` deducidas de las rutas Hive |
+| Consulta de Athena sobre las tablas catalogadas | ✅ | 8.893 filas escaneando **4.614 bytes** |
+
+**Las cuatro trampas se confirmaron todas:** la URL JDBC llevó `jdbc:postgresql://host:5432/base`,
+el SG de Glue se creó con la regla auto-referenciada, el VPC Endpoint de S3 ya existía y se
+reutilizó (gratis), y el rol fue `LabRole` — sin ningún error de trust policy.
 
 > Los objetos de Glue de la práctica anterior con Sakila (`crawler-sakila-rds`, `sakila_catalog`
 > y su conexión JDBC) apuntan a una RDS ya borrada. **Se eliminan en la misma sesión**, para que

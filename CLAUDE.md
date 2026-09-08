@@ -226,10 +226,28 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 | 5.4 · Arquitectura backend | 15 % | ✅ decisiones cerradas (8 `DEC-`) |
 | 5.5 · Arquitectura frontend | (en el 15 %) | ✅ redactada |
 | 5.6 · Implementación backend | 10 % | ✅ **implementada y probada** |
-| 5.7 · AWS ETL/catálogo/costos | **20 %** | 🟡 diseñada y **validada en local** · falta la sesión de AWS |
-| §4 · Prompt log | obligatorio | 🟡 al día, 10 entradas |
+| 5.7 · AWS ETL/catálogo/costos | **20 %** | ✅ **desplegado y verificado en AWS (08/09)** |
+| §4 · Prompt log | obligatorio | ✅ 14 entradas |
 
-**Lo único que falta es la sesión de AWS.** Plan de 10 pasos en `documento/07-aws-etl-glue-costos.md`, scripts en `infra/`.
+### ✅ Sesión de AWS ejecutada — 08/09
+
+**Las 8 secciones están completas.** Lo único que queda antes del jueves es **ensayar la defensa**.
+Evidencia íntegra en `entregas/parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md`.
+
+Resultados medidos en AWS: los `.sql` escritos contra PostgreSQL 16 corrieron **sin un cambio**
+contra **PostgreSQL 18.3** en RDS · invariante de sobreventa **0 violaciones** · ETL **141
+dimensiones + 9.121 hechos en 1,64 s** (en local dio 8.821: el generador es aleatorio) ·
+data lake con 13 objetos Parquet · **8 tablas** catalogadas con particiones `year`/`month`
+detectadas solas · Athena consultó 8.893 filas escaneando **4.614 bytes**. Costo real: **~$0,25**.
+
+Tres hallazgos que sólo aparecieron en AWS:
+1. AWS devuelve `TransitionDefaultMinimumObjectSize: all_storage_classes_128K` — **no transiciona
+   objetos < 128 KB**, confirmando el análisis de costos de la Sesión 6 desde el propio servicio.
+2. Los 8.893 hechos cayeron en **2 particiones**, no 60: el ADR #1 acertó el cálculo.
+3. **La ventana de bootstrap.** Las RDS son privadas, pero CloudShell corre fuera de la VPC y no
+   podía cargar los `.sql`. Se abrió el 5432 a **una sola IP** (la de CloudShell), se cargó, y se
+   **revocó en la misma sesión** dejando una única regla: 5432 desde el SG de Glue, sin CIDR.
+   Decisión del alumno, documentada para la defensa.
 
 **Todo el pipeline está funcionando en local** con dos PostgreSQL 16 en Docker (`docker-compose.yml`, puertos **15432/15433** — el 5432 y el 5433 están ocupados por los PostgreSQL nativos 13/17/18 que ya tenía la máquina). Reconstrucción completa desde cero verificada reproducible.
 
@@ -260,6 +278,29 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 > 📌 **Aplica directo al parcial:** si las RDS nuevas se hacen públicamente accesibles, es exactamente la misma deuda. Es una decisión a tomar y justificar en `NFR-SEG-` (sección 5.2).
 
 ### Recursos AWS
+
+### 🔴 VIVOS al 08/09 — qué hay que dar de baja y cuándo
+
+| Recurso | Identificador | Cobra | Baja |
+|---|---|---|---|
+| **RDS OLTP** | `parcial-oltp` (db.t3.micro, PG 18.3) | ~$0,43/día | ⚠️ **BORRAR el 10/09 después de la defensa** |
+| **RDS OLAP** | `parcial-olap` (db.t3.micro, PG 18.3) | ~$0,43/día | ⚠️ **BORRAR el 10/09 después de la defensa** |
+| Bucket del data lake | `datalake-aerolinea-936980625651` | centavos/mes | ✅ **NO borrar** — lo usan el Checkpoint 2 y el resto del curso |
+| SG de Glue (auto-referenciado) | `sg-0b3237efc5e6f8c1e` | gratis | tras borrar las RDS |
+| SG de las bases | `sg-0a85ff98fa816dff8` | gratis | tras borrar las RDS |
+| VPC Endpoint de S3 (Gateway) | `vpce-09b60424dc9c1f1cf` | **gratis** | dejarlo |
+| Catálogo + crawler + 2 conexiones JDBC | `aerolinea_catalog`, `crawler-datalake-aerolinea`, `conn-parcial-oltp/olap` | no cobran en reposo | dejar hasta la corrección |
+
+**Decisión del alumno (08/09):** las RDS quedan encendidas hasta la sustentación del **10/09**
+para poder mostrarlas en vivo. Son ~$1,70 de los ~$45 restantes, a cambio de no depender de
+recrearlas a las corridas. **Recordar el borrado ese mismo día.**
+
+```bash
+aws rds delete-db-instance --db-instance-identifier parcial-oltp --skip-final-snapshot --delete-automated-backups --region us-east-1
+aws rds delete-db-instance --db-instance-identifier parcial-olap --skip-final-snapshot --delete-automated-backups --region us-east-1
+```
+
+---
 
 **Estado al 01/09: la cuenta no tiene ningún recurso cobrando cómputo.** Todo lo de las prácticas anteriores fue dado de baja para arrancar el parcial con infraestructura nueva — decisión del alumno: reutilizar obligaba a explicar en la defensa por qué un componente venía prestado de otra práctica, y la coherencia del trabajo pesa más que ~$2 de ahorro.
 

@@ -13,8 +13,8 @@ defendido oralmente"*
 |---|---|---|
 | **Diagrama** de arquitectura del data lake | esta carpeta + [`_comun/diagramas/generar.py`](../../_comun/diagramas/generar.py) | ✅ |
 | **ADR** | [ADR #1 — esquema de particionado](../../semana-03/sesion-05-adr-01-particionado/) | ✅ |
-| **Implementación** del bucket | [`crear-data-lake.sh`](crear-data-lake.sh) | 🟡 escrito y validado · falta ejecutar |
-| **Implementación** del crawler | [Sesión 7](../sesion-07-glue-catalog-crawlers/) | 🟡 procedimiento y trampas documentados · falta ejecutar |
+| **Implementación** del bucket | [`crear-data-lake.sh`](crear-data-lake.sh) | ✅ **ejecutado 08/09** → `datalake-aerolinea-936980625651` |
+| **Implementación** del crawler | [Sesión 7](../sesion-07-glue-catalog-crawlers/) | ✅ **ejecutado 08/09** → 8 tablas catalogadas |
 | **Defensa oral** | §4 de este documento | ✅ preparada |
 
 ---
