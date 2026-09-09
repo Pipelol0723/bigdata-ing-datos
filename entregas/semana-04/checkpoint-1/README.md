@@ -65,6 +65,29 @@ Después, el crawler según el procedimiento de la [Sesión 7](../sesion-07-glue
 con las cuatro trampas ya documentadas: URL JDBC con `://` y puerto, SG auto-referenciado, VPC
 Endpoint de S3 (gratis, no NAT), y `LabRole`.
 
+### Las tres zonas, pobladas — y medidas
+
+El flujo del diagrama no es una promesa: corrió. Un **job de Glue dentro de la VPC**
+([`job_glue_raw_processed.py`](../../parcial-1-aerolinea/etl/job_glue_raw_processed.py)) extrae
+las 17 tablas del OLTP privado por JDBC y escribe `raw/`; después **relee `raw/` desde S3** —no la
+base— y escribe `processed/` con el esquema restaurado.
+
+| Zona | Formato | Archivos | Bytes | Database del catálogo |
+|---|---|---|---|---|
+| `raw/oltp/` | CSV, `fecha_extraccion=` | 17 | **2.915.371** | `aerolinea_raw` (17 tablas) |
+| `processed/oltp/` | Parquet + Snappy | 17 | **941.399** | `aerolinea_processed` (17 tablas) |
+| `curated/` | Parquet, estrella | 10 | 150.305 | `aerolinea_catalog` (8 tablas) |
+
+**Lo mismo ocupa 3,1 veces menos en Parquet que en CSV.** Y consultado con Athena:
+
+| `SELECT estado, count(*) FROM reserva GROUP BY estado` | Bytes escaneados |
+|---|---|
+| contra `raw/` (CSV) | **586.285** |
+| contra `processed/` (Parquet) | **2.335** |
+
+**251 veces menos, misma respuesta.** El CSV escanea los mismos 586.285 bytes sin importar qué se
+le pregunte: siempre lee todo. Eso es lo que se paga a $5 por TB.
+
 ### Costo
 
 | Componente | USD/mes |

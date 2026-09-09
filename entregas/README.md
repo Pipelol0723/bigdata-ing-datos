@@ -81,8 +81,9 @@ Evidencia completa en
 | SG de Glue (auto-referenciado) | `sg-0b3237efc5e6f8c1e` |
 | SG de las bases | `sg-0a85ff98fa816dff8` |
 | VPC Endpoint de S3 (gratis) | `vpce-09b60424dc9c1f1cf` |
-| Database del catálogo | `aerolinea_catalog` — **8 tablas** |
-| Crawler | `crawler-datalake-aerolinea` |
+| Databases del catálogo | `aerolinea_raw` (17) · `aerolinea_processed` (17) · `aerolinea_catalog` (8) |
+| Crawlers | `crawler-datalake-aerolinea` · `crawler-raw` · `crawler-processed` |
+| Job de Glue (dentro de la VPC) | `job-raw-processed` — SUCCEEDED en 149 s |
 | Conexiones JDBC | `conn-parcial-oltp` · `conn-parcial-olap` |
 
 Tres mediciones que el trabajo local no podía dar:
@@ -92,7 +93,11 @@ Tres mediciones que el trabajo local no podía dar:
 - **8.893 hechos cayeron en 2 particiones**, no en 60: el ADR #1 acertó el cálculo.
 - **Athena escaneó 4.614 bytes** para consultar esas 8.893 filas. Eso es Parquet columnar.
 
-Costo real de la sesión: **~$0,25**.
+**Y la medición que cierra el argumento del formato:** la misma consulta sobre `reserva`
+escaneó **586.285 bytes en CSV** y **2.335 en Parquet** — 251 veces menos, misma respuesta.
+El CSV escanea lo mismo sin importar qué se le pregunte.
+
+Costo real de las dos sesiones: **~$0,64**.
 
 💰 El bucket **no se borra**: cuesta centavos y lo necesitan el Checkpoint 2 y el resto del curso.
 Las RDS quedan hasta la sustentación del 10/09 y **se borran ese día** — cobran almacenamiento

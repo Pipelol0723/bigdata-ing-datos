@@ -33,6 +33,30 @@ Athena cobra **$5 por TB escaneado**. Una consulta que lee 3 de 20 columnas sobr
 una fracción de lo que escanearía sobre CSV: es la misma pregunta a una fracción del precio. Por
 eso `raw/` es CSV (fidelidad a la fuente) y todo lo demás es Parquet (costo de consulta).
 
+### ✅ Medido sobre el data lake real (08/09)
+
+Las mismas 17 tablas del OLTP, escritas en las dos zonas por el job de Glue:
+
+| Zona | Formato | Bytes |
+|---|---|---|
+| `raw/oltp/` | CSV | **2.915.371** |
+| `processed/oltp/` | Parquet + Snappy | **941.399** |
+
+**3,1 veces menos en disco.** Pero el ahorro que importa es el de consulta — la misma pregunta,
+con Athena, contra cada zona:
+
+| `SELECT estado, count(*) FROM reserva GROUP BY estado` | Bytes escaneados |
+|---|---|
+| `aerolinea_raw` (CSV) | **586.285** |
+| `aerolinea_processed` (Parquet) | **2.335** |
+
+**251 veces menos.** Y `SELECT count(*)` sobre Parquet escanea **0 bytes**: el conteo de filas está
+en el pie del archivo, así que Athena responde sin leer datos.
+
+> El detalle que remata el argumento: el CSV escaneó **exactamente los mismos 586.285 bytes en las
+> dos consultas**. Da igual qué se le pregunte — siempre lee todo el archivo. El formato no es una
+> preferencia de almacenamiento: es lo que decide si la pregunta cuesta o no cuesta.
+
 ---
 
 # Parte 2 — ADR #1: esquema de particionado del data lake

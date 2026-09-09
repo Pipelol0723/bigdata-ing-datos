@@ -113,8 +113,25 @@ lugar de por política. **A partir de unas pocas reglas de acceso distintas, Lak
 de ser un lujo.**
 
 ⚠️ **Límite del entorno:** en el Learner Lab **no se pueden crear roles ni usuarios de IAM** —
-todo corre con `LabRole`. O sea que esta sección es diseño, no implementación: la separación de
-permisos se puede *diseñar* y justificar, pero no demostrar en este entorno.
+todo corre con `LabRole`. La política de permisos en sí no se puede demostrar acá; lo que sí se
+implementó es **la frontera sobre la que se aplicaría**.
+
+### ✅ La separación por database, implementada (08/09)
+
+El catálogo quedó dividido en tres databases, una por zona:
+
+| Database | Zona | Tablas | A quién se le daría acceso |
+|---|---|---|---|
+| `aerolinea_raw` | `raw/oltp/` | **17** | sólo ingeniería de datos |
+| `aerolinea_processed` | `processed/oltp/` | **17** | ingeniería y analistas técnicos |
+| `aerolinea_catalog` | `curated/` | 8 | analistas de negocio |
+
+Con esto, una política IAM que permita `glue:GetTable` sobre `aerolinea_catalog` y lo niegue sobre
+`aerolinea_raw` es **una política de cuatro líneas**. Sin la separación habría que enumerar tabla
+por tabla y mantener esa lista cada vez que alguien agrega una.
+
+**La frontera se dibuja al crear el catálogo, no cuando hace falta el permiso.** Es gratis hacerlo
+ahora y caro hacerlo después: mover una tabla de database rompe toda consulta que la nombre.
 
 ---
 

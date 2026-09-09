@@ -17,10 +17,20 @@
 | Athena | 8.893 filas consultadas escaneando **4.614 bytes** |
 | Costo real de la sesión | **~$0,25** |
 
-**El ETL se ejecutó desde CloudShell contra las RDS**, no como job de Glue. Fue una decisión de
-alcance: el job de Glue es la evolución prevista —tiene sentido cuando la recarga completa deje
-de entrar en la ventana de proceso— y agregarlo hoy no cambia ningún resultado del documento.
-El mismo script apuntó a AWS sin editar una línea, sólo cambiando `DSN_OLTP` y `DSN_OLAP`.
+### Dónde corre cada ETL, y por qué no es el mismo lugar
+
+| ETL | Dónde corre | Por qué ahí |
+|---|---|---|
+| **OLTP → OLAP** (`etl_oltp_a_olap.py`) | CloudShell, contra las RDS | Es una recarga completa de 9.121 filas en 1,64 s. Un job de Glue agregaría arranque de workers y costo por DPU para un trabajo que tarda menos que el arranque |
+| **OLTP → `raw/` → `processed/`** (`job_glue_raw_processed.py`) | **Job de Glue, dentro de la VPC** | No es una preferencia: las RDS son privadas y CloudShell corre **fuera** de la VPC. Glue es el único que llega sin abrir nada hacia internet |
+
+La segunda fila es la respuesta a *"¿cómo extraés de una base que no escucha en internet?"*, y
+salió de toparse con el problema, no de anticiparlo: la primera pasada dejó `raw/` y `processed/`
+vacías justamente porque la ventana de bootstrap ya estaba cerrada.
+
+**Resultado del job** (Glue 4.0, G.1X × 2, **SUCCEEDED en 149 s**): las 17 tablas del OLTP en
+`raw/` como CSV fiel y en `processed/` como Parquet tipado. **2.915.371 bytes en CSV contra
+941.399 en Parquet: 3,1 veces menos.**
 
 ## Por qué se validó primero en local
 

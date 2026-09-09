@@ -227,7 +227,7 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 | 5.5 · Arquitectura frontend | (en el 15 %) | ✅ redactada |
 | 5.6 · Implementación backend | 10 % | ✅ **implementada y probada** |
 | 5.7 · AWS ETL/catálogo/costos | **20 %** | ✅ **desplegado y verificado en AWS (08/09)** |
-| §4 · Prompt log | obligatorio | ✅ 14 entradas |
+| §4 · Prompt log | obligatorio | ✅ 17 entradas |
 
 ### ✅ Sesión de AWS ejecutada — 08/09
 
@@ -248,6 +248,26 @@ Tres hallazgos que sólo aparecieron en AWS:
    podía cargar los `.sql`. Se abrió el 5432 a **una sola IP** (la de CloudShell), se cargó, y se
    **revocó en la misma sesión** dejando una única regla: 5432 desde el SG de Glue, sin CIDR.
    Decisión del alumno, documentada para la defensa.
+
+### 🔁 Segunda pasada del 08/09 — las zonas `raw/` y `processed/`
+
+Al releer lo entregado apareció un hueco: **el data lake tenía tres zonas y sólo `curated/` con
+datos**, mientras el diagrama del Checkpoint 1 afirmaba el flujo completo. Se corrigió con un
+**job de Glue dentro de la VPC** (`job-raw-processed`, SUCCEEDED en 149 s), que era además la
+única forma de extraer del OLTP **sin reabrir la ventana**, ya cerrada.
+
+Dos decisiones del job que conviene poder defender:
+- `processed/` se construye **releyendo `raw/` desde S3**, no consultando la base. Es lo que
+  vuelve real la promesa de reversibilidad de la zona cruda.
+- **El tipado es la transformación** entre las dos zonas: al releer el CSV todo vuelve como texto
+  y el job le devuelve el esquema de PostgreSQL. Responde solo *"¿qué aporta `processed/`?"*.
+
+**Mediciones nuevas:** las 17 tablas ocupan **2.915.371 bytes en CSV** y **941.399 en Parquet**
+(3,1× menos). Y la misma consulta con Athena escaneó **586.285 bytes contra `raw/`** y **2.335
+contra `processed/`** — **251× menos, misma respuesta**. El CSV escanea lo mismo sin importar qué
+se le pregunte: siempre lee todo.
+
+Total de las dos pasadas: **~$0,64**.
 
 **Todo el pipeline está funcionando en local** con dos PostgreSQL 16 en Docker (`docker-compose.yml`, puertos **15432/15433** — el 5432 y el 5433 están ocupados por los PostgreSQL nativos 13/17/18 que ya tenía la máquina). Reconstrucción completa desde cero verificada reproducible.
 
@@ -289,7 +309,10 @@ Tres hallazgos que sólo aparecieron en AWS:
 | SG de Glue (auto-referenciado) | `sg-0b3237efc5e6f8c1e` | gratis | tras borrar las RDS |
 | SG de las bases | `sg-0a85ff98fa816dff8` | gratis | tras borrar las RDS |
 | VPC Endpoint de S3 (Gateway) | `vpce-09b60424dc9c1f1cf` | **gratis** | dejarlo |
-| Catálogo + crawler + 2 conexiones JDBC | `aerolinea_catalog`, `crawler-datalake-aerolinea`, `conn-parcial-oltp/olap` | no cobran en reposo | dejar hasta la corrección |
+| Catálogo — **3 databases** | `aerolinea_raw` (17 tablas) · `aerolinea_processed` (17) · `aerolinea_catalog` (8) | no cobran en reposo | dejar hasta la corrección |
+| **3 crawlers** | `crawler-datalake-aerolinea` · `crawler-raw` · `crawler-processed` | ~$0,12 por corrida | dejar **On demand**, nunca con schedule |
+| **Job de Glue** | `job-raw-processed` — corre dentro de la VPC por `conn-parcial-oltp` | ~$0,15 por corrida | dejar |
+| 2 conexiones JDBC | `conn-parcial-oltp` · `conn-parcial-olap` | no cobran | dejar hasta la corrección |
 
 **Decisión del alumno (08/09):** las RDS quedan encendidas hasta la sustentación del **10/09**
 para poder mostrarlas en vivo. Son ~$1,70 de los ~$45 restantes, a cambio de no depender de
