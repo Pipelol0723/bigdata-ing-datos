@@ -184,7 +184,7 @@ aws s3api get-bucket-lifecycle-configuration --bucket <bucket>
 
 > ✅ **Aplicado el 08/09** sobre `datalake-aerolinea-936980625651`, junto con el versionado y el
 > bloqueo de acceso público 4/4. La respuesta de AWS está en la §1; evidencia completa en
-> [`../../parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md`](../../parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md).
+> el anexo *Evidencia — Sesión de AWS del 08/09* (adjunto).
 >
 > **Y la política resultó aún mejor calibrada de lo previsto:** los objetos reales del data lake
 > pesan entre 3,0 y 81,4 KiB — **ninguno llega a 128 KB**. Con el default de AWS, la regla de

@@ -138,7 +138,7 @@ ahora y caro hacerlo después: mover una tabla de database rompe toda consulta q
 ## 5. Evidencia
 
 > ✅ **Ejecutado el 08/09.** Salidas completas en
-> [`../../parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md`](../../parcial-1-aerolinea/evidencia/aws/sesion-2026-09-08.md).
+> el anexo *Evidencia — Sesión de AWS del 08/09* (adjunto).
 
 | Elemento | Estado | Resultado |
 |---|---|---|

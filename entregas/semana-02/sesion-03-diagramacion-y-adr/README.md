@@ -116,15 +116,15 @@ exactamente qué hay que revisar: se marca reemplazado y se escribe el siguiente
 que reconstruir por qué el sistema es como es leyendo el código, que registra **qué** hace pero
 nunca **qué se descartó**.
 
-> El **ADR #1 del proyecto** —esquema de particionado del data lake— está en
-> [`../../semana-03/sesion-05-adr-01-particionado/`](../../semana-03/sesion-05-adr-01-particionado/).
+> El **ADR #1 del proyecto** —esquema de particionado del data lake— se entrega como documento
+> aparte: *Session 5 — ADR #1: esquema de particionado*.
 
 ---
 
 ## 4. Cómo se generaron los diagramas
 
 Con la librería [`diagrams`](https://diagrams.mingrammer.com/) de Python, que usa los assets
-oficiales de AWS. Fuente en [`../../_comun/diagramas/generar.py`](../../_comun/diagramas/generar.py):
+oficiales de AWS. Fuente en `generar.py`, adjunto:
 
 ```bash
 pip install diagrams          # requiere Graphviz en el PATH

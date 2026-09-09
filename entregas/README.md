@@ -9,25 +9,41 @@ vencida y el módulo ya no acepta envíos (verificado el 07/09; ver
 
 ## Estado
 
-| Semana | Actividad | Carpeta | Estado |
-|---|---|---|---|
-| 1 | Session 1 — Las 5 V, casos de uso y roles | [`semana-01/sesion-01-cinco-v-y-roles/`](semana-01/sesion-01-cinco-v-y-roles/) | ✅ escrita |
-| 1 | Session 2 — Arquitecturas de datos | — | ✅ **ya entregada** en Moodle (06/08) |
-| 1 | Module 1 — Welcome to AWS Academy DE | [`modulos-aws-academy/`](modulos-aws-academy/) | ⬜ pendiente |
-| 2 | Session 3 — Diagramación y anatomía de un ADR | [`semana-02/sesion-03-diagramacion-y-adr/`](semana-02/sesion-03-diagramacion-y-adr/) | ✅ escrita |
-| 2 | Session 4 — Setup y dos arquitecturas alternativas | [`semana-02/sesion-04-setup-y-alternativas/`](semana-02/sesion-04-setup-y-alternativas/) | ✅ escrita |
-| 2 | Module 2 — Data-Driven Organizations | [`modulos-aws-academy/`](modulos-aws-academy/) | ⬜ pendiente |
-| 3 | Session 5 — **ADR #1: esquema de particionado** | [`semana-03/sesion-05-adr-01-particionado/`](semana-03/sesion-05-adr-01-particionado/) | ✅ escrita |
-| 3 | Session 6 — S3: clases, versionado y lifecycle | [`semana-03/sesion-06-s3-clases-versionado-lifecycle/`](semana-03/sesion-06-s3-clases-versionado-lifecycle/) | ✅ **aplicada en AWS (08/09)** |
-| 3 | Module 3 — The Elements of Data | [`modulos-aws-academy/`](modulos-aws-academy/) | ⬜ pendiente |
-| 4 | Session 7 — Glue Data Catalog y Crawlers | [`semana-04/sesion-07-glue-catalog-crawlers/`](semana-04/sesion-07-glue-catalog-crawlers/) | ✅ **evidencia capturada (08/09)** |
-| 4 | **Checkpoint 1** (nota de proyecto) | [`semana-04/checkpoint-1/`](semana-04/checkpoint-1/) | ✅ **bucket y crawler ejecutados (08/09)** |
-| 4 | Module 4 — Design Principles for Pipelines | [`modulos-aws-academy/`](modulos-aws-academy/) | ⬜ pendiente |
-| 5 | **Parcial 1** — Sistema de reservas | [`parcial-1-aerolinea/`](parcial-1-aerolinea/) | ✅ **8 de 8 secciones** · falta ensayar la defensa |
-| — | EC2 + Apache (práctica anterior) | [`ec2-apache/`](ec2-apache/) | ✅ entregada |
+**Un documento por actividad.** Cada uno responde a su actividad y **se entiende solo**: no
+depende de los otros ni de rutas del repositorio, para poder enviarse suelto por correo.
 
-**La sesión de AWS se ejecutó el 08/09 y cerró todo lo que dependía de ella.** Lo único
-pendiente son los **cuatro módulos de AWS Academy**, que viven en otra plataforma.
+| Sem | Actividad de Moodle | Documento a enviar | Estado |
+|---|---|---|---|
+| 1 | Session 1 — Assignment | [`semana-01/sesion-01-cinco-v-y-roles/README.md`](semana-01/sesion-01-cinco-v-y-roles/README.md) | ✅ |
+| 1 | Session 2 — Assignment | — | ✅ **ya entregada** en Moodle (06/08) |
+| 1 | Module 1 — Welcome to AWS Academy DE | [`modulos-aws-academy/modulo-1-welcome.md`](modulos-aws-academy/modulo-1-welcome.md) | 🟡 documento ✅ · **módulo pendiente** |
+| 2 | Session 3 — Assignment | [`semana-02/sesion-03-diagramacion-y-adr/README.md`](semana-02/sesion-03-diagramacion-y-adr/README.md) | ✅ |
+| 2 | Session 4 — Assignment | [`semana-02/sesion-04-setup-y-alternativas/README.md`](semana-02/sesion-04-setup-y-alternativas/README.md) | ✅ |
+| 2 | Module 2 — Data-Driven Organizations | [`modulos-aws-academy/modulo-2-data-driven-organizations.md`](modulos-aws-academy/modulo-2-data-driven-organizations.md) | 🟡 documento ✅ · **módulo pendiente** |
+| 3 | Session 5 — Assignment (**ADR #1**) | [`semana-03/sesion-05-adr-01-particionado/README.md`](semana-03/sesion-05-adr-01-particionado/README.md) | ✅ |
+| 3 | Session 6 — Assignment | [`semana-03/sesion-06-s3-clases-versionado-lifecycle/README.md`](semana-03/sesion-06-s3-clases-versionado-lifecycle/README.md) | ✅ aplicada en AWS |
+| 3 | Module 3 — The Elements of Data | [`modulos-aws-academy/modulo-3-elements-of-data.md`](modulos-aws-academy/modulo-3-elements-of-data.md) | 🟡 documento ✅ · **módulo pendiente** |
+| 4 | Session 7 — Assignment | [`semana-04/sesion-07-glue-catalog-crawlers/README.md`](semana-04/sesion-07-glue-catalog-crawlers/README.md) | ✅ evidencia capturada |
+| 4 | **Session 8 — Checkpoint 1** (proyecto) | [`semana-04/checkpoint-1/README.md`](semana-04/checkpoint-1/README.md) | ✅ ejecutado en AWS |
+| 4 | Module 4 — Design Principles for Pipelines | [`modulos-aws-academy/modulo-4-design-principles.md`](modulos-aws-academy/modulo-4-design-principles.md) | 🟡 documento ✅ · **módulo pendiente** |
+| 5 | **Parcial 1** | [`parcial-1-aerolinea/`](parcial-1-aerolinea/) | ✅ **8 de 8 secciones** · falta ensayar la defensa |
+| — | EC2 + Apache (práctica anterior) | [`ec2-apache/README.md`](ec2-apache/README.md) | ✅ entregada |
+
+**Los cuatro 🟡 tienen su documento escrito**, pero el módulo en sí se completa en la plataforma
+de **AWS Academy** —lectura + quiz— y eso sigue pendiente. El documento no lo reemplaza: recoge
+los conceptos aplicados al proyecto, que es lo que hay que poder defender.
+
+### Archivos adjuntos por actividad
+
+Los documentos referencian sus adjuntos por nombre, no por ruta. Al enviar cada uno, acompañarlo de:
+
+| Documento | Adjuntar además |
+|---|---|
+| Session 3 | `n1-contexto.png` · `n2-componentes.png` · `generar.py` |
+| Session 4 | `alt-a-batch.png` · `alt-b-streaming.png` |
+| Session 6 | `lifecycle-borrador-ia.json` · `lifecycle-revisada.json` |
+| Checkpoint 1 | `checkpoint-1-data-lake.png` · `n1-contexto.png` · `n2-componentes.png` · `crear-data-lake.sh` · `job_glue_raw_processed.py` · anexo de evidencia de AWS |
+| Módulos 1 a 4 | `modulo-N-evidencia.png` (captura del módulo completo) |
 
 ---
 

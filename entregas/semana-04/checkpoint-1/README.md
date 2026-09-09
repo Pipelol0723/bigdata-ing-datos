@@ -11,10 +11,10 @@ defendido oralmente"*
 
 | Pieza | Dónde está | Estado |
 |---|---|---|
-| **Diagrama** de arquitectura del data lake | esta carpeta + [`_comun/diagramas/generar.py`](../../_comun/diagramas/generar.py) | ✅ |
-| **ADR** | [ADR #1 — esquema de particionado](../../semana-03/sesion-05-adr-01-particionado/) | ✅ |
+| **Diagrama** de arquitectura del data lake | adjunto · generado por `generar.py` | ✅ |
+| **ADR** | documento *Session 5 — ADR #1* (adjunto) | ✅ |
 | **Implementación** del bucket | [`crear-data-lake.sh`](crear-data-lake.sh) | ✅ **ejecutado 08/09** → `datalake-aerolinea-936980625651` |
-| **Implementación** del crawler | [Sesión 7](../sesion-07-glue-catalog-crawlers/) | ✅ **ejecutado 08/09** → 8 tablas catalogadas |
+| **Implementación** del crawler | documento *Session 7* (adjunto) | ✅ **ejecutado 08/09** → 8 tablas catalogadas |
 | **Defensa oral** | §4 de este documento | ✅ preparada |
 
 ---
@@ -34,14 +34,14 @@ El flujo, y qué garantiza cada paso:
 | Catálogo → Athena | consulta SQL | que cualquier motor lea lo mismo sin redefinir nada |
 
 Vistas de contexto y de componentes del sistema completo: [`n1-contexto.png`](n1-contexto.png) ·
-[`n2-componentes.png`](n2-componentes.png) — el porqué de los dos niveles está en la
-[Sesión 3](../../semana-02/sesion-03-diagramacion-y-adr/).
+[`n2-componentes.png`](n2-componentes.png) — el porqué de los dos niveles está en el
+documento *Session 3* (adjunto).
 
 ---
 
 ## 2. ADR
 
-**[ADR #1 — Particionar por fecha de vuelo con granularidad mensual](../../semana-03/sesion-05-adr-01-particionado/)**
+**ADR #1 — Particionar por fecha de vuelo con granularidad mensual** (documento *Session 5*, adjunto)
 
 En una línea: se particiona por **fecha de vuelo** porque es lo que filtran las tres consultas del
 negocio, y con granularidad **mensual** porque a 294 filas por día la partición diaria produce
@@ -61,14 +61,14 @@ Crea el bucket, bloquea el acceso público, activa versionado, aplica la políti
 revisada y crea las tres zonas. Termina imprimiendo la verificación, que es lo que se captura como
 evidencia.
 
-Después, el crawler según el procedimiento de la [Sesión 7](../sesion-07-glue-catalog-crawlers/) —
+Después, el crawler según el procedimiento del documento *Session 7* (adjunto) —
 con las cuatro trampas ya documentadas: URL JDBC con `://` y puerto, SG auto-referenciado, VPC
 Endpoint de S3 (gratis, no NAT), y `LabRole`.
 
 ### Las tres zonas, pobladas — y medidas
 
 El flujo del diagrama no es una promesa: corrió. Un **job de Glue dentro de la VPC**
-([`job_glue_raw_processed.py`](../../parcial-1-aerolinea/etl/job_glue_raw_processed.py)) extrae
+(`job_glue_raw_processed.py`, adjunto) extrae
 las 17 tablas del OLTP privado por JDBC y escribe `raw/`; después **relee `raw/` desde S3** —no la
 base— y escribe `processed/` con el esquema restaurado.
 
