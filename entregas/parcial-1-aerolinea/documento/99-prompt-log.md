@@ -52,6 +52,13 @@ se reconstruye al final.
 | 16 | Extraer de una base privada | Al plantear cómo poblar `raw/`, apareció que las RDS ya eran privadas y CloudShell corre fuera de la VPC | Dos opciones: reabrir la ventana por IP, o un job de Glue dentro de la VPC | **Elegí el job de Glue**, revirtiendo mi propio "no hace falta" del día anterior. El contexto había cambiado: ya no era un lujo sino la única vía que no reabría la ventana — y de paso les dio un consumidor a las dos conexiones JDBC, que hasta entonces existían sin que nada las usara. |
 | 17 | Que las zonas signifiquen algo | Al escribir el job, decidir si `processed/` se construye desde la base o desde `raw/` | El asistente propuso releer `raw/` desde S3 | **Se adoptó, y es la decisión que vuelve real la zona cruda:** si `processed/` se regenerara volviendo a la fuente, `raw/` sería decorativa y el argumento de reversibilidad se caería en la primera pregunta. El tipado —devolverle al CSV el esquema de PostgreSQL— quedó como la transformación concreta que justifica la zona. |
 
+### 2026-09-10 — Guía de ejecución en AWS
+
+| # | Objetivo | Prompt (resumen) | Qué devolvió | Corrección / refinamiento aplicado |
+|---|---|---|---|---|
+| 18 | Documentar cómo correr todo | *"creá un documento con el paso a paso para correr la app en AWS, qué hiciste y por qué, y cómo abrir cada cosa por separado"* | El asistente empezó por releer el código antes de escribir, y encontró **dos defectos** | **(a)** `prueba_concurrencia.py` tenía la conexión fija al Docker local mientras la API la leía del entorno: apuntada a RDS, la prueba habría preparado y verificado la instancia en **otra base**. **(b)** La restauración de la corrida sin lock estaba en el orden equivocado: re-agregar el `CHECK` con filas que lo violan falla. Ambos corregidos. Ninguno se había manifestado porque todo corría en local — **aparecieron al intentar escribir los pasos para AWS**. |
+| 19 | Que todo corra en AWS | *"todo debe correrse en AWS, nada en mi local"* | La API nunca se había desplegado en AWS: sólo había corrido en local | Se diseñó una **EC2 dentro de la VPC** para la API, el ETL y `psql`, porque las RDS son privadas y CloudShell corre afuera. La contraseña pasa por **SSM Parameter Store** en vez del user-data, y el acceso es por **EC2 Instance Connect** sin abrir el 22 a internet. **Esta parte quedó marcada como no ejecutada todavía** en la guía, en vez de presentarla como verificada. |
+
 ---
 
 ## Observaciones sobre el uso de la herramienta

@@ -14,6 +14,14 @@ completo, la implementación y el anexo de prompt log.
 
 ---
 
+## ☁️ Correr la aplicación en AWS
+
+**[`GUIA-EJECUCION-AWS.md`](GUIA-EJECUCION-AWS.md)** — paso a paso para levantar todo en AWS,
+cómo abrir cada componente por separado (bases, API, lógica, ETL, Glue, S3, catálogo, Athena),
+qué se hizo y por qué, guion para la defensa y baja de recursos.
+
+---
+
 ## ▶️ Cómo retomar (sesión del 06/09 cerrada)
 
 Los contenedores quedaron **detenidos, con los datos intactos** en sus volúmenes.
@@ -49,7 +57,7 @@ del enunciado y declara explícitamente qué requisito origina cada decisión.
 | 5.5 | Arquitectura frontend | (dentro del 15%) | `documento/05-arquitectura-frontend.md` | 🟡 borrador 06/09 |
 | 5.6 | Primera implementación backend | 10% | `documento/06-implementacion-backend.md` | ✅ implementado y probado |
 | 5.7 | AWS: ETL, catálogo y costos | 20% | `documento/07-aws-etl-glue-costos.md` | ✅ **desplegado y verificado en AWS (08/09)** |
-| §4 | Prompt log (anexo) | obligatorio | `documento/99-prompt-log.md` | ✅ 17 entradas |
+| §4 | Prompt log (anexo) | obligatorio | `documento/99-prompt-log.md` | ✅ 19 entradas |
 
 Claridad y trazabilidad del documento: 10% adicional, transversal a todas las secciones.
 

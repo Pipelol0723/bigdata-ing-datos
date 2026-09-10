@@ -31,6 +31,16 @@ mostrar () {
     fi
 }
 
+mostrar "EC2 de la API" \
+    aws ec2 describe-instances --region "$REGION" \
+      --filters "Name=tag:Name,Values=api-parcial" "Name=instance-state-name,Values=pending,running,stopping,stopped" \
+      --query "Reservations[].Instances[].[InstanceId,InstanceType,State.Name]" \
+      --output text
+
+mostrar "Parámetros SSM /parcial" \
+    aws ssm get-parameters-by-path --region "$REGION" --path /parcial \
+      --query "Parameters[].Name" --output text
+
 mostrar "RDS del parcial" \
     aws rds describe-db-instances --region "$REGION" \
       --query "DBInstances[?starts_with(DBInstanceIdentifier,'parcial-')].[DBInstanceIdentifier,DBInstanceClass,DBInstanceStatus,AllocatedStorage]" \
@@ -69,6 +79,13 @@ cat <<'REFERENCIA'
     DETENIDAS, y AWS las reinicia solas a los 7 días de detenidas.
     Después de la defensa la consigna es BORRARLAS, no detenerlas:
     el esquema y los scripts quedan en el repo y recrear todo son 5 minutos.
+
+ --- EC2 de la API (terminar, NO detener: detenida se reinicia sola) ---
+ aws ec2 terminate-instances --instance-ids <i-...> --region us-east-1
+
+ --- Parámetros de SSM (la contraseña cifrada y los endpoints) ---
+ aws ssm delete-parameters --names /parcial/pg_password /parcial/ep_oltp \
+     /parcial/ep_olap /parcial/bucket --region us-east-1
 
  --- Borrar las bases (sin snapshot: los datos son sintéticos) ---
  aws rds delete-db-instance --db-instance-identifier parcial-oltp \

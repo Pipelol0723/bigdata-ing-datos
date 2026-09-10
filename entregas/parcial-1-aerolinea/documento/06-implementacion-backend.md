@@ -154,11 +154,23 @@ docker exec -i parcial-oltp psql -U parcial -d aerolinea \
   -c "ALTER TABLE reservas.instancia_vuelo DROP CONSTRAINT no_sobreventa_eco;"
 MODO_INSEGURO=1 uvicorn main:app --port 8010     # en otra terminal
 python api/prueba_concurrencia.py --peticiones 30 --etiqueta sin-lock
-# restaurar:
+```
+
+**Restaurar — el orden importa.** La corrida A deja la instancia con 4 comprometidos sobre 1
+vendible, así que agregar el `CHECK` directamente **falla**: PostgreSQL valida las filas
+existentes y encuentra la violación. Primero hay que dejar la instancia en un estado válido, y la
+propia corrida B lo hace (`preparar_instancia` la resetea antes de disparar):
+
+```bash
+uvicorn main:app --port 8010                     # reiniciar la API SIN MODO_INSEGURO
+python api/prueba_concurrencia.py --peticiones 30 --etiqueta con-lock   # resetea y deja 1 de 1
 docker exec -i parcial-oltp psql -U parcial -d aerolinea \
   -c "ALTER TABLE reservas.instancia_vuelo ADD CONSTRAINT no_sobreventa_eco
       CHECK (asientos_comprometidos_eco <= capacidad_vendible_eco);"
 ```
+
+> Corregido el 10/09: la versión anterior restauraba el `CHECK` inmediatamente después de la
+> corrida A, lo que habría fallado. Detectado al releer el código para la guía de AWS.
 
 ---
 

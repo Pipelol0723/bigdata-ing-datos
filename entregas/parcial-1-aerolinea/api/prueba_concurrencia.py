@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import threading
 from collections import Counter
 from datetime import datetime, timezone
@@ -28,7 +29,13 @@ import httpx
 import psycopg
 from psycopg.rows import dict_row
 
-DSN = "postgresql://parcial:parcial_local_dev@127.0.0.1:15432/aerolinea"
+# La MISMA variable que usa la API (config.py). Antes estaba fija al Docker
+# local: con la API apuntando a RDS, la prueba preparaba y verificaba la
+# instancia en otra base, y el resultado no tenía sentido. La prueba tiene que
+# mirar exactamente la base contra la que corre la API.
+DSN = os.environ.get(
+    "DSN_OLTP", "postgresql://parcial:parcial_local_dev@127.0.0.1:15432/aerolinea"
+)
 DIR_EVIDENCIA = Path(__file__).resolve().parents[1] / "evidencia" / "concurrencia"
 
 

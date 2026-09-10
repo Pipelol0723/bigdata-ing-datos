@@ -227,7 +227,7 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 | 5.5 · Arquitectura frontend | (en el 15 %) | ✅ redactada |
 | 5.6 · Implementación backend | 10 % | ✅ **implementada y probada** |
 | 5.7 · AWS ETL/catálogo/costos | **20 %** | ✅ **desplegado y verificado en AWS (08/09)** |
-| §4 · Prompt log | obligatorio | ✅ 17 entradas |
+| §4 · Prompt log | obligatorio | ✅ 19 entradas |
 
 ### ✅ Sesión de AWS ejecutada — 08/09
 
