@@ -14,6 +14,13 @@ completo, la implementación y el anexo de prompt log.
 
 ---
 
+## 🎤 Sustentación
+
+**[`SUSTENTACION.md`](SUSTENTACION.md)** — hoja de repaso: qué decir en cada sección, las cifras
+medidas, cómo responder un cambio no previsto, la demo en vivo y las preguntas trampa.
+
+---
+
 ## ☁️ Correr la aplicación en AWS
 
 **[`GUIA-EJECUCION-AWS.md`](GUIA-EJECUCION-AWS.md)** — paso a paso para levantar todo en AWS,
