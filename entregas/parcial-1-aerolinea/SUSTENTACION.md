@@ -35,7 +35,7 @@
 | **5.4 · Backend** | 8 decisiones `DEC-01`–`08`. **Monolito modular**; **hold** de 30 min; **pago por webhook idempotente** | **`DEC-03` bloqueo optimista** · pesimista: serializa las ventas del mismo vuelo, que es justo lo que no se quiere |
 | **5.5 · Frontend** | **SPA** para el embudo (`DEC-09`), **SSE** para avisar asiento tomado (`DEC-10`), portal separado para agencias (`DEC-11`) | **SSE** · *polling*: a 2.500 búsquedas/min multiplica la carga de lectura, que es el cuello de botella |
 | **5.6 · Implementación** | FastAPI + PostgreSQL. Pool de conexiones. **Prueba con barrera**: los 30 hilos salen a la vez | Pool y no conexión única: con una sola conexión la prueba pasa **por el motivo equivocado** — no hay paralelismo real |
-| **5.7 · AWS** | 2 RDS privadas, EC2 en la VPC, data lake de 3 zonas, catálogo de Glue, Athena. **Costo total: ~$1** | **Particionado mensual** por fecha de vuelo (ADR #1) · diario: archivos de 15 KB |
+| **5.7 · AWS** | 2 RDS privadas, EC2 en la VPC, data lake de 3 zonas, catálogo de Glue, Athena. **Costo total: ~$2,70** | **Particionado mensual** por fecha de vuelo (ADR #1) · diario: archivos de 15 KB |
 | **§4 · Prompt log** | 22 entradas: qué pedí, qué devolvió, **qué corregí**. Las decisiones de diseño las tomé yo, una en contra de la recomendación de la IA | La IA encontró la conexión única antes de probar; también desplegó una vez un script con bug — está registrado |
 
 ---
@@ -51,7 +51,8 @@
 | **Athena, misma consulta** | **586.285 bytes en CSV vs 2.339 en Parquet** (**250×**) · `count(*)` en Parquet: **0 bytes** |
 | Particionado mensual | los hechos cayeron en **2 particiones, no 60** · archivo mayor: 81 KB |
 | Ticket business última hora vs económica anticipada | **4,9 veces** |
-| Costo total en AWS | **~$1** (la sesión del 08/09 ~$0,64 · la del 10/09 ~$0,35) |
+| Costo total en AWS | **~$2,70** — ~$1 de trabajo (08/09 ~$0,64 · 10/09 ~$0,35) + ~$1,70 por dejar las RDS encendidas hasta la defensa, por decisión propia |
+| Proyección mensual de la plataforma de datos | **≈ $33/mes** · las dos RDS son el **93 %** · volumen ×10 → **×1,84**, no ×10 |
 | Modelo | 17 tablas · 19 `FR` · 10 `NFR` · 7 `RSK` · 12 `DEC` · 9 `SUP` |
 
 ---
@@ -125,7 +126,8 @@ sed -n '/def _comprometer_seguro/,/return cur.rowcount/p' api/repositorio.py
 | **¿Esto es Big Data?** | **No.** 9.000 filas caben en un teléfono. Construí la arquitectura que hace falta cuando lo sea, y calculé dónde está ese punto: ~1.000 M filas/año, y no se llega vendiendo más sino guardando las búsquedas que no terminan en compra |
 | **¿Por qué no microservicios?** | Partir el inventario en servicios convierte un `UPDATE` atómico en una transacción distribuida — justo lo que hay que evitar. El monolito es modular: `busqueda` se extrae primero si hace falta |
 | **¿No dijiste que las bases no escuchan en internet?** | El régimen es privado. Para la carga inicial abrí el 5432 a **una sola IP** y lo cerré en la misma sesión. Hoy ni eso: la carga se hace desde la EC2, dentro de la VPC |
-| **¿Dónde corre el ETL?** | OLTP → OLAP, en la EC2: 9.000 filas en 2,4 s, un job de Glue tardaría más en arrancar. La extracción al data lake, en un **job de Glue**: es lo único que llega a la base privada sin abrir nada |
+| **¿Dónde corre el ETL?** | OLTP → OLAP, en la EC2: 9.000 filas en 2,4 s, un job de Glue tardaría más en arrancar. La extracción al data lake, en un **job de Glue**: nació cuando no había nada dentro de la VPC, y deja probado el camino para cuando el ETL del OLAP necesite Spark. **Es una desviación del diseño y está declarada en 5.7** |
+| **¿Están las dos bases registradas en el Glue Data Catalog?** | Sí, **a través de sus copias en S3**: el OLTP en `aerolinea_raw` y `aerolinea_processed` (17 tablas cada una), el OLAP en `aerolinea_catalog` (8). Las conexiones JDBC a las dos existen y la del OLTP la usa el job. **No corrí un crawler JDBC directo**: una tabla catalogada por JDBC es sólo metadato y Athena no la puede leer; sobre S3 es consultable. Para cumplirlo al pie de la letra: dos crawlers sobre las conexiones, 5 minutos, ~$0,25. Está declarado en 5.7 |
 | **¿Por qué la prueba no borra cualquier reserva?** | Porque el esquema **protege los registros financieros**: `pago` y `comision` no se borran en cascada. Un pago es auditoría. La prueba usa una instancia de vuelo propia |
 | **¿Usaste IA?** | Sí, y el prompt log registra qué corregí. Las decisiones de diseño fueron mías — una, en contra de lo que recomendaba la IA |
 | **¿Qué falló?** | Tres bugs que sólo aparecieron en AWS, todos corregidos y reprobados. Y la primera versión del data lake tenía tres zonas con datos en una sola: lo detecté releyendo la evidencia contra el diagrama |

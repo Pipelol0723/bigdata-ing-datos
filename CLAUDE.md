@@ -226,8 +226,19 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 | 5.4 · Arquitectura backend | 15 % | ✅ decisiones cerradas (8 `DEC-`) |
 | 5.5 · Arquitectura frontend | (en el 15 %) | ✅ redactada |
 | 5.6 · Implementación backend | 10 % | ✅ **implementada y probada** |
-| 5.7 · AWS ETL/catálogo/costos | **20 %** | ✅ **desplegado y verificado en AWS (08/09)** |
-| §4 · Prompt log | obligatorio | ✅ 22 entradas |
+| 5.7 · AWS ETL/catálogo/costos | **20 %** | ✅ **desplegado y verificado en AWS (08/09)** · 2 desviaciones declaradas |
+| §4 · Prompt log | obligatorio | ✅ 23 entradas |
+
+📄 **Documento final consolidado (10/09):** `entregas/parcial-1-aerolinea/entrega/Parcial1-Sistema-Reservas-Aerolinea.pdf`
+(52 páginas), generado con `entrega/construir_documento.py --autor "..."` desde `documento/`.
+**Regenerarlo después de tocar cualquier sección.** Falta poner el nombre del alumno en la portada.
+
+⚠️ **Dos desviaciones declaradas en la 5.7 (reescrita el 10/09 para que diga lo que se hizo):**
+1. El ETL OLTP → OLAP corre en la **EC2**, no en Glue (el diseño sigue apuntando a Glue Spark a escala).
+2. Las dos bases están en el Glue Data Catalog **a través de sus copias en S3** (3 crawlers, uno por
+   zona); **no se corrió un crawler JDBC directo** sobre las RDS. Cerrarlo costaría ~$0,25 y 5 min
+   con las bases encendidas. Decisión del alumno: no gastar y declararlo.
+Proyección de costos actualizada: **≈ $33,08/mes**, RDS = **93 %**; gasto real del parcial **≈ $2,70**.
 
 ### ✅ Sesión de AWS ejecutada — 08/09
 
@@ -276,7 +287,7 @@ Total de las dos pasadas: **~$0,64**.
 - ETL: 141 filas de dimensiones + 8.821 de hechos en ~3,3 s.
 - Las tres vistas de negocio de `FR-19` responden con datos interpretables (`evidencia/olap/`).
 
-⚠️ **Para la próxima sesión — plan de AWS (una sola vez, ~$0.40):** crear 2 RDS `db.t3.micro`, cargar los `.sql`, SG auto-referenciado, verificar el VPC Endpoint de S3, 2 conexiones JDBC con `LabRole`, correr los crawlers, ejecutar el job de Glue, **capturar evidencia en `evidencia/glue/`** y **borrar las instancias**. Las 5 trampas ya documentadas aplican igual a PostgreSQL.
+✅ ~~Plan de AWS de una sola sesión~~ — **ejecutado el 08/09 y reprobado el 10/09**; la evidencia quedó en `evidencia/aws/` (no en `evidencia/glue/`, que está vacía).
 
 ⚠️ **Objetos de Glue huérfanos de la práctica de Sakila** (conexión JDBC, `crawler-sakila-rds`, database `sakila_catalog`) apuntan a una RDS borrada. No cobran, pero conviene borrarlos antes de que el profesor mire el catálogo del parcial.
 

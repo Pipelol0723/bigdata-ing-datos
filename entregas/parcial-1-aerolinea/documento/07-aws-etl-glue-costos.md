@@ -1,8 +1,28 @@
 # 5.7 Implementación en AWS: ETL, catálogo de datos y costos
 
-> **Estado:** ✅ **DESPLEGADO Y VERIFICADO EN AWS — 08/09.**
-> Evidencia completa en [`../evidencia/aws/sesion-2026-09-08.md`](../evidencia/aws/sesion-2026-09-08.md).
+> **Estado:** ✅ **DESPLEGADO Y VERIFICADO EN AWS — 08/09, reprobado de punta a punta el 10/09.**
 > **Peso en la rúbrica:** 20% — **la sección que más pesa**
+> **Evidencia:** [`../evidencia/aws/sesion-2026-09-08.md`](../evidencia/aws/sesion-2026-09-08.md) y [`../evidencia/aws/sesion-2026-09-10.md`](../evidencia/aws/sesion-2026-09-10.md)
+
+## Arquitectura desplegada
+
+![Arquitectura desplegada en AWS](../diagramas/arquitectura-aws-desplegada.png)
+
+El diagrama muestra la arquitectura **tal como quedó desplegada y verificada**, no la vista de
+diseño: cada caja es un recurso que existe y cada flecha, un proceso que se ejecutó y se midió.
+
+| Flujo | Qué lo ejecuta | Por qué ahí |
+|---|---|---|
+| Reservas → **OLTP** | API FastAPI en la EC2 `api-parcial` | la API tiene que estar dentro de la VPC: las bases son privadas |
+| **OLTP → OLAP** (dimensiones y hechos) | ETL en Python, en la misma EC2 | recarga completa de ~9.000 filas en ~2 s: un job de Glue tardaría más en arrancar que en terminar |
+| **OLTP → `raw/` → `processed/`** | job de Glue `job-raw-processed`, por JDBC | llega a la base privada desde dentro de la VPC y escribe al lago con Spark: deja probado el camino de migración del ETL a Glue |
+| **OLAP → `curated/`** | `exportar_curated.py`, en la EC2 | Parquet particionado por fecha de vuelo y mes (ADR #1) |
+| Zonas → **Glue Data Catalog** | 3 crawlers *on demand* | una database por zona: la única frontera de permisos disponible sin Lake Formation |
+| Catálogo → **Athena** | consultas SQL sobre S3 | cobra por byte escaneado: Parquet + particiones lo mantienen en centavos |
+
+Las líneas punteadas no son flujo de datos: son permisos (`LabRole`), la contraseña leída de SSM
+Parameter Store y la ruta hacia S3 por el **VPC Endpoint tipo Gateway** — gratis, frente a los
+~$32/mes de un NAT Gateway.
 
 ## Resultado de la ejecución en AWS (08/09)
 
@@ -12,17 +32,17 @@
 | Carga de los 4 `.sql` | OK · el generador de actividad tardó **2,4 s** |
 | Invariante de no-sobreventa sobre RDS | **0 violaciones** |
 | ETL OLTP → OLAP contra las RDS | **141 dimensiones + 9.121 hechos en 1,64 s** |
-| Data lake en S3 | 13 objetos, 147 KiB, Parquet particionado `year=/month=` |
-| Catálogo de Glue | **8 tablas**, particiones `year`/`month` detectadas solas |
-| Athena | 8.893 filas consultadas escaneando **4.614 bytes** |
-| Costo real de la sesión | **~$0,25** |
+| Data lake en S3 | `curated/`: 13 objetos, 147 KiB, Parquet particionado `year=/month=` |
+| Catálogo de Glue | **42 tablas en 3 databases**; en `curated/`, particiones `year`/`month` detectadas solas |
+| Athena | 8.893 filas del modelo estrella escaneando **4.614 bytes** · misma consulta: **586.285 bytes en CSV contra 2.335 en Parquet** |
+| Costo real de la sesión | **~$0,64** (las dos pasadas) |
 
 ### Dónde corre cada ETL, y por qué no es el mismo lugar
 
 | ETL | Dónde corre | Por qué ahí |
 |---|---|---|
-| **OLTP → OLAP** (`etl_oltp_a_olap.py`) | CloudShell, contra las RDS | Es una recarga completa de 9.121 filas en 1,64 s. Un job de Glue agregaría arranque de workers y costo por DPU para un trabajo que tarda menos que el arranque |
-| **OLTP → `raw/` → `processed/`** (`job_glue_raw_processed.py`) | **Job de Glue, dentro de la VPC** | No es una preferencia: las RDS son privadas y CloudShell corre **fuera** de la VPC. Glue es el único que llega sin abrir nada hacia internet |
+| **OLTP → OLAP** (`etl_oltp_a_olap.py`) | **EC2 de la API**, dentro de la VPC (el 08/09, desde CloudShell durante la ventana de bootstrap) | Es una recarga completa de 9.121 filas en 1,64 s. Un job de Glue agregaría arranque de workers y costo por DPU para un trabajo que tarda menos que el arranque |
+| **OLTP → `raw/` → `processed/`** (`job_glue_raw_processed.py`) | **Job de Glue, dentro de la VPC** | Nació de una restricción: el 08/09 las RDS ya eran privadas, CloudShell corre **fuera** de la VPC y todavía no había ninguna EC2 adentro. Glue llegaba sin abrir nada hacia internet |
 
 La segunda fila es la respuesta a *"¿cómo extraés de una base que no escucha en internet?"*, y
 salió de toparse con el problema, no de anticiparlo: la primera pasada dejó `raw/` y `processed/`
@@ -65,6 +85,25 @@ aeropuerto ──┘
                                          dim_fecha · dim_ruta · dim_vuelo
                                          dim_tarifa · dim_canal · dim_estado
 ```
+
+```mermaid
+erDiagram
+    dim_fecha  ||--o{ fact_tramo_vendido : "fecha de vuelo"
+    dim_fecha  ||--o{ fact_tramo_vendido : "fecha de reserva"
+    dim_ruta   ||--o{ fact_tramo_vendido : ""
+    dim_vuelo  ||--o{ fact_tramo_vendido : ""
+    dim_tarifa ||--o{ fact_tramo_vendido : ""
+    dim_canal  ||--o{ fact_tramo_vendido : ""
+    dim_estado_reserva ||--o{ fact_tramo_vendido : ""
+
+    dim_fecha ||--o{ fact_ocupacion_vuelo : ""
+    dim_ruta  ||--o{ fact_ocupacion_vuelo : ""
+    dim_vuelo ||--o{ fact_ocupacion_vuelo : ""
+```
+
+Las dimensiones compartidas (`dim_fecha`, `dim_ruta`, `dim_vuelo`) hacen que el modelo sea una
+**constelación**, no dos estrellas independientes: se puede cruzar ocupación con ingresos por la
+misma ruta y la misma fecha.
 
 ### ¿Por qué no copiar tal cual?
 
@@ -151,6 +190,20 @@ una preferencia, se está pagando una opción sobre el futuro.
 que administrar, parchear y monitorear — exactamente lo que `DEC-05` y el pilar de Excelencia
 Operativa buscan evitar.
 
+> ⚠️ **Desviación declarada en la implementación.** El ETL OLTP → OLAP **no se migró a Glue**:
+> se ejecutó el mismo script Python validado en local (`etl_oltp_a_olap.py`), desde la EC2 de
+> la aplicación, dentro de la VPC — la alternativa que esta sección descarta para el diseño.
+> Tres razones: el script corrió contra las RDS **sin cambiar una línea** (las conexiones llegan
+> por variables de entorno); a ~9.000 filas en ~2 s el arranque de un job de Glue cuesta más
+> que el proceso; y la objeción de arriba —un servidor más que administrar— no aplica, porque
+> la EC2 ya existe para servir la API.
+>
+> **Glue sí se implementó y se midió** en el job `job-raw-processed`, que puebla `raw/` y
+> `processed/` por JDBC dentro de la VPC. El camino de migración —conexión JDBC, Security Group,
+> VPC Endpoint, `LabRole`, script en S3— ya está probado. **La decisión de diseño no cambia:**
+> el ETL del OLAP pasa a Glue cuando la recarga completa deje de entrar en la ventana de proceso
+> (`NFR-ESC-01`).
+
 ---
 
 ## Frecuencia de ejecución
@@ -179,25 +232,47 @@ la recarga deje de entrar en la ventana de proceso, no un pendiente.
 ## Conexión al Glue Data Catalog
 
 ```
-              ┌──────────────────── VPC ────────────────────┐
-              │                                             │
-  Glue Job ───┼─▶ [SG auto-referenciado] ─┬─▶ RDS OLTP :5432│
-  Crawler  ───┤                           └─▶ RDS OLAP :5432│
-              │                                             │
-              │   VPC Endpoint S3 (Gateway, GRATIS) ──▶ S3  │
-              └─────────────────────────────────────────────┘
-                              │
-                    Glue Data Catalog
-                  (ambas bases registradas)
+ ┌─────────────────────────── VPC (us-east-1c) ───────────────────────────┐
+ │                                                                        │
+ │  Glue Job (JDBC) ──► [SG auto-referenciado] ──► RDS OLTP :5432         │
+ │        │                                                               │
+ │        └──► VPC Endpoint S3 (Gateway, gratis) ──┐                      │
+ │  EC2 api-parcial ── exporta el OLAP a curated/ ─┤                      │
+ │                                                 │                      │
+ └─────────────────────────────────────────────────┼──────────────────────┘
+                                                   ▼
+                                 S3:  raw/  ·  processed/  ·  curated/
+                                                   │
+                                        3 crawlers (on demand)
+                                                   ▼
+                                           Glue Data Catalog
+                      aerolinea_raw  ·  aerolinea_processed  ·  aerolinea_catalog
 ```
 
 | Pieza | Configuración |
 |---|---|
-| Conexión JDBC ×2 | `jdbc:postgresql://<endpoint>:5432/<base>` — **dos puntos y puerto explícito** |
+| Conexión JDBC ×2 | `conn-parcial-oltp` y `conn-parcial-olap` · `jdbc:postgresql://<endpoint>:5432/<base>` — **dos puntos y puerto explícito** |
 | Rol IAM | **`LabRole`** (el lab no permite crear roles) |
-| Red | VPC por defecto, subred en `us-east-1a`, **SG con regla auto-referenciada** |
+| Red | VPC por defecto, subred en `us-east-1c`, **SG con regla auto-referenciada** |
 | Salida a S3 | **VPC Endpoint tipo Gateway** — gratis |
-| Crawlers ×2 | Uno por base, *on demand*, `Include path = <base>/%` |
+| Crawlers ×3 | Uno por zona del lago, *on demand*: `crawler-raw`, `crawler-processed`, `crawler-datalake-aerolinea` |
+
+**Cómo quedaron registradas las dos bases.** Cada base está en el catálogo **a través de su copia
+en el data lake**: las 17 tablas del OLTP en `aerolinea_raw` (CSV fiel) y `aerolinea_processed`
+(Parquet tipado); el modelo estrella del OLAP en `aerolinea_catalog` (8 tablas, con las
+particiones `year`/`month` detectadas por el crawler).
+
+> ⚠️ **Desviación declarada.** El enunciado pide que *ambas bases* queden registradas en el
+> catálogo. Las conexiones JDBC a las dos RDS se crearon —y la del OLTP quedó probada, porque
+> es la que usa el job de Glue—, pero **no se corrió un crawler JDBC directo sobre las bases**:
+> las tablas están catalogadas a partir de sus copias en S3.
+>
+> **Por qué igual se sostiene:** una tabla catalogada por JDBC es sólo metadato, y Athena no
+> puede consultarla sin un conector federado. Una tabla catalogada sobre S3 es **visible y
+> consultable** —que es lo que pide el enunciado— desde Glue y desde Athena. **Qué faltaría para
+> cumplirlo al pie de la letra:** dos crawlers sobre `conn-parcial-oltp` y `conn-parcial-olap`
+> con `Include path = aerolinea/reservas/%` y `aerolinea_dw/dw/%`; unos 5 minutos y ~$0,25 con
+> las bases encendidas.
 
 ### Las cinco trampas, ya pagadas en prácticas anteriores
 
@@ -220,9 +295,13 @@ Documentadas en el `CLAUDE.md` del curso. Aplican igual a PostgreSQL:
 |---|---|---|---|
 | **RDS PostgreSQL** `db.t3.micro` (OLTP) | PostgreSQL autoadministrado en EC2 | `NFR-DISP-01` (99,9 %), `NFR-SEG-02` (cifrado en reposo) | **Fiabilidad** (backups y failover gestionados), **Seguridad** (parcheo y cifrado sin intervención) |
 | **RDS PostgreSQL** `db.t3.micro` (OLAP) | Redshift · Athena sobre S3 | `FR-19`, `NFR-PERF-01` (la analítica no debe tocar el OLTP) | **Optimización de Costos** — Redshift `ra3.large` cuesta ~$780/mes contra ~$15: absurdo a esta escala. **Eficiencia del Rendimiento** — aísla la carga analítica |
-| **AWS Glue ETL** (Spark, 2×G.1X) | Glue Python Shell · Lambda · script en EC2 | `FR-19`, `NFR-ESC-01` (absorber ×5 en temporada alta) | **Eficiencia del Rendimiento** (paraleliza, no choca contra topes), **Excelencia Operativa** (serverless, sin servidor que mantener) |
+| **AWS Glue ETL** (Spark, 2×G.1X) — `job-raw-processed` | Glue Python Shell · Lambda · script en EC2 | `FR-19`, `NFR-ESC-01` (absorber ×5 en temporada alta) | **Eficiencia del Rendimiento** (paraleliza, no choca contra topes), **Excelencia Operativa** (serverless, sin servidor que mantener). Hoy extrae del OLTP al lago; es el destino del ETL del OLAP cuando el volumen lo pida |
+| **EC2** `t3.micro` (API + ETL OLTP → OLAP) | Lambda + API Gateway · Elastic Beanstalk | La API de 5.6, `DEC-05` (monolito modular) | **Excelencia Operativa** — el mismo código de 5.6 corre sin cambios como servicio `systemd`; **Seguridad** — puerto 22 sólo desde el rango de EC2 Instance Connect, API en `127.0.0.1` |
+| **SSM Parameter Store** (`SecureString`) | Contraseña en un archivo del repo o en el *user data* | `NFR-SEG-02` | **Seguridad** — la contraseña viaja cifrada con KMS y nunca se escribe en el repositorio |
+| **S3** (data lake `raw/` · `processed/` · `curated/`) | Guardar sólo el OLAP | `FR-19`, `NFR-AUD-01` (retención de 5 años: la zona cruda pasa a Glacier por lifecycle) | **Fiabilidad** (versionado), **Optimización de Costos** (lifecycle por zona) |
 | **Glue Data Catalog** | Documentar el esquema a mano | Exigido explícitamente por el enunciado; habilita `FR-19` | **Excelencia Operativa** (metadatos vivos, no un documento que se desactualiza), **Sostenibilidad** (un catálogo compartido evita copias redundantes) |
-| **Glue Crawler** ×2 | Definir las tablas a mano en el catálogo | Mantiene el catálogo sincronizado con `DEC-08` | **Excelencia Operativa** |
+| **Glue Crawler** ×3 (uno por zona) | Definir las tablas a mano en el catálogo | Mantiene el catálogo sincronizado con `DEC-08` | **Excelencia Operativa** — detectó solo las particiones `year`/`month` |
+| **Athena** | Consultar el OLAP con `psql` | `FR-19` (analítica sin tocar el OLTP) | **Optimización de Costos** — se paga por byte leído: 2.335 bytes en Parquet contra 586.285 en CSV |
 | **Conexión JDBC de Glue** (en VPC) | Hacer las bases públicamente accesibles | `NFR-SEG-01`, `NFR-SEG-02` | **Seguridad** — las bases nunca escuchan en una interfaz pública |
 | **VPC Endpoint S3** (Gateway) | NAT Gateway | `NFR-SEG-02`; restricción de presupuesto | **Seguridad** (el tráfico no sale a internet), **Optimización de Costos** (gratis vs $0.045/h) |
 | **Security Group auto-referenciado** | Abrir el 5432 a `0.0.0.0/0` | `NFR-SEG-02` | **Seguridad** — es la lección ya pagada en la práctica de Sakila |
@@ -234,28 +313,39 @@ Documentadas en el `CLAUDE.md` del curso. Aplican igual a PostgreSQL:
 
 > Precios de **us-east-1**, On-Demand, a septiembre de 2026. Verificados contra la
 > [AWS Pricing Calculator](https://calculator.aws). Mes = 730 horas.
+>
+> **Alcance:** la plataforma de datos —bases, ETL y catálogo—, que es lo que evalúa 5.7. La EC2
+> de la API (`t3.micro` + 8 GB gp3 ≈ **$8,23/mes**) es el cómputo del backend de 5.6 y queda
+> fuera; el ETL OLTP → OLAP corre en ella **sin costo marginal**. S3 y Athena, a este volumen
+> (~4 MB, consultas de KB), no llegan a un centavo por mes.
 
 | Concepto | Supuesto | Costo mensual |
 |---|---|---|
 | RDS OLTP | `db.t3.micro` PostgreSQL, 1 AZ, 20 GB gp2 · $0.018/h + $0.115/GB-mes | **$15.44** |
 | RDS OLAP | idéntica | **$15.44** |
-| Glue ETL | 2 DPU (G.1X) × ~3 min × 30 corridas/mes · $0.44/DPU-hora | **$1.32** |
-| Crawlers | 2 crawlers × ~4 corridas/mes (on demand) · mínimo facturable 10 min | **$0.59** |
-| Glue Data Catalog | ~30 tablas · el primer millón de objetos y de peticiones no se cobra | **$0.00** |
+| Glue ETL | 2 DPU (G.1X) × ~3 min × 30 corridas/mes · $0.44/DPU-hora — *medido: 149 s por corrida* | **$1.32** |
+| Crawlers | 3 crawlers × ~4 corridas/mes (on demand) · mínimo facturable 10 min | **$0.88** |
+| Glue Data Catalog | 42 tablas · el primer millón de objetos y de peticiones no se cobra | **$0.00** |
 | VPC Endpoint S3 | tipo Gateway | **$0.00** |
-| | **TOTAL** | **≈ $32.79 / mes** |
+| | **TOTAL** | **≈ $33.08 / mes** |
 
-**Las dos instancias RDS son el 94 % del costo.** Cualquier optimización que no las toque es
+**Las dos instancias RDS son el 93 % del costo.** Cualquier optimización que no las toque es
 irrelevante — dato que conviene tener a mano en la defensa.
 
 ### Costo real de este parcial
 
-La proyección mensual es lo que pide el enunciado, pero **no es lo que se va a gastar**: las
-instancias se crean el día de la ejecución, se captura la evidencia y se borran.
+La proyección mensual es lo que pide el enunciado, pero **no es lo que se gastó**: los recursos
+se crearon para ejecutar, medir y defender, y se dan de baja después de la defensa.
 
-```
-2 RDS × $0.018/h × ~6 h  +  1 corrida de ETL  +  2 crawlers   ≈  $0.40
-```
+| Concepto | Estimado |
+|---|---|
+| Sesión del 08/09 — RDS, carga, ETL, crawlers, job de Glue, Athena | ~$0,64 |
+| RDS encendidas del 08/09 al 10/09 para la demo en vivo (decisión del alumno) | ~$1,70 |
+| Sesión del 10/09 — EC2 de la API, prueba de la guía de punta a punta | ~$0,35 |
+| **Total** | **≈ $2,70** |
+
+> El panel del lab (AWS Budgets) se actualiza con 8–12 h de atraso: son estimaciones a partir
+> de los precios de la tabla, no una lectura de la factura.
 
 ### Escenario de crecimiento ×10
 
@@ -269,17 +359,17 @@ Hay dos formas de multiplicar por diez, y **no cuestan lo mismo**:
 | RDS OLAP | $15.44 | **$28.28** | ❌ Íd. |
 | Storage | (incluido) | incluido | ❌ 20 GB es el **mínimo** de RDS: no cambia hasta superarlo |
 | Glue ETL | $1.32 | **$3.50** | ❌ Spark paraleliza: ~2,7× el tiempo, no 10× |
-| Crawlers | $0.59 | $0.59 | ❌ El esquema no cambia con el volumen |
+| Crawlers | $0.88 | $0.88 | ❌ El esquema no cambia con el volumen |
 | Catálogo | $0 | $0 | ❌ Plano |
-| **Total** | **$32.79** | **≈ $60.65** | **×1,85 — no ×10** |
+| **Total** | **$33.08** | **≈ $60.94** | **×1,84 — no ×10** |
 
 #### B) Frecuencia ×10 (ETL cada 2,4 h en vez de diario)
 
 | Concepto | Actual | ×10 | |
 |---|---|---|---|
 | Glue ETL | $1.32 | **$13.20** | ✅ Sí escala lineal: son 10× más corridas |
-| Todo lo demás | $31.47 | $31.47 | Sin cambios |
-| **Total** | **$32.79** | **≈ $44.67** | ×1,36 |
+| Todo lo demás | $31.76 | $31.76 | Sin cambios |
+| **Total** | **$33.08** | **≈ $44.96** | ×1,36 |
 
 ### Lectura para los pilares de Optimización de Costos y Sostenibilidad
 
@@ -303,20 +393,23 @@ El requisito es de diseño para producción; la implementación lo declara en ve
 
 ---
 
-## Plan de ejecución en AWS (sesión única)
+## Procedimiento ejecutado en AWS
 
-| # | Paso | Comprobación |
+| # | Paso | Resultado verificado |
 |---|---|---|
-| 1 | Borrar los objetos de Glue huérfanos de la práctica de Sakila | El catálogo del parcial queda limpio |
-| 2 | Crear 2 RDS PostgreSQL `db.t3.micro`, sin *enhanced monitoring* | Estado `available` |
-| 3 | Cargar `01-esquema.sql`, `02-datos-demo.sql`, `03-actividad-demo.sql` en la OLTP y `01-esquema-estrella.sql` en la OLAP | 17 tablas + 9 objetos DW |
-| 4 | Crear SG de Glue con **regla auto-referenciada** y permitir 5432 desde él en ambas bases | Trampa 2 |
-| 5 | Verificar/crear el **VPC Endpoint de S3** | Trampa 3 |
-| 6 | Crear 2 conexiones JDBC y probarlas con `LabRole` | Trampas 1 y 4 |
-| 7 | Correr los 2 crawlers → **ambas bases en el Data Catalog** | Requisito explícito del enunciado |
-| 8 | Ejecutar el job de ETL | Filas en el OLAP |
-| 9 | **Capturar evidencia** → `evidencia/glue/` | Capturas del catálogo con ambas bases |
-| 10 | **Borrar las dos RDS** | Presupuesto |
+| 1 | Crear 2 RDS PostgreSQL `db.t3.micro`, sin *enhanced monitoring* | `parcial-oltp` y `parcial-olap`, PostgreSQL 18.3, `available` |
+| 2 | Cargar `01-esquema.sql`, `02-datos-demo.sql`, `03-actividad-demo.sql` en la OLTP y `01-esquema-estrella.sql` en la OLAP, por una ventana de **una sola IP**, revocada en la misma sesión | 17 tablas · 0 violaciones del invariante · bases privadas |
+| 3 | SG de Glue con **regla auto-referenciada**; 5432 en las bases sólo desde ese grupo | Una única regla, sin CIDR (trampa 2) |
+| 4 | Reutilizar el **VPC Endpoint de S3** (Gateway) | `vpce-09b60424dc9c1f1cf` (trampa 3) |
+| 5 | Crear 2 conexiones JDBC con `LabRole` | `conn-parcial-oltp`, `conn-parcial-olap` (trampas 1 y 4) |
+| 6 | ETL OLTP → OLAP con el script de 5.6, sin cambios | 141 dimensiones + 9.121 hechos en 1,64 s |
+| 7 | Exportar el OLAP a `curated/` (Parquet, `year`/`month`) | 13 objetos, 2 particiones |
+| 8 | Job de Glue `job-raw-processed` por `conn-parcial-oltp` | SUCCEEDED en 149 s · 17 tablas en `raw/` y `processed/` |
+| 9 | 3 crawlers sobre las tres zonas | 42 tablas en 3 databases, particiones detectadas |
+| 10 | Athena sobre las tres databases | 586.285 bytes en CSV contra 2.335 en Parquet |
+| 11 | EC2 de la API con la guía de ejecución, **todo desde AWS** | Reserva, pago idempotente y concurrencia 1 de 30 |
+
+Evidencia completa en `evidencia/aws/sesion-2026-09-08.md` y `evidencia/aws/sesion-2026-09-10.md`.
 
 El código del ETL no cambia entre local y AWS: las conexiones vienen de `DSN_OLTP` y
 `DSN_OLAP` como variables de entorno.
@@ -332,8 +425,8 @@ semilla y los scripts quedan en el repo y recrear todo son 5 minutos.
 | Si cambia… | Qué se toca | Costo | Alternativa ya considerada |
 |---|---|---|---|
 | **La analítica debe ser en tiempo real** | Cambia la frecuencia del ETL, o se pasa a CDC. **No cambia el backend ni el modelo**: la frontera de `DEC-08` sigue valiendo. El costo del ETL ×10, no el total | Medio, aislado | La tabla de frecuencias ya tiene el número |
-| **Volumen ×100** | Las RDS suben de clase; el ETL en Spark absorbe sin rediseño — **que es exactamente por lo que se eligió Spark** y no Lambda | Medio | Lambda: habría chocado contra los 15 min |
+| **Volumen ×100** | Las RDS suben de clase; el ETL del OLAP pasa de la EC2 a un job de Glue (Spark), que absorbe sin rediseño — **por eso Spark es el destino de diseño** y no Lambda. El camino (JDBC, SG, endpoint, `LabRole`) ya está probado con `job-raw-processed` | Medio | Lambda: habría chocado contra los 15 min |
 | **Piden agregar una métrica nueva** (ej. ingreso por aeronave) | `dim_vuelo` ya tiene la ruta; se agrega `dim_aeronave` y una FK al hecho. El grano no cambia | Bajo | El grano a nivel tramo se eligió sin pre-agregar justamente para esto |
-| **Hay que reducir el costo a la mitad** | Apagar la OLAP fuera de horario laboral y bajar la frecuencia del ETL. Las RDS son el 94 % del costo: cualquier otra optimización es ruido | Bajo | Está en la lectura de Sostenibilidad |
+| **Hay que reducir el costo a la mitad** | Apagar la OLAP fuera de horario laboral y bajar la frecuencia del ETL. Las RDS son el 93 % del costo: cualquier otra optimización es ruido | Bajo | Está en la lectura de Sostenibilidad |
 | **El profesor pide Athena en vez de la RDS OLAP** | El ETL escribiría Parquet a S3 en vez de a PostgreSQL. El esquema estrella **no cambia**; cambia el destino | Medio | Descartado acá porque el enunciado exige PostgreSQL para el OLAP |
 | **Se exige Multi-AZ** | Duplica el costo de cómputo de las RDS ($30.88 → ~$61.76/mes). No toca ni el modelo ni el ETL | Alto, sólo dinero | Declarado como desviación consciente |

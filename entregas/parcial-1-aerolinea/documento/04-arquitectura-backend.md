@@ -3,10 +3,10 @@
 > **Estado:** 🟡 decisiones cerradas 06/09 · redacción final tras implementar 5.6
 > **Peso en la rúbrica:** 15% (compartido con 5.5)
 
-**Por qué se redacta en dos tiempos:** las decisiones se cierran ahora porque son input
-obligatorio de 5.6, pero el bloque *"ajustes que aparecieron al implementar"* se completa
-después de programar. El enunciado premia declarar esos ajustes; escribir la sección entera
-antes de tocar código obliga a reescribirla o a mentir.
+**Por qué se redactó en dos tiempos:** las decisiones se cerraron antes de programar, porque
+eran el input de 5.6; los ajustes que aparecieron al implementar se declaran al final de esta
+sección. Escribir la sección entera antes de tocar código obliga a reescribirla o a ocultar
+los ajustes.
 
 ## Qué exige la rúbrica para "Sobresaliente"
 
@@ -168,12 +168,15 @@ filas históricas. Corriéndola contra el OLTP:
 ```
         ESCRITURA                                    LECTURA ANALÍTICA
    ┌──────────────────┐                          ┌────────────────────┐
-   │  OLTP PostgreSQL │  ──── ETL (Glue) ────▶   │  OLAP PostgreSQL   │
+   │  OLTP PostgreSQL │  ──────── ETL ────────►  │  OLAP PostgreSQL   │
    │  3NF · DEC-03    │                          │  estrella · FR-19  │
    └──────────────────┘                          └────────────────────┘
             │                                              │
-            └──────── ambas en Glue Data Catalog ──────────┘
+            └──── copias en S3, catalogadas en Glue ───────┘
 ```
+
+Cómo quedó implementado cada tramo —dónde corre el ETL y cómo llegan las dos bases al Glue
+Data Catalog— se detalla en 5.7.
 
 Las fuentes naturales del ETL ya existen en el modelo de 5.3: `HISTORIAL_RESERVA`
 (append-only) da los patrones de cancelación, y `TRAMO` + `INSTANCIA_VUELO` dan ocupación e
@@ -181,12 +184,55 @@ ingresos. **El diseño de 5.3 ya preparó el terreno para 5.7.**
 
 ---
 
+## Flujo de una reserva — dónde actúa cada decisión
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Cliente
+    participant A as API
+    participant D as PostgreSQL OLTP
+    participant P as Pasarela
+
+    C->>A: POST /reservas
+    A->>D: BEGIN
+    Note over A,D: tramos ordenados por id_instancia<br/>(evita deadlock en multi-tramo)
+
+    loop por cada tramo
+        A->>D: UPDATE ... SET comprometidos+1<br/>WHERE comprometidos+1 <= vendible
+        alt rowcount = 1
+            D-->>A: comprometido
+        else rowcount = 0
+            D-->>A: sin capacidad
+            A->>D: ROLLBACK
+            A-->>C: 409 · rechazo explícito (NFR-CONC-01)
+        end
+    end
+
+    A->>D: INSERT reserva 'retenida' + expira_en
+    A->>D: INSERT itinerario, tramos, historial
+    A->>D: COMMIT
+    A-->>C: 201 · retenida 30 min (DEC-02)
+
+    C->>P: paga fuera del sistema
+    P-->>A: webhook (idempotente, DEC-06)
+    A->>D: estado = 'confirmada'
+
+    Note over A,D: si el hold ya venció:<br/>no confirma, dispara reembolso
+```
+
 ## Ajustes que aparecieron durante la implementación
 
-*(se completa después de 5.6 — un ajuste no es un error, es información valiosa)*
+Implementar 5.6 no contradijo ninguna decisión de esta sección, pero precisó dos. Un ajuste no es
+un error: es información que el diseño previo no tenía.
 
 | Qué cambió | Por qué | Documento actualizado |
 |---|---|---|
+| **El pool de conexiones pasa a ser parte del mecanismo de `DEC-03`**, no un detalle de infraestructura | La primera versión de la API compartía una sola conexión. La prueba de concurrencia habría pasado **por el motivo equivocado**: sin conexiones paralelas no hay carrera que ganar, y el bloqueo optimista nunca se habría puesto a prueba | 5.4 (esta tabla) · 5.6 |
+| **La expiración de holds pasa a dos capas** (`DEC-07`): barrido programado + filtrado perezoso en la lectura | Con sólo el barrido periódico queda una ventana en la que un hold vencido sigue contando como ocupado, y la búsqueda muestra menos asientos de los que hay | 5.4 — `DEC-07` |
+
+Un tercer ajuste de 5.6 —`id_canal = 0` para la venta directa en el OLAP— es una transformación
+del ETL y no toca el backend: se documenta en 5.7.
 
 ---
 

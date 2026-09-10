@@ -14,6 +14,21 @@ completo, la implementación y el anexo de prompt log.
 
 ---
 
+## 📄 Documento de entrega
+
+**[`entrega/Parcial1-Sistema-Reservas-Aerolinea.pdf`](entrega/Parcial1-Sistema-Reservas-Aerolinea.pdf)**
+— el documento final completo que pide la §6: contexto y supuestos, FR, NFR, modelo ER,
+arquitectura backend y frontend, 5.6, 5.7, anexo de prompts y la evidencia de AWS como anexo.
+También en `.md` y `.html` en la misma carpeta.
+
+Se genera desde las secciones de `documento/`, que siguen siendo la fuente de verdad:
+
+```bash
+python entrega/construir_documento.py --autor "Nombre Apellido"
+```
+
+---
+
 ## 🎤 Sustentación
 
 **[`SUSTENTACION.md`](SUSTENTACION.md)** — hoja de repaso: qué decir en cada sección, las cifras
@@ -29,9 +44,9 @@ qué se hizo y por qué, guion para la defensa y baja de recursos.
 
 ---
 
-## ▶️ Cómo retomar (sesión del 06/09 cerrada)
+## ▶️ Entorno local (el de desarrollo)
 
-Los contenedores quedaron **detenidos, con los datos intactos** en sus volúmenes.
+Los contenedores de Docker quedaron **detenidos, con los datos intactos** en sus volúmenes.
 
 ```bash
 cd entregas/parcial-1-aerolinea
@@ -39,13 +54,10 @@ docker compose start          # levanta oltp:15432 y olap:15433 con los datos ya
 cd api && uvicorn main:app --port 8010
 ```
 
-Si hiciera falta reconstruir desde cero, la guía completa está en
-[`documento/06-implementacion-backend.md`](documento/06-implementacion-backend.md#guía-de-ejecución)
-— verificada de punta a punta el 06/09.
-
-**Lo único pendiente es la sesión de AWS:** plan de 10 pasos en
-[`documento/07-aws-etl-glue-costos.md`](documento/07-aws-etl-glue-costos.md#plan-de-ejecución-en-aws-sesión-única),
-scripts en `infra/`. Costo estimado: ~$0.40 si se borran las instancias al terminar.
+Reconstrucción desde cero en
+[`documento/06-implementacion-backend.md`](documento/06-implementacion-backend.md#guía-de-ejecución).
+**La sesión de AWS ya se ejecutó** (08/09 y 10/09): lo que se hizo, en la sección 5.7 y en
+`evidencia/aws/`.
 
 ---
 
@@ -56,15 +68,15 @@ del enunciado y declara explícitamente qué requisito origina cada decisión.
 
 | # | Sección | Peso | Archivo | Estado |
 |---|---|---|---|---|
-| — | Contexto y supuestos | — | `documento/00-contexto-y-supuestos.md` | 🟡 borrador 06/09 |
-| 5.1 | Requisitos funcionales | 10% | `documento/01-requisitos-funcionales.md` | 🟡 borrador 06/09 |
-| 5.2 | Requisitos no funcionales | 10% | `documento/02-requisitos-no-funcionales.md` | 🟡 borrador 06/09 |
-| 5.3 | Modelo entidad-relación | 15% | `documento/03-modelo-er.md` | 🟡 borrador 06/09 |
-| 5.4 | Arquitectura backend | 15% | `documento/04-arquitectura-backend.md` | 🟡 decisiones cerradas 06/09 |
-| 5.5 | Arquitectura frontend | (dentro del 15%) | `documento/05-arquitectura-frontend.md` | 🟡 borrador 06/09 |
-| 5.6 | Primera implementación backend | 10% | `documento/06-implementacion-backend.md` | ✅ implementado y probado |
-| 5.7 | AWS: ETL, catálogo y costos | 20% | `documento/07-aws-etl-glue-costos.md` | ✅ **desplegado y verificado en AWS (08/09)** |
-| §4 | Prompt log (anexo) | obligatorio | `documento/99-prompt-log.md` | ✅ 22 entradas |
+| — | Contexto y supuestos | — | `documento/00-contexto-y-supuestos.md` | ✅ |
+| 5.1 | Requisitos funcionales | 10% | `documento/01-requisitos-funcionales.md` | ✅ |
+| 5.2 | Requisitos no funcionales | 10% | `documento/02-requisitos-no-funcionales.md` | ✅ |
+| 5.3 | Modelo entidad-relación | 15% | `documento/03-modelo-er.md` | ✅ |
+| 5.4 | Arquitectura backend | 15% | `documento/04-arquitectura-backend.md` | ✅ con los ajustes de la implementación |
+| 5.5 | Arquitectura frontend | (dentro del 15%) | `documento/05-arquitectura-frontend.md` | ✅ |
+| 5.6 | Primera implementación backend | 10% | `documento/06-implementacion-backend.md` | ✅ implementado y probado, local y AWS |
+| 5.7 | AWS: ETL, catálogo y costos | 20% | `documento/07-aws-etl-glue-costos.md` | ✅ desplegado y verificado · 2 desviaciones declaradas |
+| §4 | Prompt log (anexo) | obligatorio | `documento/99-prompt-log.md` | ✅ 23 entradas |
 
 Claridad y trazabilidad del documento: 10% adicional, transversal a todas las secciones.
 
@@ -79,9 +91,11 @@ parcial-1-aerolinea/
 ├── db/olap/       Esquema de la base analítica
 ├── etl/           Script del proceso ETL (sección 5.7)
 ├── infra/         Scripts de creación y baja de recursos AWS
-└── evidencia/     Capturas y salidas que respaldan lo que afirma el documento
-    ├── concurrencia/   Prueba de sobreventa: sin lock y con lock
-    └── glue/           Ambas bases registradas en el Data Catalog
+├── entrega/       Documento final consolidado (.pdf/.html/.md) y el script que lo genera
+└── evidencia/     Salidas que respaldan lo que afirma el documento
+    ├── concurrencia/   Prueba de sobreventa: sin lock y con lock (local)
+    ├── olap/           Las tres vistas de negocio de FR-19
+    └── aws/            Las dos sesiones de AWS: 08/09 y 10/09 (catálogo, Athena, API, concurrencia)
 ```
 
 ---

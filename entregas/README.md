@@ -26,7 +26,7 @@ depende de los otros ni de rutas del repositorio, para poder enviarse suelto por
 | 4 | Session 7 — Assignment | [`semana-04/sesion-07-glue-catalog-crawlers/README.md`](semana-04/sesion-07-glue-catalog-crawlers/README.md) | ✅ evidencia capturada |
 | 4 | **Session 8 — Checkpoint 1** (proyecto) | [`semana-04/checkpoint-1/README.md`](semana-04/checkpoint-1/README.md) | ✅ ejecutado en AWS |
 | 4 | Module 4 — Design Principles for Pipelines | [`modulos-aws-academy/modulo-4-design-principles.md`](modulos-aws-academy/modulo-4-design-principles.md) | 🟡 documento ✅ · **módulo pendiente** |
-| 5 | **Parcial 1** | [`parcial-1-aerolinea/`](parcial-1-aerolinea/) | ✅ **8 de 8 secciones** · falta ensayar la defensa |
+| 5 | **Parcial 1** | [`parcial-1-aerolinea/entrega/Parcial1-Sistema-Reservas-Aerolinea.pdf`](parcial-1-aerolinea/entrega/Parcial1-Sistema-Reservas-Aerolinea.pdf) | ✅ **documento final consolidado** · falta el nombre en la portada |
 | — | EC2 + Apache (práctica anterior) | [`ec2-apache/README.md`](ec2-apache/README.md) | ✅ entregada |
 
 **Los cuatro 🟡 tienen su documento escrito**, pero el módulo en sí se completa en la plataforma

@@ -7,6 +7,13 @@
 
 ## 1. Arquitectura general
 
+> **Vista de diseño (06/09).** La arquitectura tal como quedó desplegada en AWS —con la EC2 de la
+> aplicación, el ETL en Python y el job de Glue que puebla `raw/` y `processed/`— está en
+> [`arquitectura-aws-desplegada.png`](arquitectura-aws-desplegada.png) y en la sección 5.7.
+> Dos diferencias con este diagrama, declaradas como desviaciones en 5.7: el ETL OLTP → OLAP
+> corre en la EC2 y no en Glue, y las dos bases quedan en el catálogo **a través de sus copias
+> en S3** (3 crawlers, uno por zona), no con crawlers JDBC directos sobre las bases.
+
 ```mermaid
 flowchart TB
     subgraph clientes["Clientes"]

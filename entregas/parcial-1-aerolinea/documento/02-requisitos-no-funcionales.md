@@ -3,16 +3,18 @@
 > **Estado:** 🟡 borrador — 06/09
 > **Peso en la rúbrica:** 10%
 
-## Qué exige la rúbrica para "Sobresaliente"
+## Criterio de redacción
 
-> *"Métricas concretas rastreables hasta un riesgo de negocio explícito, particularmente
-> concurrencia."*
-
-Y el enunciado avisa: **no alcanza con escribir "debe ser rápido" o "debe ser seguro"**.
+El enunciado avisa: **no alcanza con escribir "debe ser rápido" o "debe ser seguro"**.
 Un NFR sin número no se puede verificar, y sin verificar no se puede evaluar.
 
 **Regla propia:** todo NFR de esta sección tiene (1) un número, (2) cómo se mide, y
 (3) el riesgo de negocio `RSK-` que lo justifica.
+
+## Qué exige la rúbrica para "Sobresaliente"
+
+> *"Métricas concretas rastreables hasta un riesgo de negocio explícito, particularmente
+> concurrencia."*
 
 ## Riesgos de negocio identificados
 

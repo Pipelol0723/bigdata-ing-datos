@@ -49,6 +49,11 @@ Tres detalles del montaje sin los cuales la prueba no probaría nada:
 
 Evidencia cruda en `evidencia/concurrencia/resultado-sin-lock.json` y `resultado-con-lock.json`.
 
+**Reprobada en AWS el 10/09**, con la API en la EC2 y la base en RDS: con el mecanismo, **1 de
+30**; sin él, **2 reservas vivas con el contador en 1**. En local habían sido 4: la latencia de
+red de RDS cambia el tamaño de la ventana de carrera, y colisionan menos pedidos. El defecto es el
+mismo (`evidencia/aws/sesion-2026-09-10.md`).
+
 ### Lo que muestra la corrida A, y es más grave que "vender de más"
 
 **Cuatro pasajeros con reserva viva sobre un vuelo de un asiento** — pero el contador dice
@@ -121,6 +126,12 @@ inconsistencia que los códigos HTTP por sí solos no revelarían.
 ---
 
 ## Guía de ejecución
+
+**En AWS:** `GUIA-EJECUCION-AWS.md`, en la raíz de la entrega, probada de punta a punta el 10/09.
+La API corre en una EC2 dentro de la VPC como servicio `systemd`, se accede por EC2 Instance
+Connect sin abrir el 22 a internet, y la contraseña de la base se lee cifrada de SSM Parameter
+Store. Lo que sigue es la guía **local**, con la que se desarrolló y se validó todo antes de
+subirlo.
 
 **Requisitos:** Docker y Python 3.11+.
 

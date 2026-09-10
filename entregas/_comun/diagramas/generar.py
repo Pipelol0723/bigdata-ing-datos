@@ -18,10 +18,12 @@ from diagrams.aws.analytics import Athena, Glue, GlueCrawlers, GlueDataCatalog
 from diagrams.aws.analytics import KinesisDataFirehose, KinesisDataStreams
 from diagrams.aws.compute import EC2
 from diagrams.aws.database import RDSPostgresqlInstance
+from diagrams.aws.management import SystemsManagerParameterStore
 from diagrams.aws.network import Endpoint, VPC
 from diagrams.aws.security import IAMRole
 from diagrams.aws.storage import S3
 from diagrams.onprem.client import Users
+from diagrams.programming.language import Python
 
 SALIDA = Path(__file__).parent / "salida"
 SALIDA.mkdir(exist_ok=True)
@@ -203,8 +205,70 @@ def data_lake():
         curated >> athena
 
 
+# =============================================================================
+#  Parcial 1 · 5.7 — La arquitectura TAL COMO QUEDÓ DESPLEGADA (10/09)
+#  Distinto de `componentes()`, que es la vista de diseño: acá cada caja es un
+#  recurso que existe, y cada flecha, un proceso que se ejecutó y se midió.
+#  · ETL OLTP→OLAP: Python en la EC2 (no Glue: 9.000 filas en 2 s)
+#  · Extracción al lago: job de Glue por JDBC, dentro de la VPC
+# =============================================================================
+def parcial_aws():
+    # Letra más grande y menos aire que el resto: este diagrama va impreso a ancho de página
+    # en el documento del parcial, y con la escala por defecto las etiquetas quedaban en ~4 pt.
+    with Diagram(
+        "Parcial 1 · 5.7 — Arquitectura desplegada en AWS",
+        filename=ruta("parcial-5-7-aws"),
+        outformat="png",
+        show=False,
+        direction="LR",
+        graph_attr={**BASE, "fontsize": "16", "nodesep": "0.35", "ranksep": "0.55"},
+        node_attr={"fontsize": "16", "imagepos": "tc"},   # ícono arriba: la etiqueta no lo pisa
+        edge_attr={"fontsize": "15"},
+    ):
+        usuarios = Users("Pasajeros\ny agencias")
+
+        with Cluster("VPC (us-east-1)"):
+            with Cluster("EC2 api-parcial"):
+                api = EC2("API FastAPI\n(servicio systemd)")
+                etl = Python("ETL\nOLTP → OLAP")
+
+            with Cluster("RDS PostgreSQL privadas"):
+                oltp = RDSPostgresqlInstance("parcial-oltp\n3NF · 17 tablas")
+                olap = RDSPostgresqlInstance("parcial-olap\nestrella")
+
+            job = Glue("job-raw-processed\n(JDBC, en la VPC)")
+            endpoint = Endpoint("VPC Endpoint S3\n(Gateway, gratis)")
+
+        with Cluster("S3 · data lake"):
+            raw = S3("raw/\nCSV fiel")
+            proc = S3("processed/\nParquet tipado")
+            cur = S3("curated/\nestrella, year/month")
+
+        with Cluster("Glue Data Catalog"):
+            crawlers = GlueCrawlers("3 crawlers\n(on demand)")
+            catalogo = GlueDataCatalog("3 databases\n42 tablas")
+
+        athena = Athena("Athena")
+        ssm = SystemsManagerParameterStore("SSM\ncontraseña cifrada")
+        rol = IAMRole("LabRole")
+
+        usuarios >> Edge(label="reservas") >> api
+        api >> Edge(label="5432 · por SG") >> oltp
+        oltp >> Edge(label="lee") >> etl
+        etl >> Edge(label="dimensiones\ny hechos") >> olap
+        olap >> Edge(label="exportar_curated") >> cur
+        oltp >> Edge(label="JDBC") >> job
+        job >> Edge(label="extracción") >> raw
+        raw >> Edge(label="relee y tipa") >> proc
+        [raw, proc, cur] >> crawlers >> catalogo >> athena
+        job >> SECUNDARIO >> endpoint
+        ssm >> Edge(color="darkgreen", style="dashed") >> api
+        rol >> Edge(color="darkgreen", style="dashed") >> job
+
+
 if __name__ == "__main__":
-    for f in (contexto, componentes, alternativa_batch, alternativa_streaming, data_lake):
+    for f in (contexto, componentes, alternativa_batch, alternativa_streaming, data_lake,
+              parcial_aws):
         f()
         print(f"[ok] {f.__name__}")
     print(f"\nDiagramas en: {SALIDA}")
