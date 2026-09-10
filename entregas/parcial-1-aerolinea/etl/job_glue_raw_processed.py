@@ -84,8 +84,13 @@ for tabla in TABLAS:
     df_origen.coalesce(1).write.mode("overwrite").option("header", "true").csv(ruta_raw)
 
     # --- 2. raw/ -> processed/, releyendo desde S3 ---------------------------
+    # Se relee SÓLO la extracción recién escrita, no toda la carpeta de la
+    # tabla. raw/ acumula una partición por corrida (es el historial); si
+    # processed/ leyera todas, cada corrida nueva duplicaría las filas.
+    # Corregido el 10/09, antes de la segunda ejecución: con una sola
+    # extracción el error no se veía.
     # Todo vuelve como string: es el CSV haciendo lo que hace el CSV.
-    df_raw = spark.read.option("header", "true").csv("s3://" + BUCKET + "/raw/oltp/" + tabla + "/")
+    df_raw = spark.read.option("header", "true").csv(ruta_raw)
 
     # Se le devuelve el esquema que traía de PostgreSQL. Ésta es la
     # transformación que justifica que processed/ exista.

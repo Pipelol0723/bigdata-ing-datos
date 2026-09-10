@@ -227,7 +227,7 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 | 5.5 · Arquitectura frontend | (en el 15 %) | ✅ redactada |
 | 5.6 · Implementación backend | 10 % | ✅ **implementada y probada** |
 | 5.7 · AWS ETL/catálogo/costos | **20 %** | ✅ **desplegado y verificado en AWS (08/09)** |
-| §4 · Prompt log | obligatorio | ✅ 19 entradas |
+| §4 · Prompt log | obligatorio | ✅ 22 entradas |
 
 ### ✅ Sesión de AWS ejecutada — 08/09
 
@@ -305,6 +305,9 @@ Total de las dos pasadas: **~$0,64**.
 |---|---|---|---|
 | **RDS OLTP** | `parcial-oltp` (db.t3.micro, PG 18.3) | ~$0,43/día | ⚠️ **BORRAR el 10/09 después de la defensa** |
 | **RDS OLAP** | `parcial-olap` (db.t3.micro, PG 18.3) | ~$0,43/día | ⚠️ **BORRAR el 10/09 después de la defensa** |
+| **EC2 de la API** | `i-0154fecb40194d171` (`api-parcial`, t3.micro, AL2023) — creada el 10/09 | ~$0,25/día | ⚠️ **TERMINAR el 10/09 después de la defensa** (detenida se reinicia sola) |
+| Parámetros SSM | `/parcial/pg_password` (SecureString) · `/parcial/ep_oltp` · `/parcial/ep_olap` · `/parcial/bucket` | gratis | borrar junto con la EC2 |
+| SG de la API | `sg-011464a7b7ecbddbd` (`api-parcial`) | gratis | tras terminar la EC2 |
 | Bucket del data lake | `datalake-aerolinea-936980625651` | centavos/mes | ✅ **NO borrar** — lo usan el Checkpoint 2 y el resto del curso |
 | SG de Glue (auto-referenciado) | `sg-0b3237efc5e6f8c1e` | gratis | tras borrar las RDS |
 | SG de las bases | `sg-0a85ff98fa816dff8` | gratis | tras borrar las RDS |
@@ -321,7 +324,27 @@ recrearlas a las corridas. **Recordar el borrado ese mismo día.**
 ```bash
 aws rds delete-db-instance --db-instance-identifier parcial-oltp --skip-final-snapshot --delete-automated-backups --region us-east-1
 aws rds delete-db-instance --db-instance-identifier parcial-olap --skip-final-snapshot --delete-automated-backups --region us-east-1
+aws ec2 terminate-instances --instance-ids i-0154fecb40194d171 --region us-east-1
+aws ssm delete-parameters --names /parcial/pg_password /parcial/ep_oltp /parcial/ep_olap /parcial/bucket --region us-east-1
 ```
+
+### ✅ Guía de ejecución en AWS probada de punta a punta — 10/09
+
+`entregas/parcial-1-aerolinea/GUIA-EJECUCION-AWS.md` se ejecutó completa en AWS, **sin nada en la
+máquina local**: EC2 por EC2 Instance Connect (22 abierto sólo al prefix list de AWS), API como
+servicio systemd, ciclo reserva → pago → **pago repetido idempotente**, prueba de concurrencia
+**con lock 1 de 30** y **sin lock 2 reservas vivas con el contador en 1** (actualización perdida),
+ETL desde la EC2, job de Glue y Athena (**586.285 bytes en CSV vs 2.339 en Parquet**).
+Evidencia en `evidencia/aws/sesion-2026-09-10.md`.
+
+**Tres bugs que sólo aparecieron en AWS, corregidos y reprobados:** la prueba de concurrencia
+apuntaba al Docker local; la prueba intentaba borrar reservas pagadas (la FK de `pago` las
+protege a propósito: los registros financieros no se borran en cascada); y el job de Glue
+duplicaba `processed/` en la segunda corrida.
+
+⚠️ **Trampa de CloudShell:** subir un archivo con el mismo nombre **no lo reemplaza** (*"ya existe
+en el entorno y no se sobrescribirá"*). Hacer `rm` antes, y verificar la línea que cambió — no un
+texto que aparece en las dos versiones.
 
 ---
 

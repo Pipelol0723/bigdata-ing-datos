@@ -18,16 +18,18 @@ Tres partes, según para qué la abras:
 
 ### Qué está verificado y qué no
 
-Esta guía distingue lo que **ya se ejecutó en AWS** de lo que está escrito pero **todavía no corrió**:
+Cada paso lleva la marca de si **ya se ejecutó en AWS**:
 
 | Marca | Significa |
 |---|---|
-| ✅ | Ejecutado y verificado en AWS el 08/09. Hay evidencia en `evidencia/aws/sesion-2026-09-08.md` |
-| 🟡 | Escrito y revisado, **pero no ejecutado todavía en AWS** |
+| ✅ | Ejecutado y verificado en AWS. Evidencia en `evidencia/aws/sesion-2026-09-08.md` y `sesion-2026-09-10.md` |
 
-> ⚠️ **Lo único 🟡 es la EC2 de la aplicación** (§4, pasos 3 a 5) — la API y la prueba de
-> concurrencia corriendo en AWS. Todo lo demás corrió. Hasta el 08/09 la API sólo se había
-> ejecutado en local, y la instrucción es que todo corra en AWS: por eso existe esta parte.
+> ✅ **La guía completa se ejecutó en AWS el 10/09**, de punta a punta y sin nada en la máquina
+> local. Probarla encontró **tres bugs que en local nunca se habían manifestado** — los tres están
+> corregidos y vueltos a probar (§7, filas 9, 12 y 13).
+>
+> **Lo único no ejecutado, a propósito:** exponer `/docs` a internet (§5.3, opcional), la baja de
+> recursos (§8) y la carga desde cero (Anexo A), que **borraría los datos**.
 
 ---
 
@@ -162,8 +164,9 @@ source ~/env.sh && echo "BUCKET=$BUCKET  VPC=$VPC  SG_DB=$SG_DB"
 
 ### Estado actual (10/09)
 
-**Ya existe y está cargado:** las dos RDS con datos, el bucket con las tres zonas, el catálogo,
-los crawlers, el job de Glue. **Falta sólo la EC2 de la aplicación.** Los pasos 1 a 5 la crean.
+**Existe y está cargado todo**, incluida la EC2 de la aplicación (`i-0154fecb40194d171`, creada el
+10/09). Si la EC2 ya está corriendo, saltar al paso 5. Si se borró, los pasos 3 a 5 la recrean
+en unos 5 minutos.
 
 Para una instalación **desde cero** (cuenta vacía), ver el Anexo A al final.
 
@@ -184,7 +187,7 @@ Esperado: `parcial-oltp` y `parcial-olap` en `available` y `False`; en el bucket
 
 ---
 
-### Paso 2 — Subir el código a CloudShell 🟡
+### Paso 2 — Subir el código a CloudShell ✅
 
 1. En **GitHub** → repositorio `Pipelol0723/bigdata-ing-datos` → botón **Code → Download ZIP**.
 2. En **CloudShell** → **Acciones → Cargar archivo** → elegir el ZIP.
@@ -200,7 +203,7 @@ ls ~/repo/entregas/parcial-1-aerolinea
 
 ---
 
-### Paso 3 — Crear la EC2 de la aplicación 🟡
+### Paso 3 — Crear la EC2 de la aplicación ✅
 
 En **CloudShell**:
 
@@ -222,7 +225,7 @@ Termina con `LISTO — instancia i-…` y las instrucciones para entrar.
 
 ---
 
-### Paso 4 — Instalar y levantar la API en la EC2 🟡
+### Paso 4 — Instalar y levantar la API en la EC2 ✅
 
 1. **Consola EC2 → Instancias → `api-parcial` → Conectar** → pestaña **EC2 Instance Connect**
    → **Conectar**. Se abre una terminal **dentro de la instancia**, en el navegador.
@@ -244,7 +247,7 @@ levantar nada**, y deja la API como servicio `systemd`.
 
 ---
 
-### Paso 5 — Verificar que la aplicación responde 🟡
+### Paso 5 — Verificar que la aplicación responde ✅
 
 En la terminal de la **EC2**:
 
@@ -365,7 +368,8 @@ curl -s localhost:8010/salud; echo
 psql "$DSN_OLTP" -tAc "SELECT min(fecha_operacion), max(fecha_operacion)
                        FROM reservas.instancia_vuelo WHERE fecha_operacion >= current_date"
 
-# buscar vuelos — cambiar la fecha por una del rango anterior
+# buscar vuelos — cambiar la fecha por una del rango anterior.
+# Algunos días dan 0: la ruta no opera todos los días (dias_operacion). No es un error.
 curl -s "localhost:8010/vuelos?origen=BOG&destino=MDE&fecha=2026-09-20" | python -m json.tool
 
 # reservar: tomar un pasajero y una instancia reales
@@ -445,7 +449,21 @@ exactamente 1. Sin él, se vende varias veces el mismo asiento **y el sistema no
 python api/prueba_concurrencia.py --url http://127.0.0.1:8010 --peticiones 30 --etiqueta con-lock
 ```
 
-Esperado: `201 : 1` · `409 : 29` · `asientos comprometidos .. 1` · `[OK]`.
+Resultado verificado en AWS (10/09):
+
+```
+Instancia 229: 1 asiento(s) vendible(s), 0 comprometidos
+      201 :   1   reserva creada
+      409 :  29   rechazo explícito (sin cupo)
+[OK] CORRECTO: exactamente 1 de 30 solicitudes prosperaron
+Instancia de prueba 229 y sus reservas eliminadas.
+```
+
+> **La prueba usa una instancia de vuelo propia** (fecha 2099-12-31), no una de la demo, y **la
+> borra al terminar**. No es comodidad: las instancias de la demo tienen reservas **pagadas**, y el
+> esquema **no borra en cascada los registros financieros** (`pago`, `comision`) — un pago es
+> auditoría. Intentar limpiarlas choca con esa regla. Para inspeccionar el estado final antes de
+> que se borre: agregar `--conservar`.
 
 **Corrida A, sin el mecanismo — [EC2].** Hay que desactivar las **dos** capas: el `CHECK` de la
 base (si no, la base ataja la sobreventa y no se ve) y el lock de la API.
@@ -460,7 +478,24 @@ curl -s localhost:8010/salud; echo                    # debe decir "inseguro"
 python api/prueba_concurrencia.py --url http://127.0.0.1:8010 --peticiones 30 --etiqueta sin-lock
 ```
 
-Esperado: **varias reservas confirmadas sobre 1 asiento**, `[FALLA] SOBREVENTA`.
+Resultado verificado en AWS (10/09):
+
+```
+      201 :   2   reserva creada
+  asientos comprometidos .. 1
+  reservas vivas .......... 2
+  version ................. 2
+[!] INCONSISTENTE: 2 respuestas 201 pero 1 comprometidos
+```
+
+**Esto es una actualización perdida, y es peor que una sobreventa visible:** dos pasajeros tienen
+el mismo asiento (`reservas vivas = 2`), pero **el contador dice 1**. `version = 2` prueba que hubo
+dos escrituras y que la segunda pisó a la primera. **El sistema no sabe que vendió de más.**
+
+> El veredicto dice *INCONSISTENTE* y no *SOBREVENTA* porque compara el contador contra la
+> capacidad (1 ≤ 1). La sobreventa real está en `reservas vivas`. Por eso el contador no alcanza:
+> miente de forma coherente. Cuántas reservas colisionan varía entre corridas (en local fueron 4;
+> en AWS, con la latencia de red de por medio, 2) — el efecto es el mismo.
 
 **Restaurar — ⚠️ en este orden, o falla:**
 
@@ -475,9 +510,11 @@ psql "$DSN_OLTP" -c "ALTER TABLE reservas.instancia_vuelo ADD CONSTRAINT no_sobr
                      CHECK (asientos_comprometidos_eco <= capacidad_vendible_eco);"
 ```
 
-> **Por qué el orden:** la corrida A deja más asientos comprometidos que vendibles. `ADD
-> CONSTRAINT` valida las filas existentes, encuentra la violación y **se niega**. La corrida B
-> resetea esa instancia a un estado válido antes de disparar.
+> **Por qué el orden:** `ADD CONSTRAINT` valida las filas existentes, y si encuentra una que lo
+> viola, **se niega**. Hoy la prueba borra su instancia al terminar, así que ya no deja la fila
+> inválida; igual conviene la corrida B antes del `CHECK`: confirma que la API volvió al modo
+> seguro *antes* de volver a encender la segunda capa. Verificado en AWS el 10/09: después de este
+> bloque, `no_sobreventa_eco` y `no_sobreventa_bus` quedan presentes.
 
 La prueba guarda el resultado en `evidencia/concurrencia/resultado-<etiqueta>.json`. Para
 conservarlo:
@@ -533,7 +570,12 @@ RUN=$(aws glue start-job-run --job-name job-raw-processed --query JobRunId --out
 aws glue get-job-run --job-name job-raw-processed --run-id $RUN --query 'JobRun.[JobRunState,ExecutionTime]' --output text
 ```
 
-Esperado: `SUCCEEDED` en ~150 s. **Cuesta ~$0,15 por corrida.**
+Esperado: `SUCCEEDED` en ~170 s. **Cuesta ~$0,15 por corrida.**
+
+> **Se puede correr cuantas veces se quiera.** Cada corrida agrega a `raw/` una partición
+> `fecha_extraccion=` —es el historial— y reescribe `processed/` sólo con la extracción nueva.
+> Hasta el 10/09 no era así: `processed/` leía todas las extracciones y **duplicaba las filas** en
+> la segunda corrida (medido: 17.787 filas para 8.894 reservas). Corregido y verificado.
 
 ---
 
@@ -651,6 +693,9 @@ anterior ya está en el repo** (`evidencia/concurrencia/resultado-sin-lock.json`
 | 9 | La prueba de concurrencia miraba otra base | la conexión estaba fija al Docker local | **corregido el 10/09**: lee `DSN_OLTP` como la API |
 | 10 | Restaurar el `CHECK` después de la corrida A falla | quedan filas que lo violan | resetear la instancia primero (§5.5). **Corregido el 10/09** en la sección 5.6 |
 | 11 | El data lake tenía 3 zonas y datos en 1 | la primera pasada sólo exportó `curated/` | job de Glue para `raw/` y `processed/` |
+| 12 | La prueba de concurrencia falla con `ForeignKeyViolation` sobre `pago_id_reserva_fkey` | borraba reservas **pagadas** de una instancia de la demo, y el esquema protege los pagos | **corregido el 10/09**: usa una instancia dedicada y la borra al terminar |
+| 13 | `processed/` con todas las filas duplicadas | el job leía todas las extracciones de `raw/` | **corregido el 10/09**: lee sólo la extracción recién escrita |
+| 14 | Al subir un archivo a CloudShell con el mismo nombre, no se reemplaza | CloudShell no sobrescribe: *"ya existe en el entorno y no se sobrescribirá"* | `rm` del archivo viejo antes de subir el nuevo, y **verificar la línea que cambió**, no una que aparece en las dos versiones |
 
 ---
 

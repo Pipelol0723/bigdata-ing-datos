@@ -22,7 +22,7 @@ import json
 import os
 import threading
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import httpx
@@ -39,28 +39,60 @@ DSN = os.environ.get(
 DIR_EVIDENCIA = Path(__file__).resolve().parents[1] / "evidencia" / "concurrencia"
 
 
+# Instancia DEDICADA a la prueba, en una fecha fuera de la operación real.
+#
+# Por qué no una instancia de la demo: el esquema NO borra en cascada los
+# registros financieros —`pago` y `comision` no tienen ON DELETE CASCADE—
+# porque un pago es auditoría y no puede desaparecer porque se borró una
+# reserva. Las instancias de la demo tienen reservas pagadas, así que
+# "limpiarlas" choca con esa regla (pasó en AWS el 10/09:
+# ForeignKeyViolation sobre pago_id_reserva_fkey). En la instancia dedicada
+# sólo reserva esta prueba, que nunca paga: se limpia sin tocar nada
+# financiero. Y al terminar se borra, para no ensuciar el ETL ni el lago.
+FECHA_PRUEBA = date(2099, 12, 31)
+
+
+def _borrar_reservas(cur, id_inst: int) -> None:
+    """Borra las reservas de la instancia. Itinerario, tramo, asignación e
+    historial caen en cascada; en la instancia dedicada no hay pagos."""
+    cur.execute(
+        """DELETE FROM reservas.reserva r
+            WHERE r.id_reserva IN (
+                SELECT i.id_reserva FROM reservas.itinerario i
+                JOIN reservas.tramo t ON t.id_itinerario = i.id_itinerario
+                WHERE t.id_instancia = %s)""",
+        (id_inst,),
+    )
+
+
 def preparar_instancia(capacidad: int = 1) -> dict:
-    """Deja una instancia de vuelo con exactamente `capacidad` asientos libres."""
+    """Deja la instancia dedicada con exactamente `capacidad` asientos libres."""
     with psycopg.connect(DSN, row_factory=dict_row) as conn, conn.cursor() as cur:
+        # Se crea clonando el vuelo AV8020; si quedó de una corrida
+        # interrumpida, se reutiliza (restricción instancia_unica).
+        cur.execute(
+            """INSERT INTO reservas.instancia_vuelo
+                      (id_vuelo_prog, fecha_operacion, matricula,
+                       capacidad_vendible_eco, capacidad_vendible_bus)
+               SELECT vp.id_vuelo_prog, %s, iv.matricula, %s, 0
+                 FROM reservas.vuelo_programado vp
+                 JOIN reservas.instancia_vuelo iv USING (id_vuelo_prog)
+                WHERE vp.numero_vuelo = 'AV8020'
+                ORDER BY iv.fecha_operacion LIMIT 1
+               ON CONFLICT (id_vuelo_prog, fecha_operacion) DO NOTHING""",
+            (FECHA_PRUEBA, capacidad),
+        )
         cur.execute(
             """SELECT iv.id_instancia
                  FROM reservas.instancia_vuelo iv
                  JOIN reservas.vuelo_programado vp USING (id_vuelo_prog)
-                WHERE vp.numero_vuelo = 'AV8020'
-                  AND iv.fecha_operacion > CURRENT_DATE + 5
-                ORDER BY iv.fecha_operacion LIMIT 1"""
+                WHERE vp.numero_vuelo = 'AV8020' AND iv.fecha_operacion = %s""",
+            (FECHA_PRUEBA,),
         )
         id_inst = cur.fetchone()["id_instancia"]
 
-        # Borra reservas previas de esa instancia para partir de cero
-        cur.execute(
-            """DELETE FROM reservas.reserva r
-                WHERE r.id_reserva IN (
-                    SELECT i.id_reserva FROM reservas.itinerario i
-                    JOIN reservas.tramo t ON t.id_itinerario = i.id_itinerario
-                    WHERE t.id_instancia = %s)""",
-            (id_inst,),
-        )
+        # Restos de una corrida anterior que no llegó a limpiar
+        _borrar_reservas(cur, id_inst)
         cur.execute(
             """UPDATE reservas.instancia_vuelo
                   SET capacidad_vendible_eco = %s,
@@ -71,6 +103,15 @@ def preparar_instancia(capacidad: int = 1) -> dict:
         )
         conn.commit()
     return {"id_instancia": id_inst, "capacidad": capacidad}
+
+
+def limpiar_instancia(id_inst: int) -> None:
+    """Borra las reservas de la prueba y la instancia dedicada."""
+    with psycopg.connect(DSN) as conn, conn.cursor() as cur:
+        _borrar_reservas(cur, id_inst)
+        cur.execute("DELETE FROM reservas.instancia_vuelo WHERE id_instancia = %s",
+                    (id_inst,))
+        conn.commit()
 
 
 def estado_instancia(id_inst: int) -> dict:
@@ -140,6 +181,8 @@ def main() -> None:
     ap.add_argument("--peticiones", type=int, default=30)
     ap.add_argument("--capacidad", type=int, default=1)
     ap.add_argument("--etiqueta", default="con-lock")
+    ap.add_argument("--conservar", action="store_true",
+                    help="no borrar la instancia de prueba al terminar (para inspeccionarla)")
     args = ap.parse_args()
 
     modo_api = httpx.get(f"{args.url}/salud", timeout=10).json()["modo_inventario"]
@@ -208,6 +251,12 @@ def main() -> None:
     destino = DIR_EVIDENCIA / f"resultado-{args.etiqueta}.json"
     destino.write_text(json.dumps(salida, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"\nEvidencia escrita en: {destino.relative_to(DIR_EVIDENCIA.parents[1])}")
+
+    if args.conservar:
+        print(f"Instancia de prueba {id_inst} conservada (--conservar).")
+    else:
+        limpiar_instancia(id_inst)
+        print(f"Instancia de prueba {id_inst} y sus reservas eliminadas.")
 
 
 if __name__ == "__main__":
