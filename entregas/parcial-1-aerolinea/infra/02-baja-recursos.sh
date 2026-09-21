@@ -122,6 +122,9 @@ if [ -n "$SGS" ]; then
     echo "# Los SG se referencian entre sí (el de las bases apunta al de la API y al de"
     echo "# Glue): se reintenta hasta 3 vueltas para que caigan en el orden que se pueda."
     echo "for i in 1 2 3; do for sg in $(echo $SGS); do aws ec2 delete-security-group --group-id \$sg --region $R 2>/dev/null && echo \"borrado \$sg\"; done; done"
+    echo "# Si alguno sobrevivió, esto muestra por qué (DependencyViolation = una EC2, una"
+    echo "# interfaz de red u otro SG todavía lo usa o lo referencia):"
+    echo "for sg in $(echo $SGS); do aws ec2 describe-security-groups --group-ids \$sg --region $R >/dev/null 2>&1 && aws ec2 delete-security-group --group-id \$sg --region $R; done"
 fi
 
 if [ -n "$BUCKETS_PARCIAL" ]; then
