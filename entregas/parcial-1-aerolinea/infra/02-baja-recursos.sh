@@ -119,6 +119,19 @@ while IFS= read -r x; do [ -n "$x" ] && echo "aws glue delete-connection --conne
 while IFS= read -r x; do [ -n "$x" ] && echo "aws glue delete-database --name \"$x\" --region $R"; done <<< "$DATABASES"
 while IFS= read -r x; do [ -n "$x" ] && echo "aws logs delete-log-group --log-group-name \"$x\" --region $R"; done <<< "$LOGS"
 if [ -n "$SGS" ]; then
+    # Reglas de un SG que NO se va a borrar (típicamente el default) que apuntan a uno
+    # que sí: bloquean el borrado con DependencyViolation. Pasó con glue-sakila, que
+    # seguía referenciado desde el default por la práctica de Sakila.
+    aws ec2 describe-security-group-rules --region $R \
+        --query "SecurityGroupRules[?ReferencedGroupInfo.GroupId!=null].[GroupId,SecurityGroupRuleId,IsEgress,ReferencedGroupInfo.GroupId]" \
+        --output text 2>/dev/null |
+    while read -r grupo regla egreso apunta; do
+        printf '%s\n' $SGS | grep -qx "$apunta" || continue      # no apunta a uno que se borra
+        printf '%s\n' $SGS | grep -qx "$grupo" && continue       # el que la tiene también se borra
+        [ "$egreso" = "True" ] && tipo=egress || tipo=ingress
+        echo "# $grupo tiene una regla hacia $apunta: hay que quitarla antes de borrarlo"
+        echo "aws ec2 revoke-security-group-$tipo --group-id $grupo --security-group-rule-ids $regla --region $R"
+    done
     echo "# Los SG se referencian entre sí (el de las bases apunta al de la API y al de"
     echo "# Glue): se reintenta hasta 3 vueltas para que caigan en el orden que se pueda."
     echo "for i in 1 2 3; do for sg in $(echo $SGS); do aws ec2 delete-security-group --group-id \$sg --region $R 2>/dev/null && echo \"borrado \$sg\"; done; done"
