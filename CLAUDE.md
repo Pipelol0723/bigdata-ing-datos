@@ -213,7 +213,7 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- 🔴 **Estado actual (06/09): Parcial 1 — entrega Y DEFENSA el jueves 10/09.** Sistema de reservas de una aerolínea. **Las dos entregas de la §6 se presentan juntas ese día** (confirmado 06/09). Individual, defensa oral **eliminatoria por sección**. Enunciado íntegro en `entregas/parcial-1-aerolinea/enunciado.md`.
+- ✅ **Estado actual (21/09): Parcial 1 cerrado — cuenta limpia para el nuevo corte.** Se entregó y defendió el 10/09; el 21/09 se dio de baja toda su infraestructura (ver *Cuenta limpia al 21/09* más abajo). Enunciado, documento final y evidencia quedan en `entregas/parcial-1-aerolinea/`.
 
 ### 📊 Avance del parcial al 06/09
 
@@ -289,7 +289,7 @@ Total de las dos pasadas: **~$0,64**.
 
 ✅ ~~Plan de AWS de una sola sesión~~ — **ejecutado el 08/09 y reprobado el 10/09**; la evidencia quedó en `evidencia/aws/` (no en `evidencia/glue/`, que está vacía).
 
-⚠️ **Objetos de Glue huérfanos de la práctica de Sakila** (conexión JDBC, `crawler-sakila-rds`, database `sakila_catalog`) apuntan a una RDS borrada. No cobran, pero conviene borrarlos antes de que el profesor mire el catálogo del parcial.
+✅ ~~Objetos de Glue huérfanos de la práctica de Sakila~~ — borrados el 21/09, junto con el SG `glue-sakila`.
 
 - **Cuenta AWS vacía (01/09):** se dieron de baja Cloud9 y la RDS `db-service`. **No queda ningún recurso cobrando cómputo.** El parcial arranca con infraestructura nueva.
 - **Trabajo anterior, ya entregado:** EC2 + Apache (`entregas/ec2-apache/`) con FastAPI como reverse proxy (`scripts/instalar-fastapi.sh`), Sakila en RDS, MySQL local en Cloud9 y Glue conectado a la RDS.
@@ -310,34 +310,36 @@ Total de las dos pasadas: **~$0,64**.
 
 ### Recursos AWS
 
-### 🔴 VIVOS al 08/09 — qué hay que dar de baja y cuándo
+### ✅ Cuenta limpia al 21/09 — fin del parcial, arranca el nuevo corte
 
-| Recurso | Identificador | Cobra | Baja |
-|---|---|---|---|
-| **RDS OLTP** | `parcial-oltp` (db.t3.micro, PG 18.3) | ~$0,43/día | ⚠️ **BORRAR el 10/09 después de la defensa** |
-| **RDS OLAP** | `parcial-olap` (db.t3.micro, PG 18.3) | ~$0,43/día | ⚠️ **BORRAR el 10/09 después de la defensa** |
-| **EC2 de la API** | `i-0154fecb40194d171` (`api-parcial`, t3.micro, AL2023) — creada el 10/09 | ~$0,25/día | ⚠️ **TERMINAR el 10/09 después de la defensa** (detenida se reinicia sola) |
-| Parámetros SSM | `/parcial/pg_password` (SecureString) · `/parcial/ep_oltp` · `/parcial/ep_olap` · `/parcial/bucket` | gratis | borrar junto con la EC2 |
-| SG de la API | `sg-011464a7b7ecbddbd` (`api-parcial`) | gratis | tras terminar la EC2 |
-| Bucket del data lake | `datalake-aerolinea-936980625651` | centavos/mes | ✅ **NO borrar** — lo usan el Checkpoint 2 y el resto del curso |
-| SG de Glue (auto-referenciado) | `sg-0b3237efc5e6f8c1e` | gratis | tras borrar las RDS |
-| SG de las bases | `sg-0a85ff98fa816dff8` | gratis | tras borrar las RDS |
-| VPC Endpoint de S3 (Gateway) | `vpce-09b60424dc9c1f1cf` | **gratis** | dejarlo |
-| Catálogo — **3 databases** | `aerolinea_raw` (17 tablas) · `aerolinea_processed` (17) · `aerolinea_catalog` (8) | no cobran en reposo | dejar hasta la corrección |
-| **3 crawlers** | `crawler-datalake-aerolinea` · `crawler-raw` · `crawler-processed` | ~$0,12 por corrida | dejar **On demand**, nunca con schedule |
-| **Job de Glue** | `job-raw-processed` — corre dentro de la VPC por `conn-parcial-oltp` | ~$0,15 por corrida | dejar |
-| 2 conexiones JDBC | `conn-parcial-oltp` · `conn-parcial-olap` | no cobran | dejar hasta la corrección |
+Toda la infraestructura del parcial se dio de baja el 21/09 con
+`entregas/parcial-1-aerolinea/infra/02-baja-recursos.sh`. El script sólo lee: audita e imprime
+los comandos con los IDs reales, y el alumno los pegó a mano en CloudShell. Verificado: **LIMPIO**.
 
-**Decisión del alumno (08/09):** las RDS quedan encendidas hasta la sustentación del **10/09**
-para poder mostrarlas en vivo. Son ~$1,70 de los ~$45 restantes, a cambio de no depender de
-recrearlas a las corridas. **Recordar el borrado ese mismo día.**
+| Se borró | Detalle |
+|---|---|
+| RDS | `parcial-oltp` y `parcial-olap`, sin snapshot final |
+| EC2 | `i-0154fecb40194d171` (`api-parcial`) |
+| S3 | `datalake-aerolinea-936980625651`, con todas sus versiones |
+| Glue | `job-raw-processed`, 4 crawlers, 3 conexiones, 4 databases (incluye los restos de Sakila) y los log groups `/aws-glue/*` |
+| SSM | `/parcial/*` |
+| Security Groups | `rds-parcial`, `glue-parcial`, `api-parcial`, `glue-sakila`, `launch-wizard-1` |
 
-```bash
-aws rds delete-db-instance --db-instance-identifier parcial-oltp --skip-final-snapshot --delete-automated-backups --region us-east-1
-aws rds delete-db-instance --db-instance-identifier parcial-olap --skip-final-snapshot --delete-automated-backups --region us-east-1
-aws ec2 terminate-instances --instance-ids i-0154fecb40194d171 --region us-east-1
-aws ssm delete-parameters --names /parcial/pg_password /parcial/ep_oltp /parcial/ep_olap /parcial/bucket --region us-east-1
-```
+**Queda a propósito:** el VPC Endpoint de S3 `vpce-09b60424dc9c1f1cf` (tipo Gateway, **gratis**;
+lo necesita cualquier job de Glue que corra dentro de la VPC), la VPC default y su SG `default`.
+
+⚠️ **Las RDS quedaron vivas 11 días después de la defensa** (10/09 → 21/09). Si estuvieron
+encendidas todo ese tiempo, son hasta ~$11 de más. **Anotar el presupuesto real en la próxima
+sesión.** Es el patrón de siempre, el recurso barato olvidado: la baja estaba escrita acá mismo,
+con fecha, y aun así se pasó. **Una baja diferida ("después de la defensa") es una baja olvidada.**
+
+💡 **Trampa nueva: el SG `default` retiene referencias.** `glue-sakila` no se dejaba borrar
+(`DependencyViolation`) porque el SG `default` tenía una regla de entrada 3306 que lo
+referenciaba, de cuando la RDS de Sakila usaba el default. Hubo que revocar esa regla primero. El
+script ahora imprime ese `revoke` solo.
+
+📌 **Si el Checkpoint 2 necesita el data lake**, hay que recrearlo porque el bucket ya no existe:
+`entregas/semana-04/checkpoint-1/crear-data-lake.sh`.
 
 ### ✅ Guía de ejecución en AWS probada de punta a punta — 10/09
 
@@ -367,9 +369,9 @@ texto que aparece en las dos versiones.
 | ~~Cloud9 `i-0490df2bd01dfaafe`~~ | `t3.small` · entorno `aws-cloud9-my-env-5521f907b4ed4cfba8188eaba6c1ff1a` | ✅ **BORRADO 01/09** |
 | ~~RDS `db-service`~~ | `db.t4g.micro` · MySQL 8.4.9 · Sakila cargada | ✅ **BORRADA 01/09** |
 
-⚠️ **Quedan objetos de Glue huérfanos** — conexión JDBC, crawler `crawler-sakila-rds` y database `sakila_catalog` apuntando a una RDS que ya no existe. **No cobran en reposo**, pero conviene borrarlos antes de que el profesor mire el catálogo del parcial.
+✅ ~~Objetos de Glue huérfanos de Sakila~~ — borrados el 21/09.
 
-📌 **Recursos del parcial:** dos instancias RDS PostgreSQL nuevas (OLTP + OLAP). Ver `entregas/parcial-1-aerolinea/documento/07-aws-etl-glue-costos.md`.
+📌 **Recursos del parcial:** dados de baja el 21/09 (ver *Cuenta limpia al 21/09*).
 
 ⚠️ **Una RDS se reinicia sola a los 7 días de detenida** — regla de AWS, no del lab — y cobra storage aunque esté detenida (~$2.30/mes por 20 GB). Para las dos del parcial la consigna es **borrarlas** después de la defensa, no detenerlas: el esquema y el script de bootstrap quedan en el repo.
 
@@ -442,7 +444,7 @@ Si alguna vez hicieran falta: parameter group propio (familia `mysql8.4`) con `l
 ⚠️ Con 908 MB de RAM **no entra Spark ni un dataset mediano en pandas**. Para procesamiento real: EMR, o DuckDB local.
 ### 🔵 Glue conectado a la RDS (histórico — esa RDS ya no existe)
 
-⚠️ **Los IDs de esta sección son de la práctica de Sakila y apuntan a recursos borrados el 01/09.** Se conserva por **las cuatro trampas de más abajo**, que aplican igual a las conexiones PostgreSQL del parcial y son horas de trabajo ya pagadas. Los recursos en sí son huérfanos.
+⚠️ **Los IDs de esta sección son de la práctica de Sakila y apuntan a recursos borrados el 01/09.** Se conserva por **las cuatro trampas de más abajo**, que aplican igual a las conexiones PostgreSQL del parcial y son horas de trabajo ya pagadas. Los objetos de Glue y el SG `glue-sakila` se borraron el 21/09; de esta tabla sólo sigue vivo el VPC Endpoint.
 
 | Recurso | ID / nombre |
 |---|---|
