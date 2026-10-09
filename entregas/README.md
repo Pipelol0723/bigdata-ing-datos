@@ -27,6 +27,7 @@ depende de los otros ni de rutas del repositorio, para poder enviarse suelto por
 | 4 | **Session 8 — Checkpoint 1** (proyecto) | [`semana-04/checkpoint-1/README.md`](semana-04/checkpoint-1/README.md) | ✅ ejecutado en AWS |
 | 4 | Module 4 — Design Principles for Pipelines | [`modulos-aws-academy/modulo-4-design-principles.md`](modulos-aws-academy/modulo-4-design-principles.md) | 🟡 documento ✅ · **módulo pendiente** |
 | 5 | **Parcial 1** | [`parcial-1-aerolinea/entrega/Parcial1-Sistema-Reservas-Aerolinea.pdf`](parcial-1-aerolinea/entrega/Parcial1-Sistema-Reservas-Aerolinea.pdf) | ✅ **documento final consolidado** · falta el nombre en la portada |
+| 8 | **Taller Taxis NYC** (EMR + PySpark) | [`semana-08/taller-taxis-nyc-emr/PLAN.md`](semana-08/taller-taxis-nyc-emr/PLAN.md) | 📋 **planificado** · faltan 5 decisiones del alumno |
 | — | EC2 + Apache (práctica anterior) | [`ec2-apache/README.md`](ec2-apache/README.md) | ✅ entregada |
 
 **Los cuatro 🟡 tienen su documento escrito**, pero el módulo en sí se completa en la plataforma
@@ -115,6 +116,5 @@ El CSV escanea lo mismo sin importar qué se le pregunte.
 
 Costo real de las dos sesiones: **~$0,64**.
 
-💰 El bucket **no se borra**: cuesta centavos y lo necesitan el Checkpoint 2 y el resto del curso.
-Las RDS quedan hasta la sustentación del 10/09 y **se borran ese día** — cobran almacenamiento
-aunque estén detenidas, y AWS las reinicia solas a los 7 días.
+✅ **Todo dado de baja el 21/09**, bucket incluido (detalle en la bitácora del `CLAUDE.md`). Si el
+Checkpoint 2 necesita el data lake, se recrea con `semana-04/checkpoint-1/crear-data-lake.sh`.

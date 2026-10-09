@@ -213,7 +213,8 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- ✅ **Estado actual (21/09): Parcial 1 cerrado — cuenta limpia para el nuevo corte.** Se entregó y defendió el 10/09; el 21/09 se dio de baja toda su infraestructura (ver *Cuenta limpia al 21/09* más abajo). Enunciado, documento final y evidencia quedan en `entregas/parcial-1-aerolinea/`.
+- 📋 **Estado actual (09/10): Taller Taxis NYC (EMR + PySpark), planificado.** Enunciado y plan en `entregas/semana-08/taller-taxis-nyc-emr/PLAN.md`. Dataset medido sin descargarlo: **102.871.387 viajes en 12 Parquet (1,46 GB)**, con tipos que cambian a mitad de año (`passenger_count`, `RatecodeID`) y fechas fuera de 2018 en los 12 meses. **No se creó nada en AWS: faltan las 5 decisiones del plan.** Costo estimado ≈ $1–1,50.
+- ✅ **(21/09): Parcial 1 cerrado — cuenta limpia para el nuevo corte.** Se entregó y defendió el 10/09; el 21/09 se dio de baja toda su infraestructura (ver *Cuenta limpia al 21/09* más abajo). Enunciado, documento final y evidencia quedan en `entregas/parcial-1-aerolinea/`.
 
 ### 📊 Avance del parcial al 06/09
 
