@@ -204,8 +204,13 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 |---|---|---|
 | 2026-08-25 | **$3.20 / $50** | ~19 días de curso · ~$0.17/día promedio · no incluye la clase de ese día (~$1 más) |
 | 2026-09-01 | **$4.90 / $50** | ~26 días de curso · ~$0.19/día promedio · $1.70 en la semana, de los cuales ~$0.77 fue storage de recursos que nadie usó |
+| 2026-10-09 | **$18.80 / $50** | ~64 días de curso · **$13.90 desde el 01/09**: ~$2,70 fue el trabajo del parcial y **~$11 (estimado) las RDS y la EC2 olvidadas** del 10/09 al 21/09. Quedan **$31,20** |
 
 Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el piso diario baja de ~$0.11 a **casi cero** entre clases.
+
+🔴 **La lección del 01/09 → 09/10:** el olvido costó **unas 4 veces lo que costó todo el trabajo del
+parcial**. La baja estaba escrita en esta bitácora, con fecha, y aun así se pasó 11 días. Desde
+ahora: **la baja se hace en la misma sesión en que termina el uso**, nunca "después de".
 
 💡 **La lección de la semana 25/08 → 01/09:** de $1.70 consumidos, ~$0.77 fue *storage idle*. Parece nada, pero proyectado a fin de semestre son ~$11 — el **22% del saldo restante** — por almacenar una base con Sakila que ya no se iba a tocar. **El gasto peligroso no es el pico, es el piso.**
 
@@ -213,7 +218,7 @@ Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el pis
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- 📋 **Estado actual (09/10): Taller Taxis NYC (EMR + PySpark), planificado.** Enunciado y plan en `entregas/semana-08/taller-taxis-nyc-emr/PLAN.md`. Dataset medido sin descargarlo: **102.871.387 viajes en 12 Parquet (1,46 GB)**, con tipos que cambian a mitad de año (`passenger_count`, `RatecodeID`) y fechas fuera de 2018 en los 12 meses. **No se creó nada en AWS: faltan las 5 decisiones del plan.** Costo estimado ≈ $1–1,50.
+- 📋 **Estado actual (09/10): Taller Taxis NYC (EMR + PySpark), planificado.** Enunciado y plan en `entregas/semana-08/taller-taxis-nyc-emr/PLAN.md`. Dataset medido sin descargarlo: **102.871.387 viajes en 12 Parquet (1,46 GB)**, con tipos que cambian a mitad de año (`passenger_count`, `RatecodeID`) y fechas fuera de 2018 en los 12 meses. **Entrega: martes 13/10, mostrando el clúster corriendo, en persona, en clase y desde la consola de AWS** → se levanta de nuevo ese día (no sobrevive entre sesiones del lab). Decisiones tomadas el 09/10 (referencia con Athena sobre los crudos · tope de duración por percentiles · sin zonas 264/265 · se guarda 2018 entero · notebook en EMR Studio o, si el lab no lo deja, en SageMaker). Scripts, programa y notebook listos en `infra/`, `spark/` y `notebook/`. **Todavía no se creó nada en AWS.** Próximo: sesión 1 (carga + referencia + probar EMR Studio), ensayo general, demo. Costo estimado ≈ $2–2,50.
 - ✅ **(21/09): Parcial 1 cerrado — cuenta limpia para el nuevo corte.** Se entregó y defendió el 10/09; el 21/09 se dio de baja toda su infraestructura (ver *Cuenta limpia al 21/09* más abajo). Enunciado, documento final y evidencia quedan en `entregas/parcial-1-aerolinea/`.
 
 ### 📊 Avance del parcial al 06/09
