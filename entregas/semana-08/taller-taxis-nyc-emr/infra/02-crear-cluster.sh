@@ -2,11 +2,16 @@
 # =============================================================================
 #  El clúster EMR del taller: el mismo comando para el ensayo y para la demo
 # =============================================================================
-#  1 primario + 2 core m5.large ("large" es el máximo que permite el lab), con
+#  1 primario + 2 core m4.large ("large" es el máximo que permite el lab), con
 #  Spark, Livy y Jupyter Enterprise Gateway —lo que necesita un notebook de EMR
 #  Studio o de SageMaker—, logs en S3 y AUTO-TERMINACIÓN por inactividad.
 #
-#  ⚠️ Cobra ~$0,36/h desde que arranca hasta que se termina, haga algo o no.
+#  ¿Por qué m4 y no m5? Entre los "large", EMR sólo acepta c4.large, m1.large y
+#  m4.large (consultado el 10/10 con list-supported-instance-types, en 5.36 a 7.14):
+#  m5.large da "Instance type 'm5.large' is not supported".
+#
+#  ⚠️ Cobra ~$0,39/h ($0,10 de EC2 + $0,03 de EMR, por nodo) desde que arranca
+#     hasta que se termina, haga algo o no.
 #     El clúster NO sobrevive al fin de la sesión del lab.
 #
 #  Uso:  bash 02-crear-cluster.sh [horas_inactivo]
@@ -57,8 +62,8 @@ ID=$(aws emr create-cluster --region "$R" \
     --release-label "$RELEASE" \
     --applications Name=Hadoop Name=Spark Name=Livy Name=JupyterEnterpriseGateway \
     --instance-groups \
-        InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m5.large \
-        InstanceGroupType=CORE,InstanceCount=2,InstanceType=m5.large \
+        InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large \
+        InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
     --service-role EMR_DefaultRole \
     --ec2-attributes "KeyName=vockey,SubnetId=$SUBNET,InstanceProfile=EMR_EC2_DefaultRole" \
     --log-uri "s3://$BUCKET/logs/emr/" \

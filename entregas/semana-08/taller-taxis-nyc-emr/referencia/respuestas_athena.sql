@@ -4,11 +4,9 @@
 --  Para qué: tener los números ANTES de pagar el clúster. Lo que dé EMR tiene que
 --  coincidir con esto; si no coincide, hay un error en uno de los dos lados.
 --
---  Cómo:  1. En Athena, elegir una ubicación para los resultados:
---            s3://taxis-nyc-<cuenta>/athena-resultados/
---         2. Reemplazar BUCKET por taxis-nyc-<cuenta> en las consultas 1 y 2.
---         3. Correr de a una (seleccionar el bloque y Ctrl+Enter).
---         4. Con la consulta 3 se elige el tope; reemplazar TOPE_MIN en la 4 a la 7.
+--  Cómo:  python3 correr_referencia.py              → consultas 0 a 3 (tablas y calidad)
+--         python3 correr_referencia.py --tope 120   → consultas 4 a 7, con el tope elegido
+--         (o a mano en la consola de Athena, reemplazando BUCKET y TOPE_MIN)
 --
 --  Costo: cada consulta lee como mucho las 4 columnas (~907 MB) → ~$0,005.
 -- =============================================================================
@@ -58,7 +56,7 @@ SELECT count(*)                                      AS total,          -- esper
 FROM v;
 
 
--- 4 · Paso 6 — el viaje más largo: el crudo, y (descomentando el WHERE) el más largo válido
+-- 4a · Paso 6 — el viaje más largo, tal como viene
 SELECT pu.zone AS pu_zone,
        d.zone  AS do_zone,
        v.tpep_pickup_datetime  AS pu_datetime,
@@ -67,8 +65,21 @@ SELECT pu.zone AS pu_zone,
 FROM taxis_referencia.viajes_crudos v
 JOIN taxis_referencia.zonas pu ON v.pulocationid = CAST(pu.locationid AS bigint)
 JOIN taxis_referencia.zonas d  ON v.dolocationid = CAST(d.locationid  AS bigint)
--- WHERE year(v.tpep_pickup_datetime) = 2018
---   AND date_diff('second', v.tpep_pickup_datetime, v.tpep_dropoff_datetime) BETWEEN 1 AND TOPE_MIN * 60
+ORDER BY trip_duration DESC
+LIMIT 3;
+
+
+-- 4b · Paso 6 — el viaje más largo entre los válidos
+SELECT pu.zone AS pu_zone,
+       d.zone  AS do_zone,
+       v.tpep_pickup_datetime  AS pu_datetime,
+       v.tpep_dropoff_datetime AS do_datetime,
+       date_diff('second', v.tpep_pickup_datetime, v.tpep_dropoff_datetime) / 60.0 AS trip_duration
+FROM taxis_referencia.viajes_crudos v
+JOIN taxis_referencia.zonas pu ON v.pulocationid = CAST(pu.locationid AS bigint)
+JOIN taxis_referencia.zonas d  ON v.dolocationid = CAST(d.locationid  AS bigint)
+WHERE year(v.tpep_pickup_datetime) = 2018
+  AND date_diff('second', v.tpep_pickup_datetime, v.tpep_dropoff_datetime) BETWEEN 1 AND TOPE_MIN * 60
 ORDER BY trip_duration DESC
 LIMIT 3;
 
