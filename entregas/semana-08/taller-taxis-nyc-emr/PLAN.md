@@ -29,7 +29,7 @@
 | 2 | **Cómo se ve el notebook** | **Desde la consola de AWS**: EMR Studio, o SageMaker si el lab no deja crear el Studio | Túnel SSH a JupyterHub | La demo es por la consola: sin túnel ni `.pem`, y sin depender de que el Wi-Fi del campus deje salir el puerto 22. *El camino A/B lo propuse yo: revisalo* |
 | 3 | **Qué es un dato erróneo** | Recogida fuera de 2018 · duración ≤ 0 · duración mayor a un **tope elegido con los percentiles**, que queda como parámetro · destinos **264 y 265** | Tope fijo de 24 h · contar "Outside of NYC" como destino | Un tope fijo deja pasar taxímetros olvidados de varias horas. Las zonas 264 ("Unknown") y 265 ("Outside of NYC") no son lugares |
 | 4 | **Qué se guarda en el paso 12** | **Sólo 2018, con todas sus duraciones** | Sólo los válidos · todo | 12 particiones limpias, no se pierde ningún viaje real de 2018 y Athena reproduce exacto el paso 11. Los crudos siguen en `taxis/viajes/` |
-| 5 | **Tamaño del clúster** | **1 primario + 2 core `m5.large`** (~$0,36/h). *Lo decidí yo para no frenar: revisalo* | 1 + 4 (~$0,60/h) | La lectura no pasa de 12 tareas en paralelo: cada archivo es un solo *row group* |
+| 5 | **Tamaño del clúster** | **1 primario + 2 core `m4.large`** (~$0,39/h). *Lo decidí yo para no frenar: revisalo* | 1 + 4 (~$0,65/h) | La lectura no pasa de 12 tareas en paralelo: cada archivo es un solo *row group* |
 
 ---
 
@@ -67,13 +67,14 @@ YARN y HDFS; vos elegís cuántas máquinas y cuánto tiempo viven.
 | **DuckDB local** | 102 millones de filas entran en una laptop: esto no es *big data* por volumen |
 | **EMR** ✅ | Control del clúster (tamaño, versiones, notebook) y procesamiento distribuido de verdad. Se paga cada hora de máquina encendida, se use o no |
 
-**Cuánto cuesta.** `m5.large` ≈ **$0,12/h por nodo** ($0,096 de EC2 + $0,024 de recargo EMR):
-el clúster de 3 nodos ≈ **$0,36/h**, desde que arranca hasta que se termina.
+**Cuánto cuesta.** `m4.large` ≈ **$0,13/h por nodo** ($0,10 de EC2 + $0,03 de recargo EMR):
+el clúster de 3 nodos ≈ **$0,39/h**, desde que arranca hasta que se termina.
 
 **Trampas de este lab:**
 
-- **Tamaños hasta `large`.** La consola propone `m5.xlarge`, que en el lab falla. El script ya
-  pide `m5.large`.
+- **Tamaños hasta `large`, y EMR sólo acepta tres.** La consola propone `m5.xlarge`, que el lab
+  rechaza; y entre los `large` EMR sólo acepta `c4.large`, `m1.large` y `m4.large` —`m5.large` da
+  *"not supported"* (medido el 10/10). El script pide `m4.large`.
 - **El clúster no sobrevive al fin de la sesión** del lab (~4 h). Por eso el martes **se crea de
   nuevo**, una hora antes de la clase, con el mismo script del ensayo.
 - **La auto-terminación por inactividad es la red, no el plan.** En el ensayo, 1 h; **el martes,
@@ -121,7 +122,7 @@ la baja va en la misma sesión, nunca "después".
 |---|---|---|
 | **1 h antes** | *Start Lab* · `bash 02-crear-cluster.sh 3` (auto-terminación a las 3 h, no a 1) | CloudShell |
 | **45 min antes** | Clúster en `Waiting` · enganchar el notebook y **correrlo entero** (~10 min): llega a clase con las salidas frescas y los datos ya en memoria | EMR Studio / SageMaker |
-| **En clase** (~10 min) | 1 · Consola de EMR: el clúster `Waiting`, 3 × `m5.large`, las aplicaciones · 2 · El notebook, paso por paso; **una celda re-ejecutada en vivo** (el paso 7 tarda segundos sobre los datos en memoria) · 3 · **El paso 14 en vivo**: agregar el step y verlo pasar a `Running` mientras se muestra lo demás · 4 · S3: `viajes/year=2018/month=1…12` · 5 · Glue: el crawler y la tabla `viajes` en `taxis` · 6 · Athena: los meses coinciden con el paso 11 · 7 · El step en `Completed` y su salida | Consola |
+| **En clase** (~10 min) | 1 · Consola de EMR: el clúster `Waiting`, 3 × `m4.large`, las aplicaciones · 2 · El notebook, paso por paso; **una celda re-ejecutada en vivo** (el paso 7 tarda segundos sobre los datos en memoria) · 3 · **El paso 14 en vivo**: agregar el step y verlo pasar a `Running` mientras se muestra lo demás · 4 · S3: `viajes/year=2018/month=1…12` · 5 · Glue: el crawler y la tabla `viajes` en `taxis` · 6 · Athena: los meses coinciden con el paso 11 · 7 · El step en `Completed` y su salida | Consola |
 | **Al terminar la clase** | **Terminar el clúster ahí mismo** (y detener SageMaker si se usó) · `05-auditar-y-baja.sh` | Consola / CloudShell |
 
 **Si algo falla:**
@@ -178,7 +179,7 @@ taller-taxis-nyc-emr/
 
 | Recurso | Cobra | Baja |
 |---|---|---|
-| Clúster EMR `taller-taxis-nyc` | ~$0,36/h | **Al cerrar el ensayo y al salir de la clase** · auto-terminación como red |
+| Clúster EMR `taller-taxis-nyc` | ~$0,39/h | **Al cerrar el ensayo y al salir de la clase** · auto-terminación como red |
 | EMR Studio *o* notebook de SageMaker | Studio nada · SageMaker ~$0,05/h | SageMaker se detiene con el clúster; los dos se borran después de la corrección |
 | Bucket `taxis-nyc-<cuenta>`: datos, salida, scripts, logs, resultados de Athena | ~$0,06/mes | Después de la corrección |
 | Bases `taxis` y `taxis_referencia`, crawler | por corrida / nada | Después de la corrección |

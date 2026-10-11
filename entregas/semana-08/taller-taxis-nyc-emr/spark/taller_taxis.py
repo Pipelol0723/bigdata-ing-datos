@@ -15,6 +15,7 @@ Qué cambia respecto del notebook, y nada más:
 
 import argparse
 import json
+import sys
 from datetime import datetime, timezone
 
 from pyspark import StorageLevel
@@ -45,6 +46,8 @@ def main():
     ap.add_argument("--tope-min", type=float, required=True,
                     help="duración máxima válida, en minutos (elegida con los percentiles)")
     args = ap.parse_args()
+    # La salida del step es un archivo, no una terminal: sin esto, una tilde puede salir mal.
+    sys.stdout.reconfigure(encoding="utf-8")
     base = f"s3://{args.bucket}"
     tope = args.tope_min
 
