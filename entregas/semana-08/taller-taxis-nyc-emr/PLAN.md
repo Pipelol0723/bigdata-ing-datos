@@ -1,7 +1,8 @@
 # Taller Taxis NYC — EMR + PySpark · Plan de solución
 
-> **Estado (09/10):** decisiones tomadas · scripts y notebook listos para el ensayo · **todavía no
-> se creó nada en AWS**.
+> **Estado (10/10):** ✅ **ensayo general completo en AWS** — los 14 pasos hechos, y Athena, el
+> notebook y el programa dan los mismos números. Evidencia en
+> [`evidencia/sesion-2026-10-10.md`](evidencia/sesion-2026-10-10.md). Falta sólo la demo del martes.
 > **Entrega: martes 13/10, en clase — el clúster corriendo, mostrado desde la consola de AWS.**
 > **Enunciado:** [`enunciado.md`](enunciado.md), el archivo del profesor sin cambios.
 > **Semana 8** del curso, *Arquitectura de clúster EMR*. Lo que se mida acá alimenta la *matriz de
@@ -120,18 +121,26 @@ la baja va en la misma sesión, nunca "después".
 
 | Cuándo | Qué | Dónde |
 |---|---|---|
-| **1 h antes** | *Start Lab* · `bash 02-crear-cluster.sh 3` (auto-terminación a las 3 h, no a 1) | CloudShell |
-| **45 min antes** | Clúster en `Waiting` · enganchar el notebook y **correrlo entero** (~10 min): llega a clase con las salidas frescas y los datos ya en memoria | EMR Studio / SageMaker |
-| **En clase** (~10 min) | 1 · Consola de EMR: el clúster `Waiting`, 3 × `m4.large`, las aplicaciones · 2 · El notebook, paso por paso; **una celda re-ejecutada en vivo** (el paso 7 tarda segundos sobre los datos en memoria) · 3 · **El paso 14 en vivo**: agregar el step y verlo pasar a `Running` mientras se muestra lo demás · 4 · S3: `viajes/year=2018/month=1…12` · 5 · Glue: el crawler y la tabla `viajes` en `taxis` · 6 · Athena: los meses coinciden con el paso 11 · 7 · El step en `Completed` y su salida | Consola |
-| **Al terminar la clase** | **Terminar el clúster ahí mismo** (y detener SageMaker si se usó) · `05-auditar-y-baja.sh` | Consola / CloudShell |
+Tiempos medidos en el ensayo del 10/10: clúster ~13 min hasta `Waiting` · notebook entero ~18 min ·
+paso 14 ~11 min.
+
+| Cuándo | Qué | Dónde |
+|---|---|---|
+| **1 h 30 antes** | *Start Lab* · `bash 02-crear-cluster.sh 3` (auto-terminación a las 3 h, no a 1) | CloudShell |
+| **1 h 15 antes** | Clúster en `Waiting` · abrir el Workspace `taller-taxis-nyc` en EMR Studio → *Compute* → *EMR on EC2 cluster* → el clúster nuevo → *Attach* · **Run All Cells** (~18 min). El notebook ya está ahí: quedó guardado del ensayo | EMR Studio |
+| **50 min antes** | Guardar el notebook · **apagar el kernel** (si no, el step se queda esperando recursos) · lanzar el **paso 14**: `bash 03-correr-paso-14.sh 180` (~11 min) | EMR Studio · CloudShell |
+| **En clase** (~10 min) | 1 · Consola de EMR: el clúster, 3 × `m4.large`, las aplicaciones y el step en `Completed` con su salida · 2 · El notebook, paso por paso, con sus salidas · 3 · En vivo: una celda corta (por ejemplo `spark.read.parquet(".../viajes/").groupBy("month").count().show()`, unos segundos sobre la salida) · 4 · S3: `viajes/year=2018/month=1…12` · 5 · Glue: el crawler y la tabla `viajes` en `taxis` · 6 · Athena: los meses coinciden con el paso 11, con **0 bytes escaneados** · 7 · Si el profesor lo pide, un step nuevo en vivo: *Pasos → Agregar* (~11 min) | Consola |
+| **Al terminar la clase** | **Terminar el clúster ahí mismo** · `05-auditar-y-baja.sh` | Consola / CloudShell |
+
+**No consultar Athena mientras corre un step:** el paso 12 es `overwrite`, y a mitad de corrida la
+tabla tiene sólo algunos meses.
 
 **Si algo falla:**
-- **El clúster no arranca a tiempo** → la consola de EMR permite *Clone* sobre el clúster del
-  ensayo (guarda su configuración) y, mientras tanto, se muestran las capturas del ensayo.
-- **El notebook no se engancha** → el `.ipynb` del ensayo tiene las salidas guardadas, y el paso 14
-  se corre en vivo igual: sólo necesita la consola.
-- **La sesión del lab está por vencer** → *Start Lab* reinicia el contador: **verificarlo en el
-  ensayo**, con el clúster corriendo.
+- **El clúster no arranca a tiempo** → la consola de EMR tiene *Clonar* sobre el clúster del ensayo
+  (guarda su configuración) y, mientras tanto, se muestra la evidencia del ensayo.
+- **El notebook no se engancha** → el Workspace conserva las salidas del ensayo, y el paso 14 se corre
+  igual: sólo necesita la consola.
+- **La sesión del lab está por vencer** → arrancar con al menos 3 h en el contador.
 
 ---
 

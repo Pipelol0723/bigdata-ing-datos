@@ -218,7 +218,7 @@ ahora: **la baja se hace en la misma sesión en que termina el uso**, nunca "des
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- 📋 **Estado actual (09/10): Taller Taxis NYC (EMR + PySpark), planificado.** Enunciado y plan en `entregas/semana-08/taller-taxis-nyc-emr/PLAN.md`. Dataset medido sin descargarlo: **102.871.387 viajes en 12 Parquet (1,46 GB)**, con tipos que cambian a mitad de año (`passenger_count`, `RatecodeID`) y fechas fuera de 2018 en los 12 meses. **Entrega: martes 13/10, mostrando el clúster corriendo, en persona, en clase y desde la consola de AWS** → se levanta de nuevo ese día (no sobrevive entre sesiones del lab). Decisiones tomadas el 09/10 (referencia con Athena sobre los crudos · tope de duración por percentiles · sin zonas 264/265 · se guarda 2018 entero · notebook en EMR Studio o, si el lab no lo deja, en SageMaker). Scripts, programa y notebook listos en `infra/`, `spark/` y `notebook/`. **Todavía no se creó nada en AWS.** Próximo: sesión 1 (carga + referencia + probar EMR Studio), ensayo general, demo. Costo estimado ≈ $2–2,50.
+- 📋 **Estado actual (09/10): Taller Taxis NYC (EMR + PySpark), planificado.** Enunciado y plan en `entregas/semana-08/taller-taxis-nyc-emr/PLAN.md`. Dataset medido sin descargarlo: **102.871.387 viajes en 12 Parquet (1,46 GB)**, con tipos que cambian a mitad de año (`passenger_count`, `RatecodeID`) y fechas fuera de 2018 en los 12 meses. **Entrega: martes 13/10, mostrando el clúster corriendo, en persona, en clase y desde la consola de AWS** → se levanta de nuevo ese día (no sobrevive entre sesiones del lab). Decisiones tomadas el 09/10 (referencia con Athena sobre los crudos · tope de duración por percentiles · sin zonas 264/265 · se guarda 2018 entero · notebook en EMR Studio o, si el lab no lo deja, en SageMaker). **✅ Ensayo general completo el 10/10:** los 14 pasos en AWS, con el notebook en EMR Studio, y Athena, el notebook y el programa dan los mismos números (`evidencia/sesion-2026-10-10.md`). Costó ≈ $0,85. **Falta sólo la demo del martes**: guion con tiempos medidos en `PLAN.md` (empezar 1 h 30 antes de la clase).
 - ✅ **(21/09): Parcial 1 cerrado — cuenta limpia para el nuevo corte.** Se entregó y defendió el 10/09; el 21/09 se dio de baja toda su infraestructura (ver *Cuenta limpia al 21/09* más abajo). Enunciado, documento final y evidencia quedan en `entregas/parcial-1-aerolinea/`.
 
 ### 📊 Avance del parcial al 06/09
@@ -316,19 +316,23 @@ Total de las dos pasadas: **~$0,64**.
 
 ### Recursos AWS
 
-### 🔴 VIVOS al 10/10 — Taller Taxis (ensayo general hecho)
+### 🟡 VIVOS al 10/10 — Taller Taxis (ensayo general completo, nada cobrando por hora)
 
 | Recurso | Identificador | Cobra | Baja |
 |---|---|---|---|
-| ⚠️ **Clúster EMR** | `j-051241333LOTQJZJ6C3Y` (3 × m4.large) | **~$0,39/h** | **VERIFICAR que esté `Terminated`**: la sesión se cortó al pedir la confirmación. Tenía auto-terminación a 1 h |
-| Bucket | `taxis-nyc-936980625651` (crudos, `viajes/`, scripts, logs, resultados, Studio) | ~$0,07/mes | después de la corrección |
+| ~~Clúster EMR~~ | `j-051241333LOTQJZJ6C3Y` | — | ✅ **se apagó solo** por inactividad tras 1 h 49 min (~$0,71) |
+| Bucket | `taxis-nyc-936980625651` (3,1 GB: crudos, `viajes/`, scripts, logs, resultados, Studio) | ~$0,07/mes | después de la corrección |
 | EMR Studio + Workspace | `taller-taxis` · `taller-taxis-nyc` (notebook con salidas guardado) | nada | después de la corrección |
-| Glue | bases `taxis` y `taxis_referencia` · crawler `crawler-taxis-viajes` | por corrida | después de la corrección |
+| Glue | bases `taxis` (tabla `viajes`) y `taxis_referencia` · crawler `crawler-taxis-viajes` | por corrida | después de la corrección |
+| SG de EMR | `sg-0f253f4cb96e04bca` · `sg-0bd7e2f60a8b3af61` | nada | opcional |
 
-```bash
-aws emr list-clusters --active --region us-east-1 --query "Clusters[].[Id,Name,Status.State]" --output text
-aws emr terminate-clusters --cluster-ids j-051241333LOTQJZJ6C3Y --region us-east-1
-```
+**Martes 13/10, después de la demo:** terminar el clúster nuevo en la misma sesión. Los comandos de
+baja salen de `entregas/semana-08/taller-taxis-nyc-emr/infra/05-auditar-y-baja.sh`.
+
+💡 **Lecciones de EMR en el lab (10/10):** entre los `large`, EMR sólo acepta `c4.large`, `m1.large`
+y `m4.large` (`m5.large` → *not supported*) · EMR Studio **sí** se puede crear (Custom, IAM, `LabRole`)
+· la auto-terminación por inactividad funcionó aun con un Workspace enganchado · Livy muestra las
+tildes de los `print()` como "?".
 
 ### ✅ Cuenta limpia al 21/09 — fin del parcial, arranca el nuevo corte
 
