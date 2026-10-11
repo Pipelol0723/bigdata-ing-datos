@@ -316,6 +316,20 @@ Total de las dos pasadas: **~$0,64**.
 
 ### Recursos AWS
 
+### 🔴 VIVOS al 10/10 — Taller Taxis (ensayo general hecho)
+
+| Recurso | Identificador | Cobra | Baja |
+|---|---|---|---|
+| ⚠️ **Clúster EMR** | `j-051241333LOTQJZJ6C3Y` (3 × m4.large) | **~$0,39/h** | **VERIFICAR que esté `Terminated`**: la sesión se cortó al pedir la confirmación. Tenía auto-terminación a 1 h |
+| Bucket | `taxis-nyc-936980625651` (crudos, `viajes/`, scripts, logs, resultados, Studio) | ~$0,07/mes | después de la corrección |
+| EMR Studio + Workspace | `taller-taxis` · `taller-taxis-nyc` (notebook con salidas guardado) | nada | después de la corrección |
+| Glue | bases `taxis` y `taxis_referencia` · crawler `crawler-taxis-viajes` | por corrida | después de la corrección |
+
+```bash
+aws emr list-clusters --active --region us-east-1 --query "Clusters[].[Id,Name,Status.State]" --output text
+aws emr terminate-clusters --cluster-ids j-051241333LOTQJZJ6C3Y --region us-east-1
+```
+
 ### ✅ Cuenta limpia al 21/09 — fin del parcial, arranca el nuevo corte
 
 Toda la infraestructura del parcial se dio de baja el 21/09 con
