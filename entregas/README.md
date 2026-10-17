@@ -28,6 +28,7 @@ depende de los otros ni de rutas del repositorio, para poder enviarse suelto por
 | 4 | Module 4 — Design Principles for Pipelines | [`modulos-aws-academy/modulo-4-design-principles.md`](modulos-aws-academy/modulo-4-design-principles.md) | 🟡 documento ✅ · **módulo pendiente** |
 | 5 | **Parcial 1** | [`parcial-1-aerolinea/entrega/Parcial1-Sistema-Reservas-Aerolinea.pdf`](parcial-1-aerolinea/entrega/Parcial1-Sistema-Reservas-Aerolinea.pdf) | ✅ **documento final consolidado** · falta el nombre en la portada |
 | 8 | **Taller Taxis NYC** (EMR + PySpark) | [`semana-08/taller-taxis-nyc-emr/entrega/Taller-Taxis-NYC-respuestas.pdf`](semana-08/taller-taxis-nyc-emr/entrega/Taller-Taxis-NYC-respuestas.pdf) + `taller_taxis.ipynb` | ✅ **entregado en Moodle el 13/10** (notebook ejecutado + PDF de respuestas) |
+| — | **Parcial 2** (panel analítico: EMR + Glue + Athena + frontend) | [`parcial-2-panel-analitico/PLAN.md`](parcial-2-panel-analitico/PLAN.md) | 📋 **planificado (17/10)**, decisiones de arquitectura tomadas · faltan la semilla y las fechas |
 | — | EC2 + Apache (práctica anterior) | [`ec2-apache/README.md`](ec2-apache/README.md) | ✅ entregada |
 
 **Los cuatro 🟡 tienen su documento escrito**, pero el módulo en sí se completa en la plataforma
