@@ -68,10 +68,16 @@ Después sí, los pasos. Si un tema da para más, ofrecer profundizar en vez de 
 
 Activar el venv: `C:\Users\pipel\venvs\bigdata\Scripts\Activate.ps1`
 
-⚠️ **Docker no funciona en esta laptop (desde el 18/10):** WSL2 no arranca porque la virtualización
-está desactivada (`HCS_E_HYPERV_NOT_INSTALLED`). Reactivarla es tarea del alumno: requiere
-administrador y reiniciar (habilitar "Plataforma de máquina virtual" y revisar la virtualización en
-el firmware). Mientras tanto se usa un **PostgreSQL 17 nativo descartable** en
+✅ **Docker funciona de nuevo (18/10), pero se abre SIEMPRE con `scripts\iniciar-docker.ps1`.**
+El hipervisor estaba apagado (`hypervisorlaunchtype off`) para usar VirtualBox/VMware; el alumno lo
+reactivó (`auto`) y borró sus VMs. WSL quedó en 3.0.3. Trampa propia de esta laptop: **cada vez que
+Docker Desktop se cierra deja sockets AF_UNIX que Windows no deja borrar** (`run\dockerInference`,
+`docker-secrets-engine\engine.sock`) y el arranque siguiente falla con *"The file cannot be accessed
+by the system"*. El script mueve esas carpetas a un costado antes de abrirlo. El homelab no sirve
+para Docker: tiene WSL/Hyper-V deshabilitados a propósito. Decisión del alumno: **Docker local queda
+para después; lo que necesite Docker se prueba directo en la EC2.**
+
+Antes de eso se usó un **PostgreSQL 17 nativo descartable** en
 `C:\Users\pipel\pg-parcial2` (puerto 15499), y **PySpark 3.5.6** en el venv con
 `SPARK_LOCAL_HOSTNAME=localhost` (el hostname `portatil_pipe` tiene guion bajo y Spark lo rechaza).
 Spark en Windows **no escribe archivos** sin `winutils.exe`: se prueba la transformación y se
