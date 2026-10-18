@@ -34,7 +34,12 @@ flowchart LR
     CAT -.-> CUR
 ```
 
-**Servicios facturables: 5** (EC2, S3, EMR, Glue, Athena), de 8 permitidos por R11.
+**Servicios facturables del proyecto: 5** (EC2, S3, EMR, Glue, Athena), de 8 permitidos por R11. El
+harness cuenta 6 porque la cuenta del Learner Lab trae funciones de **Lambda** propias, que este
+proyecto no usa.
+
+**Resultado del harness sobre lo desplegado [18/10]: 70,0 / 70,0** (R1–R12 en verde, una sola corrida;
+`evidencia/harness-2026-10-18/report.md`).
 
 ## 5.1 Modelo de hosting
 
@@ -56,8 +61,8 @@ línea a cambiar (pasar a RDS).
 5xx, que R2 prohíbe. PostgreSQL resuelve la concurrencia con bloqueo por fila.
 
 **El tamaño se midió, no se supuso (D2).** Se arrancó por la `t3.micro`, la más chica que permite R11,
-para subir a `t3.small` sólo si R1 fallaba. Medido contra la EC2 [18/10]: **p95 = 183 ms** con 20
-clientes concurrentes (tope 1 s) y **R2 exacto en las 5 rondas** (1 de 50 en el último asiento, 3 de
+para subir a `t3.small` sólo si R1 fallaba. Medido contra la EC2 [18/10]: **p95 = 80 ms** con 20
+clientes concurrentes desde CloudShell (183 ms desde fuera de AWS; tope 1 s) y **R2 exacto en las 5 rondas** (1 de 50 en el último asiento, 3 de
 50 con K = 3). No hizo falta subir (**PERF**, **COST**, **SUS**: no sobredimensionar).
 
 **Cómo se evita la sobreventa (R2).** El asiento se descuenta y la reserva se inserta en **una sola

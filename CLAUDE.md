@@ -222,6 +222,7 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 | 2026-08-25 | **$3.20 / $50** | ~19 días de curso · ~$0.17/día promedio · no incluye la clase de ese día (~$1 más) |
 | 2026-09-01 | **$4.90 / $50** | ~26 días de curso · ~$0.19/día promedio · $1.70 en la semana, de los cuales ~$0.77 fue storage de recursos que nadie usó |
 | 2026-10-09 | **$18.80 / $50** | ~64 días de curso · **$13.90 desde el 01/09**: ~$2,70 fue el trabajo del parcial y **~$11 (estimado) las RDS y la EC2 olvidadas** del 10/09 al 21/09. Quedan **$31,20** |
+| 2026-10-18 | **$20 / $50** | Al abrir la sesión del parcial 2 (incluye el Taller Taxis). La sesión del 18/10 suma ~US$0,60 (2 EMR + EC2). Quedan **~$29** |
 
 Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el piso diario baja de ~$0.11 a **casi cero** entre clases.
 
@@ -235,6 +236,7 @@ ahora: **la baja se hace en la misma sesión en que termina el uso**, nunca "des
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
+- ✅ **(18/10): Parcial 2 desplegado en AWS — harness 70,0 / 70,0** en una sola corrida (`evidencia/harness-2026-10-18/`). App en EC2 `t3.micro` `i-02fec020612e00ad5` (**queda prendida para la corrección**; el lab la detiene al cerrar sesión y la reinicia en la siguiente, con IP nueva → actualizar `harness/config.yaml`). EMR pasó a 1 primario + 1 core (con 1 nodo se traba). Falta: secciones 5–6 del documento, registro de prompts, fechas.
 - 📋 **(17/10): Parcial 2 recibido y planificado** — panel analítico de la aerolínea, evaluado por un **harness automático** (70 %) contra el sistema desplegado. Plan, trampas del harness y decisiones D1–D6 en `entregas/parcial-2-panel-analitico/PLAN.md`; harness intacto en `harness/` (**no editarlo**). ⚠️ R10 suma las horas normalizadas de EMR de **45 días**: las 36 del Taller cuentan hasta el 27/11. **Decidido (17/10):** una EC2 con Docker (FastAPI + PostgreSQL, frontend servido por el mismo FastAPI), EMR transitorio de **1 nodo** `m4.large` con step y auto-terminate, tablas por DDL en Athena con *partition projection*. Semilla **12345**, individual, sin fechas. **18/10: F1 y F2 hechas en local, $0** — el job de PySpark coincide con el oráculo fila por fila, y el backend + frontend pasan R1, R2, R3 y R8 con el harness. Sigue F3 (primera sesión de AWS: `infra/01` a `03`). Si se agota el presupuesto hay otra cuenta: todo `infra/` deriva el ID de la cuenta.
 - ✅ **(13/10): Taller Taxis NYC entregado.** Notebook corrido de nuevo en un clúster nuevo (`j-0504795HQHEQRH1YLXQ`, mismos números que el ensayo) y subido a Moodle (*CC-IA-02: Taxis workshop*, "Enviado para calificar" 10:12) junto con `entrega/Taller-Taxis-NYC-respuestas.pdf` (se regenera con `entrega/construir_pdf.py`). Clúster **terminado a pedido del alumno** tras 1 h 1 min (~$0,40). Falta: **End Lab** (lo hace el alumno) y, **después de la corrección**, la baja del bucket, el Studio y Glue.
 - 📋 **(09/10): Taller Taxis NYC (EMR + PySpark), planificado.** Enunciado y plan en `entregas/semana-08/taller-taxis-nyc-emr/PLAN.md`. Dataset medido sin descargarlo: **102.871.387 viajes en 12 Parquet (1,46 GB)**, con tipos que cambian a mitad de año (`passenger_count`, `RatecodeID`) y fechas fuera de 2018 en los 12 meses. **Entrega: martes 13/10, mostrando el clúster corriendo, en persona, en clase y desde la consola de AWS** → se levanta de nuevo ese día (no sobrevive entre sesiones del lab). Decisiones tomadas el 09/10 (referencia con Athena sobre los crudos · tope de duración por percentiles · sin zonas 264/265 · se guarda 2018 entero · notebook en EMR Studio o, si el lab no lo deja, en SageMaker). **✅ Ensayo general completo el 10/10:** los 14 pasos en AWS, con el notebook en EMR Studio, y Athena, el notebook y el programa dan los mismos números (`evidencia/sesion-2026-10-10.md`). Costó ≈ $0,85. **Falta sólo la demo del martes**: guion con tiempos medidos en `PLAN.md` (empezar 1 h 30 antes de la clase).
@@ -334,6 +336,24 @@ Total de las dos pasadas: **~$0,64**.
 > 📌 **Aplica directo al parcial:** si las RDS nuevas se hacen públicamente accesibles, es exactamente la misma deuda. Es una decisión a tomar y justificar en `NFR-SEG-` (sección 5.2).
 
 ### Recursos AWS
+
+### 🟢 VIVOS al 18/10 — Parcial 2 (desplegado, tiene que estar arriba para la corrección)
+
+| Recurso | Identificador | Cobra | Baja |
+|---|---|---|---|
+| EC2 de la app | `i-02fec020612e00ad5` · `t3.micro` · tag `parcial2-app` | ~US$0,015/h prendida (instancia + IPv4) · EBS 8 GB | **después de la corrección** (`infra/09-auditar-y-baja.sh`) |
+| Security group | `sg-0aed72ab437513545` (`parcial2-app`) | nada | con la EC2 |
+| Bucket | `aerolinea-p2-936980625651` (~106 MB) | centavos | después de la corrección |
+| Glue / Athena | base `airline_analytics` (2 tablas) | nada | después de la corrección |
+| ~~EMR~~ | `j-00349162LQTSD9WGFEE5` (trabado, terminado a mano) · `j-0521467TOB8AKZBIIM2` (se apagó solo) | — | ✅ terminados |
+
+💡 **Lecciones del 18/10:** el Learner Lab correcto es el curso **179973** (módulo 17689683): carga el
+panel dentro de la página; el botón **AWS** del panel abre la consola y la sesión se comparte con las
+pestañas de Claude · **EMR de 1 solo nodo se traba** (YARN no ubica el AM de Spark en el primario) y
+terminar un clúster con un step trabado tardó ~25 min · CloudShell **se desconecta cuando Chrome no
+está al frente**: correr lo largo con `nohup ... &` y leer el log · CloudShell trae Python 3.13 en un
+virtualenv (`pip --user` falla): venv propio en `/tmp` · Chromium de Playwright en CloudShell necesita
+`sudo dnf install nss nspr atk ...` · los CSV de Windows difieren de los de Linux sólo en `\r\n`.
 
 ### 🟡 VIVOS al 13/10 — Taller Taxis (entregado, nada cobrando por hora)
 

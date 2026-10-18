@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "team_id": "andres-cespedes",
+    "seed": 12345
+  },
+  "generated_at": "2026-10-18 17:23:45",
+  "points": 10.0,
+  "max_points": 70.0,
+  "requirements": [
+    {
+      "id": "R1",
+      "title": "Flight search latency",
+      "weight": 4,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R2",
+      "title": "No overselling under concurrency",
+      "weight": 10,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R3",
+      "title": "Reservation retrieval",
+      "weight": 3,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R4",
+      "title": "EMR job produces curated Parquet",
+      "weight": 8,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R5",
+      "title": "Glue Catalog tables per contract",
+      "weight": 6,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R6",
+      "title": "Athena correctness and partition pruning",
+      "weight": 8,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R7",
+      "title": "Analytics endpoint backed by Athena",
+      "weight": 8,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R8",
+      "title": "Customer flow in browser",
+      "weight": 6,
+      "points": 6.0,
+      "status": "passed",
+      "tests": [
+        {
+          "name": "test_search_reserve_confirm",
+          "outcome": "passed",
+          "detail": ""
+        }
+      ],
+      "evidence": [
+        "UI created reservation RF73C1082C471439 for a flight; backend returns it"
+      ],
+      "warnings": []
+    },
+    {
+      "id": "R9",
+      "title": "Manager panel matches endpoint",
+      "weight": 4,
+      "points": 4.0,
+      "status": "passed",
+      "tests": [
+        {
+          "name": "test_manager_panel_equals_endpoint",
+          "outcome": "passed",
+          "detail": ""
+        }
+      ],
+      "evidence": [
+        "PEI-CLO 2023-03: panel=0.8359 endpoint=0.8359 truth=0.8359"
+      ],
+      "warnings": []
+    },
+    {
+      "id": "R10",
+      "title": "No leftover EMR / bounded EMR hours",
+      "weight": 5,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R11",
+      "title": "Simple low-cost architecture",
+      "weight": 4,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R12",
+      "title": "Cost projection",
+      "weight": 4,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    }
+  ]
+}

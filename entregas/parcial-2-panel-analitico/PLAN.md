@@ -131,8 +131,14 @@ fase, no para depurar.
 | F0 | 🟡 `cost_projection.yaml` en borrador (US$12,52, lo lee el harness); falta el documento de la sección 5 | — |
 | F1 | ✅ **18/10** — `spark/curar_reservas.py` con PySpark 3.5.6 (la versión de EMR 7.14): **coincide con el oráculo fila por fila** | [`local/README.md`](local/README.md) |
 | F2 | ✅ **18/10** — backend + frontend (`app/`): **R1, R2, R3 y R8 en verde** con el harness, contra el backend local | [`local/README.md`](local/README.md) |
-| F3 | 📋 scripts listos (`infra/01` a `03`, `sql/tablas_athena.sql`), sin correr | — |
-| F4–F6 | pendiente | — |
+| F3 | ✅ **18/10** — crudos generados en CloudShell (idénticos a los locales), job en EMR transitorio, tablas en Athena | [`evidencia/harness-2026-10-18/`](evidencia/harness-2026-10-18/README.md) |
+| F4 | ✅ **18/10** — app en EC2 `t3.micro` con Docker. **Harness completo: 70,0 / 70,0** en una sola corrida | [`report.md`](evidencia/harness-2026-10-18/report.md) |
+| F5 | 🟡 sección 5 en borrador ([`documento/05-decisiones.md`](documento/05-decisiones.md)); falta la 6, el registro de prompts y armar el entregable | — |
+| F6 | pendiente (defensa) | — |
+
+**Cambio de diseño del 18/10 (decidido por el alumno):** D3 pasó de 1 nodo a **1 primario + 1 core**.
+Con un solo nodo, el step quedó trabado: *"waiting for resources to be assigned for AM"* — YARN no
+ubica el application master de Spark en el primario. El clúster trabado tardó ~25 min en terminar.
 
 Semilla **12345** (la del ejemplo, confirmada por el alumno el 18/10), parcial **individual**, sin
 fechas todavía. Si el presupuesto se agota y hay que pasar a otra cuenta, los scripts de `infra/`
