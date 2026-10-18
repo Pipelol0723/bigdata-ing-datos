@@ -4,9 +4,9 @@ team_id: "andres-cespedes"
 seed: 12345              # la semilla del parcial (individual)
 
 backend:
-  base_url: "http://127.0.0.1:8000"     # LOCAL. En AWS: http://<IP-de-la-EC2>:8000
+  base_url: "http://100.55.17.95:8000"   # EC2 parcial2-app (la IP cambia en cada sesión del lab)
 frontend:
-  base_url: "http://127.0.0.1:8000"     # mismo proceso que el backend (decisión D5)
+  base_url: "http://100.55.17.95:8000"   # mismo proceso que el backend (decisión D5)
 
 aws:
   region: us-east-1
