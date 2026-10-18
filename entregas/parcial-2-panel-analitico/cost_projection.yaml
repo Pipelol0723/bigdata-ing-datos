@@ -1,0 +1,18 @@
+# Proyección mensual 24/7 (contrato: harness/contract/COST_PROJECTION.md). El harness suma los
+# line_items (no se escribe total) y los compara con lo que encuentra prendido (R12).
+# BORRADOR F0 (18/10): t3.micro hasta medir R1 en la EC2 (decisión D2). Precios us-east-1 on-demand.
+#
+# Ojo con R12: el harness estima lo vivo como EC2 x 730 h + horas de EMR x US$0,03, y no cuenta
+# ni el EBS ni la IPv4 pública. Se declaran igual porque son costos reales; ver PLAN.md, sección 6.
+assumptions: >-
+  Una aerolínea con ~200 usuarios/día: ~2.000 búsquedas y ~300 reservas por día en la web, y
+  ~330 consultas/día al panel de gerencia (10.000/mes). Historial: 2 M reservas (85 MB de CSV
+  crudo, ~27 MB en Parquet). El job de EMR corre una vez por mes. Sistema arriba 24/7, single-AZ.
+line_items:
+  - {service: "EC2", detail: "t3.micro 24/7 (FastAPI + PostgreSQL en Docker), 730 h x US$0,0104", monthly_usd: 7.59}
+  - {service: "EC2", detail: "EBS gp3 8 GB de la instancia", monthly_usd: 0.64}
+  - {service: "EC2", detail: "IPv4 pública de la instancia, 730 h x US$0,005", monthly_usd: 3.65}
+  - {service: "S3", detail: "~0,15 GB: crudos, Parquet curado, resultados de Athena", monthly_usd: 0.01}
+  - {service: "Athena", detail: "10.000 consultas/mes al panel x 10 MB mínimo facturable = 0,1 TB x US$5", monthly_usd: 0.50}
+  - {service: "EMR", detail: "1 corrida/mes, 1 x m4.large, < 1 h (EC2 US$0,10 + EMR US$0,03)", monthly_usd: 0.13}
+  - {service: "Glue", detail: "Data Catalog: 1 base y 2 tablas, sin crawler (gratis hasta 1 M objetos)", monthly_usd: 0.00}

@@ -124,6 +124,20 @@ fase, no para depurar.
 | **F5** | `cost_projection.yaml` coherente con lo desplegado, documento (secciones 5 y 6), registro de prompts, `report.md` final | Local | $0 | Entrega final |
 | **F6** | Defensa: ensayar cambios en vivo (otra regla de limpieza, otra agregación) y saber qué partes tocan: job, tablas, endpoint, tests | Local | $0 | Cada integrante explica cualquier parte |
 
+### Avance
+
+| Fase | Estado | Evidencia |
+|---|---|---|
+| F0 | 🟡 `cost_projection.yaml` en borrador (US$12,52, lo lee el harness); falta el documento de la sección 5 | — |
+| F1 | ✅ **18/10** — `spark/curar_reservas.py` con PySpark 3.5.6 (la versión de EMR 7.14): **coincide con el oráculo fila por fila** | [`local/README.md`](local/README.md) |
+| F2 | ✅ **18/10** — backend + frontend (`app/`): **R1, R2, R3 y R8 en verde** con el harness, contra el backend local | [`local/README.md`](local/README.md) |
+| F3 | 📋 scripts listos (`infra/01` a `03`, `sql/tablas_athena.sql`), sin correr | — |
+| F4–F6 | pendiente | — |
+
+Semilla **12345** (la del ejemplo, confirmada por el alumno el 18/10), parcial **individual**, sin
+fechas todavía. Si el presupuesto se agota y hay que pasar a otra cuenta, los scripts de `infra/`
+derivan el ID de la cuenta y se corren igual: lo único que se pierde es lo que viva en AWS.
+
 **Diseño para la defensa** (el profesor puede pedir cambiar una regla o una agregación en vivo): las
 reglas C1–C5 como funciones separadas y nombradas en el job, y las métricas calculadas en un solo
 lugar. Cambiar una regla tiene que ser cambiar una función y volver a correr el step.
@@ -156,9 +170,8 @@ la sección 6 del enunciado.
 
 ## 7. Pendientes
 
-**Datos que faltan (los tenés que conseguir vos):**
-- [ ] **La semilla** asignada (cambia el dataset, K y todas las respuestas).
-- [ ] ¿Individual o en equipo? El enunciado habla de equipos; el parcial 1 fue individual.
+**Datos:**
+- [x] Semilla: **12345** · individual.
 - [ ] Fechas: entrega parcial, entrega final y **ventana de corrección** (el sistema tiene que estar arriba).
 
 **Preguntas para el profesor:**

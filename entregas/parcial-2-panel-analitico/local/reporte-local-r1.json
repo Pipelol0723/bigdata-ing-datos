@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "team_id": "andres-cespedes",
+    "seed": 12345
+  },
+  "generated_at": "2026-10-18 14:51:33",
+  "points": 4.0,
+  "max_points": 70.0,
+  "requirements": [
+    {
+      "id": "R1",
+      "title": "Flight search latency",
+      "weight": 4,
+      "points": 4.0,
+      "status": "passed",
+      "tests": [
+        {
+          "name": "test_search_p95",
+          "outcome": "passed",
+          "detail": ""
+        }
+      ],
+      "evidence": [
+        "100 requests, concurrency 20: p50=0.007s p95=0.018s"
+      ],
+      "warnings": []
+    },
+    {
+      "id": "R2",
+      "title": "No overselling under concurrency",
+      "weight": 10,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R3",
+      "title": "Reservation retrieval",
+      "weight": 3,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R4",
+      "title": "EMR job produces curated Parquet",
+      "weight": 8,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R5",
+      "title": "Glue Catalog tables per contract",
+      "weight": 6,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R6",
+      "title": "Athena correctness and partition pruning",
+      "weight": 8,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R7",
+      "title": "Analytics endpoint backed by Athena",
+      "weight": 8,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R8",
+      "title": "Customer flow in browser",
+      "weight": 6,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R9",
+      "title": "Manager panel matches endpoint",
+      "weight": 4,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R10",
+      "title": "No leftover EMR / bounded EMR hours",
+      "weight": 5,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R11",
+      "title": "Simple low-cost architecture",
+      "weight": 4,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    },
+    {
+      "id": "R12",
+      "title": "Cost projection",
+      "weight": 4,
+      "points": 0.0,
+      "status": "not_verified",
+      "tests": [],
+      "evidence": [],
+      "warnings": []
+    }
+  ]
+}

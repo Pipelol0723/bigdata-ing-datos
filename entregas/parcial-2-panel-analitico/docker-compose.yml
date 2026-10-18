@@ -1,0 +1,45 @@
+# Parcial 2 · todo el lado transaccional en una sola máquina (decisión D1): la API con el frontend
+# y PostgreSQL. Es el mismo archivo en la laptop y en la EC2.
+#
+#   docker compose up -d --build        (antes: crear .env con DB_PASSWORD, ver entorno.ejemplo)
+#
+# La base NO publica ningún puerto: sólo la ve la app por la red interna de Docker. Hacia afuera
+# sale únicamente el 8000.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: aerolinea
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?falta DB_PASSWORD en .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d aerolinea"]
+      interval: 3s
+      retries: 20
+    restart: unless-stopped
+
+  app:
+    build: ./app
+    environment:
+      DATABASE_URL: postgresql://app:${DB_PASSWORD}@db:5432/aerolinea
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      ATHENA_DATABASE: ${ATHENA_DATABASE:-airline_analytics}
+      ATHENA_WORKGROUP: ${ATHENA_WORKGROUP:-primary}
+      ATHENA_OUTPUT: ${ATHENA_OUTPUT:-}
+      METRICS_TABLE: ${METRICS_TABLE:-route_month_metrics}
+      # En la laptop: credenciales del lab cargadas en la terminal (scripts/cargar-credenciales.ps1).
+      # En la EC2 quedan vacías y boto3 usa el instance profile (LabRole).
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

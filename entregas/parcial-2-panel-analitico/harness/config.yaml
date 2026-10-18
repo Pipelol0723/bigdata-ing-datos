@@ -1,0 +1,20 @@
+# Copia de config.example.yaml completada (esto sí se entrega; sin credenciales).
+# Antes de cada corrida contra AWS: actualizar las dos URLs con la IP pública actual de la EC2.
+team_id: "andres-cespedes"
+seed: 12345              # la semilla del parcial (individual)
+
+backend:
+  base_url: "http://127.0.0.1:8000"     # LOCAL. En AWS: http://<IP-de-la-EC2>:8000
+frontend:
+  base_url: "http://127.0.0.1:8000"     # mismo proceso que el backend (decisión D5)
+
+aws:
+  region: us-east-1
+  athena_workgroup: primary
+  athena_database: airline_analytics
+  athena_output: "s3://aerolinea-p2-936980625651/athena-results/"
+  tables:
+    detail: reservations_curated
+    metrics: route_month_metrics
+
+cost_projection_file: ../cost_projection.yaml   # relativo a esta carpeta (pytest se corre desde acá)

@@ -68,6 +68,17 @@ Después sí, los pasos. Si un tema da para más, ofrecer profundizar en vez de 
 
 Activar el venv: `C:\Users\pipel\venvs\bigdata\Scripts\Activate.ps1`
 
+⚠️ **Docker no funciona en esta laptop (desde el 18/10):** WSL2 no arranca porque la virtualización
+está desactivada (`HCS_E_HYPERV_NOT_INSTALLED`). Reactivarla es tarea del alumno: requiere
+administrador y reiniciar (habilitar "Plataforma de máquina virtual" y revisar la virtualización en
+el firmware). Mientras tanto se usa un **PostgreSQL 17 nativo descartable** en
+`C:\Users\pipel\pg-parcial2` (puerto 15499), y **PySpark 3.5.6** en el venv con
+`SPARK_LOCAL_HOSTNAME=localhost` (el hostname `portatil_pipe` tiene guion bajo y Spark lo rechaza).
+Spark en Windows **no escribe archivos** sin `winutils.exe`: se prueba la transformación y se
+escribe con pyarrow. Datos pesados en `C:\Users\pipel\datos-parcial2\`, fuera de OneDrive.
+Al arrancar Docker Desktop quedaron sockets AF_UNIX huérfanos imposibles de borrar: se movieron a
+`%LOCALAPPDATA%\Docker\run.viejo-*` y `docker-secrets-engine.viejo-*`.
+
 ---
 
 ## 🔔 Recordatorio permanente
@@ -218,7 +229,7 @@ ahora: **la baja se hace en la misma sesión en que termina el uso**, nunca "des
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
-- 📋 **(17/10): Parcial 2 recibido y planificado** — panel analítico de la aerolínea, evaluado por un **harness automático** (70 %) contra el sistema desplegado. Plan, trampas del harness y decisiones D1–D6 en `entregas/parcial-2-panel-analitico/PLAN.md`; harness intacto en `harness/` (**no editarlo**). ⚠️ R10 suma las horas normalizadas de EMR de **45 días**: las 36 del Taller cuentan hasta el 27/11. **Decidido (17/10):** una EC2 con Docker (FastAPI + PostgreSQL, frontend servido por el mismo FastAPI), EMR transitorio de **1 nodo** `m4.large` con step y auto-terminate, tablas por DDL en Athena con *partition projection*. Falta: semilla, fechas, equipo o individual.
+- 📋 **(17/10): Parcial 2 recibido y planificado** — panel analítico de la aerolínea, evaluado por un **harness automático** (70 %) contra el sistema desplegado. Plan, trampas del harness y decisiones D1–D6 en `entregas/parcial-2-panel-analitico/PLAN.md`; harness intacto en `harness/` (**no editarlo**). ⚠️ R10 suma las horas normalizadas de EMR de **45 días**: las 36 del Taller cuentan hasta el 27/11. **Decidido (17/10):** una EC2 con Docker (FastAPI + PostgreSQL, frontend servido por el mismo FastAPI), EMR transitorio de **1 nodo** `m4.large` con step y auto-terminate, tablas por DDL en Athena con *partition projection*. Semilla **12345**, individual, sin fechas. **18/10: F1 y F2 hechas en local, $0** — el job de PySpark coincide con el oráculo fila por fila, y el backend + frontend pasan R1, R2, R3 y R8 con el harness. Sigue F3 (primera sesión de AWS: `infra/01` a `03`). Si se agota el presupuesto hay otra cuenta: todo `infra/` deriva el ID de la cuenta.
 - ✅ **(13/10): Taller Taxis NYC entregado.** Notebook corrido de nuevo en un clúster nuevo (`j-0504795HQHEQRH1YLXQ`, mismos números que el ensayo) y subido a Moodle (*CC-IA-02: Taxis workshop*, "Enviado para calificar" 10:12) junto con `entrega/Taller-Taxis-NYC-respuestas.pdf` (se regenera con `entrega/construir_pdf.py`). Clúster **terminado a pedido del alumno** tras 1 h 1 min (~$0,40). Falta: **End Lab** (lo hace el alumno) y, **después de la corrección**, la baja del bucket, el Studio y Glue.
 - 📋 **(09/10): Taller Taxis NYC (EMR + PySpark), planificado.** Enunciado y plan en `entregas/semana-08/taller-taxis-nyc-emr/PLAN.md`. Dataset medido sin descargarlo: **102.871.387 viajes en 12 Parquet (1,46 GB)**, con tipos que cambian a mitad de año (`passenger_count`, `RatecodeID`) y fechas fuera de 2018 en los 12 meses. **Entrega: martes 13/10, mostrando el clúster corriendo, en persona, en clase y desde la consola de AWS** → se levanta de nuevo ese día (no sobrevive entre sesiones del lab). Decisiones tomadas el 09/10 (referencia con Athena sobre los crudos · tope de duración por percentiles · sin zonas 264/265 · se guarda 2018 entero · notebook en EMR Studio o, si el lab no lo deja, en SageMaker). **✅ Ensayo general completo el 10/10:** los 14 pasos en AWS, con el notebook en EMR Studio, y Athena, el notebook y el programa dan los mismos números (`evidencia/sesion-2026-10-10.md`). Costó ≈ $0,85. **Falta sólo la demo del martes**: guion con tiempos medidos en `PLAN.md` (empezar 1 h 30 antes de la clase).
 - ✅ **(21/09): Parcial 1 cerrado — cuenta limpia para el nuevo corte.** Se entregó y defendió el 10/09; el 21/09 se dio de baja toda su infraestructura (ver *Cuenta limpia al 21/09* más abajo). Enunciado, documento final y evidencia quedan en `entregas/parcial-1-aerolinea/`.

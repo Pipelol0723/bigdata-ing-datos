@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reservas · Aerolínea</title>
+<style>
+  :root { --azul: #0f3a66; --gris: #5b6670; --borde: #d0d7de; }
+  body { font: 15px/1.5 system-ui, "Segoe UI", sans-serif; margin: 0 auto; max-width: 760px; padding: 24px 16px; color: #1f2328; }
+  h1 { color: var(--azul); margin: 0 0 4px; } nav a { color: var(--gris); font-size: 13px; }
+  form, section { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin: 16px 0; }
+  label { display: flex; flex-direction: column; font-size: 12px; color: var(--gris); gap: 2px; }
+  input { font: inherit; padding: 6px 8px; border: 1px solid var(--borde); border-radius: 6px; }
+  button { font: inherit; padding: 7px 14px; border: 0; border-radius: 6px; background: var(--azul); color: #fff; cursor: pointer; }
+  ul { list-style: none; padding: 0; } li { display: flex; justify-content: space-between; align-items: center;
+       border: 1px solid var(--borde); border-radius: 8px; padding: 8px 12px; margin: 6px 0; }
+  #estado { color: var(--gris); min-height: 1.5em; } .error { color: #b42318; }
+  #confirmacion { background: #ecfdf3; border: 1px solid #abefc6; border-radius: 8px; padding: 12px; }
+</style>
+</head>
+<body>
+<h1>Buscar y reservar</h1>
+<nav><a href="/manager">Panel de gerencia →</a></nav>
+
+<form id="busqueda">
+  <label>Origen <input data-testid="search-origin" maxlength="3" placeholder="BOG" required></label>
+  <label>Destino <input data-testid="search-destination" maxlength="3" placeholder="MDE" required></label>
+  <label>Fecha <input data-testid="search-date" type="date" required></label>
+  <button data-testid="search-submit" type="submit">Buscar</button>
+</form>
+<p id="estado"></p>
+<ul id="resultados"></ul>
+
+<section id="reserva" hidden>
+  <span id="vuelo-elegido"></span>
+  <label>Pasajero <input data-testid="passenger-name" placeholder="Nombre y apellido"></label>
+  <button data-testid="confirm-submit" type="button">Confirmar reserva</button>
+</section>
+
+<section id="confirmacion" hidden>
+  Reserva confirmada. Número: <strong data-testid="confirmation-id"></strong>
+</section>
+
+<script>
+const $ = (id) => document.querySelector(`[data-testid="${id}"]`);
+const estado = document.getElementById("estado");
+let vueloElegido = null;
+
+function mostrarError(texto) { estado.textContent = texto; estado.className = "error"; }
+
+async function detalleDelError(r) {
+  try { const b = await r.json(); return b.detail ? JSON.stringify(b.detail) : r.statusText; }
+  catch { return r.statusText; }
+}
+
+document.getElementById("busqueda").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  estado.className = ""; estado.textContent = "Buscando…";
+  document.getElementById("reserva").hidden = true;
+  document.getElementById("confirmacion").hidden = true;
+  const q = new URLSearchParams({ origin: $("search-origin").value.trim().toUpperCase(),
+                                  destination: $("search-destination").value.trim().toUpperCase(),
+                                  date: $("search-date").value });
+  const r = await fetch(`/flights/search?${q}`);
+  if (!r.ok) return mostrarError(`Error ${r.status}: ${await detalleDelError(r)}`);
+  const vuelos = await r.json();
+  const lista = document.getElementById("resultados");
+  lista.replaceChildren();
+  estado.textContent = vuelos.length ? `${vuelos.length} vuelo(s) con asientos` : "No hay vuelos con asientos para esa búsqueda.";
+  for (const v of vuelos) {
+    const li = document.createElement("li");
+    li.dataset.testid = "flight-row";
+    const precio = (v.price_cents / 100).toLocaleString("es-CO", { style: "currency", currency: "USD" });
+    li.innerHTML = `<span><strong></strong> · ${v.route} · ${v.flight_date} · ${v.seats_available} asientos · ${precio}</span>`;
+    li.querySelector("strong").textContent = v.flight_id;
+    const b = document.createElement("button");
+    b.dataset.testid = "reserve-button"; b.type = "button"; b.textContent = "Reservar";
+    b.addEventListener("click", () => {
+      vueloElegido = v.flight_id;
+      document.getElementById("vuelo-elegido").textContent = `Vuelo ${v.flight_id}`;
+      document.getElementById("reserva").hidden = false;
+      $("passenger-name").focus();
+    });
+    li.appendChild(b);
+    lista.appendChild(li);
+  }
+});
+
+$("confirm-submit").addEventListener("click", async () => {
+  const nombre = $("passenger-name").value.trim();
+  if (!nombre) return mostrarError("Falta el nombre del pasajero.");
+  const r = await fetch("/reservations", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ flight_id: vueloElegido, passenger_name: nombre, fare_class: "ECONOMY" }) });
+  if (r.status === 409) return mostrarError("Ese vuelo se quedó sin asientos.");
+  if (!r.ok) return mostrarError(`Error ${r.status}: ${await detalleDelError(r)}`);
+  const reserva = await r.json();
+  document.getElementById("reserva").hidden = true;
+  $("confirmation-id").textContent = reserva.reservation_id;
+  document.getElementById("confirmacion").hidden = false;
+  estado.className = ""; estado.textContent = "";
+});
+</script>
+</body>
+</html>
