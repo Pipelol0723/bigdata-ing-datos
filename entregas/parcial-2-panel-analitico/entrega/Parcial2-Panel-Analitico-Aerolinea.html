@@ -1,0 +1,1245 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parcial 2 — Panel analítico de la aerolínea</title>
+<style>
+@page { size: A4; margin: 15mm 15mm 16mm 15mm;
+        @bottom-center { content: counter(page); font: 8.5pt 'Segoe UI', sans-serif; color: #777; } }
+@page :first { @bottom-center { content: none; } }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font: 10pt/1.45 'Segoe UI', system-ui, -apple-system, Arial, sans-serif; color: #1f2328;
+       background: #fff; margin: 0 auto; max-width: 190mm; padding: 0 2mm; }
+h1, h2, h3, h4 { color: #0f3a66; line-height: 1.25; page-break-after: avoid; break-after: avoid; }
+h1 { font-size: 19pt; border-bottom: 2px solid #0f3a66; padding-bottom: 4px; margin: 0 0 12px;
+     page-break-before: always; break-before: page; }
+h2 { font-size: 13.5pt; margin: 17px 0 7px; border-bottom: 1px solid #d0d7de; padding-bottom: 2px; }
+h3 { font-size: 11.5pt; margin: 16px 0 6px; }
+h4 { font-size: 10.5pt; margin: 14px 0 6px; }
+p { margin: 6px 0; }
+a { color: #0b5cad; text-decoration: none; }
+code { font-family: Consolas, 'Cascadia Mono', monospace; font-size: 0.88em; background: #f2f4f7;
+       padding: 0 3px; border-radius: 3px; overflow-wrap: break-word; }
+pre { background: #f6f8fa; border: 1px solid #e1e4e8; border-radius: 4px; padding: 7px 9px;
+      font-size: 7.8pt; line-height: 1.35; white-space: pre-wrap; overflow-wrap: break-word;
+      page-break-inside: avoid; break-inside: avoid; }
+pre code { background: none; padding: 0; font-size: 1em; }
+pre.mermaid { background: none; border: none; text-align: center; font-size: 10pt; white-space: pre; }
+pre.mermaid svg { width: 100%; max-width: 100% !important; max-height: 225mm; height: auto; }
+blockquote { margin: 8px 0; padding: 4px 11px; border-left: 3px solid #8fb0d8; background: #f4f8fc;
+             color: #2d333b; page-break-inside: avoid; break-inside: avoid; }
+blockquote p { margin: 4px 0; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0 10px; font-size: 8.6pt; line-height: 1.35; }
+thead { display: table-header-group; }
+tr { page-break-inside: avoid; break-inside: avoid; }
+th, td { border: 1px solid #c8d1dc; padding: 3px 5px; vertical-align: top; text-align: left; }
+th { background: #e9eff6; color: #0f3a66; }
+td code, th code { font-size: 0.92em; }
+img { width: 100%; max-width: 100%; display: block; margin: 8px auto; }   /* sólo hay diagramas */
+ul, ol { margin: 5px 0; padding-left: 22px; }
+li { margin: 2px 0; }
+hr { border: none; border-top: 1px solid #d0d7de; margin: 14px 0; }
+
+.portada { height: 255mm; display: flex; flex-direction: column; justify-content: center;
+           text-align: center; page-break-after: always; break-after: page; }
+.portada .institucion { font-size: 12pt; letter-spacing: .5px; color: #555; margin-bottom: 36mm; }
+.portada .materia { font-size: 12pt; color: #0f3a66; font-weight: 600; }
+.portada .titulo { font-size: 26pt; color: #0f3a66; font-weight: 700; margin: 8mm 0 3mm; line-height: 1.2; }
+.portada .subtitulo { font-size: 12pt; color: #444; max-width: 140mm; margin: 0 auto; }
+.portada .datos { margin-top: 40mm; font-size: 11pt; line-height: 1.8; }
+.portada .datos code { font-size: 0.85em; }
+.indice h2 { border: none; font-size: 16pt; margin-top: 0; }
+.indice ol { column-count: 2; column-gap: 9mm; padding-left: 0; list-style: none; margin: 0; font-size: 9.5pt; }
+.indice > ol > li { break-inside: avoid; margin-bottom: 7px; }
+.indice > ol > li > a { font-weight: 600; color: #0f3a66; }
+.indice ol ol { column-count: 1; padding-left: 12px; margin: 2px 0 0; font-size: 8.8pt; }
+.indice ol ol li { margin: 1px 0; }
+.indice ol ol a { color: #333; }
+</style>
+</head><body>
+
+<section class="portada">
+  <div class="institucion">UNIVERSIDAD SERGIO ARBOLEDA</div>
+  <div class="materia">Big Data e Ingeniería de Datos · PCIA 5010</div>
+  <div class="titulo">Parcial 2<br>Panel analítico de la aerolínea</div>
+  <div class="subtitulo">Documento final: decisiones y su justificación (§5), ejecución del harness
+    (§6), registro de prompts, impacto de cambios y reporte del harness</div>
+  <div class="datos">
+    <div><strong>Estudiante:</strong> Andres Felipe Cespedes Rondon</div>
+    <div><strong>Modalidad:</strong> individual · <strong>Semilla:</strong> 12345 · <strong>Fecha:</strong> 22 de octubre de 2026</div>
+    <div><strong>Harness sobre lo desplegado:</strong> 70,0 / 70,0</div>
+    <div><strong>Repositorio:</strong> github.com/Pipelol0723/bigdata-ing-datos<br>
+      carpeta <code>entregas/parcial-2-panel-analitico/</code></div>
+  </div>
+</section>
+<nav class="indice"><h2>Contenido</h2><ol><li><a href="#s1">Cómo leer este documento</a><ol></ol></li><li><a href="#s2">Introducción: el sistema y la trazabilidad</a><ol><li><a href="#s3">Qué se construyó</a></li><li><a href="#s4">Resultado</a></li><li><a href="#s5">Matriz de trazabilidad</a></li><li><a href="#s6">Dónde está cada cosa</a></li></ol></li><li><a href="#s7">5. Decisiones y su justificación</a><ol><li><a href="#s8">5.0 Arquitectura</a></li><li><a href="#s9">5.1 Modelo de hosting</a></li><li><a href="#s10">5.2 Por qué EMR, y cuál</a></li><li><a href="#s11">5.3 Organización de los datos</a></li><li><a href="#s12">5.4 De dónde saca el panel sus números</a></li><li><a href="#s13">5.5 Separación de cargas</a></li><li><a href="#s14">5.6 Servicios, alternativa y pilar</a></li><li><a href="#s15">5.7 Proyección de costos</a></li><li><a href="#s16">5.8 Definición de <code>bookings</code></a></li></ol></li><li><a href="#s17">6. Ejecución del harness</a><ol><li><a href="#s18">6.1 Cómo se corrió</a></li><li><a href="#s19">6.2 Resultado por requisito</a></li><li><a href="#s20">6.3 Lo que hay detrás de algunos números</a></li><li><a href="#s21">6.4 Preguntas abiertas al profesor</a></li><li><a href="#s22">6.5 Antes de la corrección</a></li><li><a href="#s23">6.6 Lo que falló en el camino y cómo se resolvió</a></li></ol></li><li><a href="#s24">Anexo A — Registro de prompts</a><ol></ol></li><li><a href="#s25">Anexo B — Qué se toca si cambia algo</a><ol></ol></li><li><a href="#s26">Anexo C — Reporte del harness (sin editar)</a><ol><li><a href="#s27">Harness report - andres-cespedes</a></li></ol></li></ol></nav>
+<h1 id="s1">Cómo leer este documento</h1>
+<p>Responde la entrega final del segundo parcial (§7 del enunciado): las <strong>secciones 5 y 6</strong>, con la
+misma numeración del enunciado, y el registro de prompts como anexo obligatorio. Antes va una
+introducción con la <strong>matriz de trazabilidad</strong> de R1 a R12, y al final dos anexos más: qué partes se
+tocan ante un cambio en vivo (para la defensa) y el reporte del harness sin editar.</p>
+<table>
+<thead>
+<tr>
+<th>Parte</th>
+<th>Qué contiene</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Introducción</td>
+<td>El sistema, el resultado (70/70) y cada requisito con su pieza y su medición</td>
+</tr>
+<tr>
+<td>5 · Decisiones</td>
+<td>Hosting, por qué EMR, organización de los datos, el panel, la separación de cargas, los servicios y los costos, cada uno con su requisito y su pilar de Well-Architected</td>
+</tr>
+<tr>
+<td>6 · Harness</td>
+<td>Cómo se corrió, qué dio, lo que no se pudo verificar y lo que falló en el camino</td>
+</tr>
+<tr>
+<td>Anexo A</td>
+<td>Registro de prompts</td>
+</tr>
+<tr>
+<td>Anexo B</td>
+<td>Impacto de cambios: qué se toca si el profesor pide otra regla u otra agregación</td>
+</tr>
+<tr>
+<td>Anexo C</td>
+<td><code>report.md</code> del harness, tal cual</td>
+</tr>
+</tbody>
+</table>
+<p>El código, los scripts y la evidencia están en <a href="https://github.com/Pipelol0723/bigdata-ing-datos">https://github.com/Pipelol0723/bigdata-ing-datos</a>, carpeta <code>entregas/parcial-2-panel-analitico/</code>.</p>
+<h1 id="s2">Introducción: el sistema y la trazabilidad</h1>
+<h2 id="s3">Qué se construyó</h2>
+<p>El sistema de reservas del primer parcial, ahora completo y medido. Tiene tres caminos:</p>
+<ol>
+<li><strong>Transaccional.</strong> Los clientes buscan vuelos y reservan; la base no vende un asiento dos veces
+   aunque 50 personas pidan el último a la vez. Una API FastAPI y PostgreSQL, en una EC2.</li>
+<li><strong>Batch.</strong> Dos años de historial (≈ 2,1 millones de reservas en CSV, sucias a propósito) se limpian
+   con un job de <strong>PySpark en EMR</strong> que aplica las reglas C1–C5 y escribe Parquet particionado por
+   mes en S3.</li>
+<li><strong>Analítico.</strong> Las dos tablas resultantes se registran en el <strong>Glue Data Catalog</strong> y se consultan
+   con <strong>Athena</strong>; el panel de gerencia muestra la ocupación de una ruta en un mes leyendo de Athena.</li>
+</ol>
+<p>El enunciado fija que lo más barato que cumpla es lo mejor. Por eso cada pieza es la versión mínima
+que pasa su requisito, y cada una se midió en AWS contra el harness del profesor.</p>
+<p><strong>Semilla asignada: 12345</strong> (individual). Determina el dataset, el valor K de la prueba de
+concurrencia (K = 3) y todas las respuestas esperadas.</p>
+<h2 id="s4">Resultado</h2>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Harness del profesor contra lo desplegado (18/10/2026)</td>
+<td><strong>70,0 / 70,0</strong> · 23 tests en 34 s, una sola corrida</td>
+</tr>
+<tr>
+<td>Datos</td>
+<td>2.087.701 reservas crudas → <strong>2.017.079 curadas</strong>, idénticas fila por fila a las del oráculo</td>
+</tr>
+<tr>
+<td>Costo real del parcial en AWS</td>
+<td>menos de US$1 (dos corridas de EMR, la EC2 y Athena)</td>
+</tr>
+<tr>
+<td>Proyección mensual 24/7</td>
+<td>US$8,36 declarados (lo que mide el harness) + US$4,29 de EBS e IPv4 = <strong>US$12,65 reales</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="s5">Matriz de trazabilidad</h2>
+<p>Cada requisito, la pieza que lo cumple, dónde está y la medición del harness que lo prueba
+(<code>evidencia/harness-2026-10-18/report.md</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Req</th>
+<th>Pts</th>
+<th>Cómo se cumple</th>
+<th>Dónde</th>
+<th>Medición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 · búsqueda p95 ≤ 1 s</td>
+<td>4</td>
+<td>Índice <code>(route, flight_date)</code>; endpoint síncrono con pool de conexiones</td>
+<td><code>app/main.py</code>, <code>app/schema.sql</code></td>
+<td>p95 <strong>0,080 s</strong> con 20 clientes</td>
+</tr>
+<tr>
+<td>R2 · sin sobreventa</td>
+<td>10</td>
+<td><code>UPDATE … WHERE seats_available &gt; 0</code> y la reserva en la misma transacción; <code>CHECK</code> como segunda red; pool que espera</td>
+<td><code>app/main.py</code> (<code>reservar</code>)</td>
+<td>1 de 50 y 3 de 50 (K = 3), 5 rondas cada uno, sin 5xx</td>
+</tr>
+<tr>
+<td>R3 · consultar reserva</td>
+<td>3</td>
+<td><code>reservation_id</code> como texto (un id inválido da 404, no 422)</td>
+<td><code>app/main.py</code></td>
+<td>200 y 404 correctos</td>
+</tr>
+<tr>
+<td>R4 · job EMR → Parquet</td>
+<td>8</td>
+<td>PySpark con C1–C5, corrido como <strong>step</strong> de un clúster transitorio</td>
+<td><code>spark/curar_reservas.py</code>, <code>infra/02-job-emr.sh</code></td>
+<td>2.017.079 filas; <strong>24/24</strong> archivos escritos dentro del step</td>
+</tr>
+<tr>
+<td>R5 · tablas en Glue</td>
+<td>6</td>
+<td>DDL de Athena; <code>reservations_curated</code> con partition projection; métricas sin particionar</td>
+<td><code>sql/tablas_athena.sql</code></td>
+<td>Columnas, orden y formato según contrato</td>
+</tr>
+<tr>
+<td>R6 · Athena correcto y podado</td>
+<td>8</td>
+<td>Parquet + partición por mes; un archivo por mes</td>
+<td><code>spark/curar_reservas.py</code></td>
+<td>Top-10 = oráculo; un mes escanea <strong>280.837 B</strong> (tope 1.827.162)</td>
+</tr>
+<tr>
+<td>R7 · endpoint desde Athena</td>
+<td>8</td>
+<td>Consulta parametrizada a Athena en cada pedido</td>
+<td><code>app/main.py</code> (<code>ocupacion</code>)</td>
+<td>5 rutas/mes correctas en ~0,93–1,06 s</td>
+</tr>
+<tr>
+<td>R8 · flujo del cliente</td>
+<td>6</td>
+<td>HTML + JS servido por FastAPI con los <code>data-testid</code> del contrato</td>
+<td><code>app/static/index.html</code></td>
+<td>Reserva creada desde Chromium</td>
+</tr>
+<tr>
+<td>R9 · panel = endpoint</td>
+<td>4</td>
+<td>El panel llama al endpoint y muestra 2 decimales</td>
+<td><code>app/static/manager.html</code></td>
+<td>0,8359 = 0,8359 = 0,8359</td>
+</tr>
+<tr>
+<td>R10 · EMR acotado</td>
+<td>5</td>
+<td><code>--auto-terminate</code>: el clúster muere al terminar el step</td>
+<td><code>infra/02-job-emr.sh</code></td>
+<td>0 clústeres activos; 48 h normalizadas de 150</td>
+</tr>
+<tr>
+<td>R11 · simple y barato</td>
+<td>4</td>
+<td><code>t3.micro</code>, <code>m4.large</code>, sin NAT ni balanceador, 5 servicios</td>
+<td><code>infra/04-ec2-app.sh</code></td>
+<td>6 servicios contados (Lambda viene de la cuenta del lab)</td>
+</tr>
+<tr>
+<td>R12 · proyección de costos</td>
+<td>4</td>
+<td><code>cost_projection.yaml</code> coherente con lo desplegado</td>
+<td><code>cost_projection.yaml</code></td>
+<td>Dentro del tope y de la tolerancia (§5.7 y §6.3)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s6">Dónde está cada cosa</h2>
+<p>El código, los scripts y la evidencia están en el repositorio, carpeta
+<code>entregas/parcial-2-panel-analitico/</code>. Las rutas que cita el documento son relativas a esa carpeta.</p>
+<table>
+<thead>
+<tr>
+<th>Carpeta</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>app/</code></td>
+<td>Backend FastAPI, esquema de PostgreSQL y las dos páginas del frontend</td>
+</tr>
+<tr>
+<td><code>spark/</code></td>
+<td>El job de PySpark (<code>curar_reservas.py</code>)</td>
+</tr>
+<tr>
+<td><code>sql/</code></td>
+<td>DDL de las dos tablas para Athena / Glue</td>
+</tr>
+<tr>
+<td><code>infra/</code></td>
+<td>Scripts de CloudShell: bucket, job de EMR, tablas, EC2 y auditoría de baja</td>
+</tr>
+<tr>
+<td><code>local/</code></td>
+<td>Pruebas en la laptop: el job contra el oráculo y el harness contra el backend local</td>
+</tr>
+<tr>
+<td><code>harness/</code></td>
+<td>El harness del profesor, <strong>sin modificar</strong>, más <code>config.yaml</code></td>
+</tr>
+<tr>
+<td><code>evidencia/</code></td>
+<td>El <code>report.md</code> final del harness y cómo se obtuvo</td>
+</tr>
+<tr>
+<td><code>cost_projection.yaml</code> · <code>docker-compose.yml</code></td>
+<td>Proyección de costos y la composición que corre en la EC2</td>
+</tr>
+</tbody>
+</table>
+<h1 id="s7">5. Decisiones y su justificación</h1>
+<blockquote>
+<p>Cada decisión cita el requisito que la motiva (R1–R12 del enunciado) y los pilares del AWS
+Well-Architected Framework que pesan: <strong>OE</strong> Operational Excellence · <strong>SEC</strong> Security · <strong>REL</strong>
+Reliability · <strong>PERF</strong> Performance Efficiency · <strong>COST</strong> Cost Optimization · <strong>SUS</strong>
+Sustainability. Los números entre corchetes son mediciones del harness sobre el sistema
+desplegado, no estimaciones.</p>
+</blockquote>
+<h2 id="s8">5.0 Arquitectura</h2>
+<pre class="mermaid">flowchart LR
+    subgraph Usuarios
+        C[Cliente&lt;br/&gt;navegador]
+        G[Gerente&lt;br/&gt;navegador]
+    end
+    subgraph EC2[&quot;EC2 t3.micro · Ubuntu 24.04 · Docker&quot;]
+        API[&quot;FastAPI&lt;br/&gt;API + páginas / y /manager&quot;]
+        PG[(&quot;PostgreSQL 16&lt;br/&gt;sólo reservas vivas&quot;)]
+        API --&gt; PG
+    end
+    subgraph Lote[&quot;Camino batch (1 vez por mes)&quot;]
+        RAW[(&quot;S3 raw/&lt;br/&gt;CSV crudos&quot;)]
+        EMR[&quot;EMR 7.14 transitorio&lt;br/&gt;1 primario + 1 core m4.large&lt;br/&gt;step PySpark · auto-terminate&quot;]
+        CUR[(&quot;S3 curated/&lt;br/&gt;Parquet&quot;)]
+        RAW --&gt; EMR --&gt; CUR
+    end
+    CAT[&quot;Glue Data Catalog&lt;br/&gt;DDL + partition projection&quot;]
+    ATH[&quot;Athena&quot;]
+    C -- &quot;HTTP :8000&quot; --&gt; API
+    G -- &quot;HTTP :8000&quot; --&gt; API
+    API -- &quot;GET /analytics/occupancy&quot; --&gt; ATH
+    ATH --&gt; CAT
+    CAT -.-&gt; CUR
+</pre>
+<p><strong>Servicios facturables del proyecto: 5</strong> (EC2, S3, EMR, Glue, Athena), de 8 permitidos por R11. El
+harness cuenta 6 porque la cuenta del Learner Lab trae funciones de <strong>Lambda</strong> propias, que este
+proyecto no usa.</p>
+<p><strong>Resultado del harness sobre lo desplegado [18/10]: 70,0 / 70,0</strong> (R1–R12 en verde, una sola corrida;
+<code>evidencia/harness-2026-10-18/report.md</code>).</p>
+<h2 id="s9">5.1 Modelo de hosting</h2>
+<p><strong>Decisión.</strong> Backend, frontend y base transaccional en <strong>una sola EC2 <code>t3.micro</code></strong>, con Docker
+Compose: un contenedor de FastAPI (que sirve también las dos páginas HTML) y uno de PostgreSQL 16.
+La base no publica ningún puerto; sólo la ve la API por la red interna de Docker. Hacia afuera sale
+únicamente el 8000.</p>
+<p><strong>Por qué esto y no algo más gestionado.</strong> La alternativa obvia era <strong>RDS</strong> para la base. R1 y R2 se
+cumplen igual con PostgreSQL en la misma máquina —es el mismo motor y la misma garantía
+transaccional—, y RDS agregaba ~US$14,70/mes (instancia + 20 GB) y un servicio facturable más. Con
+un presupuesto de US$50 y R12 premiando la arquitectura más barata, el costo manda (<strong>COST</strong>). Lo
+que se resigna es <strong>REL</strong>: sin backups gestionados ni Multi-AZ, perder la instancia es perder las
+reservas. Se compensa con un <code>pg_dump</code> periódico a S3; para una aerolínea real, ésa sería la primera
+línea a cambiar (pasar a RDS).</p>
+<p><strong>Por qué no algo menos gestionado (SQLite).</strong> Con 50 reservas simultáneas por el último asiento
+(R2), SQLite serializa todas las escrituras y devuelve <em>database is locked</em> si se agota la espera: un
+5xx, que R2 prohíbe. PostgreSQL resuelve la concurrencia con bloqueo por fila.</p>
+<p><strong>El tamaño se midió, no se supuso (D2).</strong> Se arrancó por la <code>t3.micro</code>, la más chica que permite R11,
+para subir a <code>t3.small</code> sólo si R1 fallaba. Medido contra la EC2 [18/10]: <strong>p95 = 80 ms</strong> con 20
+clientes concurrentes desde CloudShell (183 ms desde fuera de AWS; tope 1 s) y <strong>R2 exacto en las 5 rondas</strong> (1 de 50 en el último asiento, 3 de
+50 con K = 3). No hizo falta subir (<strong>PERF</strong>, <strong>COST</strong>, <strong>SUS</strong>: no sobredimensionar).</p>
+<p><strong>Cómo se evita la sobreventa (R2).</strong> El asiento se descuenta y la reserva se inserta en <strong>una sola
+transacción</strong>, con un <code>UPDATE flights SET seats_available = seats_available - 1 WHERE flight_id = %s
+AND seats_available &gt; 0</code>. PostgreSQL bloquea la fila del vuelo; el primero descuenta y los demás ven
+cero asientos y no actualizan nada → <code>409</code>. Un <code>CHECK (seats_available &gt;= 0)</code> es la segunda red. El
+pool de conexiones <strong>espera</strong> en vez de fallar: con 50 pedidos simultáneos, un pool agotado que
+respondiera error sería un 500.</p>
+<h2 id="s10">5.2 Por qué EMR, y cuál</h2>
+<p><strong>Qué hace el job que Athena sola no puede.</strong> Las reglas C1–C4 se pueden escribir en SQL, pero <strong>C5
+pide quedarse con la <em>primera</em> aparición de cada <code>reservation_id</code></strong>. Un CSV en S3 no tiene orden de
+filas para Athena: no hay forma de saber cuál vino primero. En Spark, cada fila se numera al leer
+el archivo (<code>monotonically_increasing_id</code>, que crece con la posición) y se conserva la de menor número.
+Además el job hace el <em>join</em> con los vuelos (la ruta y el mes salen de <code>flights.csv</code>), escribe el
+Parquet particionado y calcula las métricas, todo en una pasada.</p>
+<p><strong>Alternativas consideradas.</strong></p>
+<ul>
+<li><strong>Athena CTAS:</strong> más barata por corrida, pero no resuelve C5 de forma determinista y deja la
+  transformación repartida en varias consultas.</li>
+<li><strong>Glue job (Spark):</strong> el mismo código PySpark sin administrar clúster. Se descartó porque el curso
+  exige EMR en este proyecto.</li>
+<li><strong>EMR Serverless:</strong> sin clúster que administrar, pero necesita un rol de ejecución que confíe en
+  <code>emr-serverless</code>, y en el Learner Lab no se pueden crear roles (sólo existe <code>LabRole</code>). No se probó.</li>
+</ul>
+<p><strong>Cuál y con qué.</strong> EMR 7.14 (Spark 3.5.6) en <strong>clúster transitorio</strong>: se crea con el step y la
+opción <code>--auto-terminate</code>, corre el job y <strong>se termina solo</strong>; si el step falla, también
+(<code>ActionOnFailure=TERMINATE_CLUSTER</code>). Así R10 se cumple por diseño, no por acordarse de apagarlo
+(<strong>OE</strong>, <strong>COST</strong>). Instancias <strong>m4.large</strong>, el único tipo que permite R11 (el lab rechaza <code>m5.large</code>).</p>
+<p><strong>Uno o dos nodos: lo que enseñó la primera corrida.</strong> El diseño original era un solo nodo (4 horas
+normalizadas por corrida). En AWS el step quedó trabado: <em>"waiting for resources to be assigned for
+AM"</em> — en EMR 7, YARN no ubica el <em>application master</em> de Spark en el nodo primario. Se pasó a <strong>1
+primario + 1 core</strong>: 8 horas normalizadas por corrida, con un tope de 150 en 45 días (R10).</p>
+<h2 id="s11">5.3 Organización de los datos</h2>
+<p><strong>Parquet</strong> porque es columnar: una consulta que suma <code>price_cents</code> de un mes lee sólo esa columna,
+comprimida, y no las seis. <strong>Particionado por mes</strong> (<code>month=YYYY-MM</code>, el mes del vuelo) porque es el
+filtro natural del panel y de las consultas de R6: Athena descarta las otras 23 carpetas sin leerlas.</p>
+<p>Sin eso, R6 fallaría: con CSV o sin particiones, cada consulta de un mes escanea el historial entero.
+Con el layout elegido [18/10], el promedio por partición es de 913.581 bytes y el tope de R6 para una
+consulta de un mes, 1.827.162; la consulta del harness escaneó <strong>280.837 bytes</strong>: sólo las columnas
+que usa, de una sola carpeta. El job escribe <strong>un archivo por mes</strong> (<code>repartition("month")</code>): pocos archivos
+medianos en vez de cientos chicos, que es lo que Athena lee mejor (<strong>PERF</strong>, <strong>COST</strong>, <strong>SUS</strong>: se
+escanea —y se paga— sólo lo necesario).</p>
+<p><code>route_month_metrics</code> va <strong>sin particionar</strong>: son 240 filas, y si <code>month</code> fuera partición, el catálogo
+lo sacaría de la lista de columnas y dejaría de cumplir el contrato (R5).</p>
+<p><strong>Registro en el catálogo.</strong> Las tablas se crean con DDL de Athena y la de detalle usa <em>partition
+projection</em>: Athena calcula las 24 particiones a partir del rango declarado, sin crawler (que cobra
+por corrida) y sin volver a registrar particiones cada vez que el job reescribe (<strong>OE</strong>, <strong>COST</strong>).</p>
+<h2 id="s12">5.4 De dónde saca el panel sus números</h2>
+<p>El endpoint <code>/analytics/occupancy</code> consulta <strong>Athena en cada pedido</strong> sobre <code>route_month_metrics</code>
+(R7 lo exige y verifica el historial de consultas). Consecuencias:</p>
+<ul>
+<li><strong>Latencia:</strong> 1–3 s por consulta (arranque de Athena), dentro del tope de 10 s de R7. Para un
+  panel de gerencia es aceptable; para una página de clientes no lo sería.</li>
+<li><strong>Costo por consulta:</strong> Athena cobra un mínimo de 10 MB por consulta; sobre una tabla de 240 filas,
+  cada consulta cuesta ~US$0,00005.</li>
+<li><strong>Frescura:</strong> los números son los de la última corrida del job (mensual). La tabla agregada no
+  cambia entre corridas.</li>
+</ul>
+<p><strong>¿Caché?</strong> Hoy no se justifica: 10.000 consultas al mes cuestan ~US$0,50. Con ×10 consultas, o si
+la latencia de 1–3 s molestara, una caché en memoria por (ruta, mes) con vencimiento al correr el job
+sería correcta y R7 la permite si la primera consulta va a Athena.</p>
+<p><strong>Seguridad.</strong> <code>route</code> y <code>month</code> se validan con expresiones regulares (<code>^[A-Z]{3}-[A-Z]{3}$</code>,
+<code>^\d{4}-(0[1-9]|1[0-2])$</code>) y viajan como <strong>parámetros de Athena</strong>, nunca concatenados en el SQL:
+doble defensa contra inyección (<strong>SEC</strong>).</p>
+<h2 id="s13">5.5 Separación de cargas</h2>
+<p>El historial de 2 millones de reservas <strong>nunca entra a la base transaccional</strong>: vive en S3 y sólo lo
+leen EMR y Athena. PostgreSQL atiende reservas y búsquedas, nada más. Un análisis pesado no puede
+frenar una reserva porque no comparten ni disco, ni CPU, ni conexiones (R1, R2; <strong>PERF</strong>, <strong>REL</strong>).
+La única carga analítica que pasa por la EC2 es el endpoint del panel, que delega el cálculo en
+Athena y sólo espera la respuesta.</p>
+<h2 id="s14">5.6 Servicios, alternativa y pilar</h2>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Para qué</th>
+<th>Alternativa considerada</th>
+<th>Requisito</th>
+<th>Pilares</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>EC2</strong> <code>t3.micro</code></td>
+<td>API, frontend y PostgreSQL en Docker</td>
+<td>RDS + EC2; Lambda + API Gateway</td>
+<td>R1, R2, R3, R8, R9, R11</td>
+<td>COST, PERF, SUS</td>
+</tr>
+<tr>
+<td><strong>S3</strong></td>
+<td>Crudos, Parquet curado, resultados de Athena</td>
+<td>EBS / HDFS del clúster</td>
+<td>R4, R6</td>
+<td>COST, REL, SUS</td>
+</tr>
+<tr>
+<td><strong>EMR</strong> 7.14, transitorio</td>
+<td>Job PySpark C1–C5 + métricas</td>
+<td>Glue job; Athena CTAS; EMR Serverless</td>
+<td>R4, R10</td>
+<td>OE, COST</td>
+</tr>
+<tr>
+<td><strong>Glue Data Catalog</strong></td>
+<td>Esquema de las dos tablas</td>
+<td>Crawler de Glue</td>
+<td>R5</td>
+<td>OE, COST</td>
+</tr>
+<tr>
+<td><strong>Athena</strong></td>
+<td>Consultas del panel y verificación</td>
+<td>Redshift (cobra encendido 24/7)</td>
+<td>R6, R7, R9</td>
+<td>COST, PERF</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s15">5.7 Proyección de costos</h2>
+<p>Ver <code>cost_projection.yaml</code>. Supuestos: ~200 usuarios/día, ~2.000 búsquedas y ~300 reservas diarias,
+10.000 consultas/mes al panel, 2 M reservas de historial (85 MB de CSV, ~22 MB de Parquet) y una
+corrida mensual del job. Sistema 24/7, single-AZ.</p>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Detalle</th>
+<th>US$/mes</th>
+<th>En el yaml</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EC2</td>
+<td><code>t3.micro</code> 24/7, 730 h</td>
+<td>7,59</td>
+<td>sí</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>~0,15 GB</td>
+<td>0,01</td>
+<td>sí</td>
+</tr>
+<tr>
+<td>Athena</td>
+<td>10.000 consultas × 10 MB mínimo</td>
+<td>0,50</td>
+<td>sí</td>
+</tr>
+<tr>
+<td>EMR</td>
+<td>1 corrida/mes, 2 × <code>m4.large</code>, &lt; 1 h</td>
+<td>0,26</td>
+<td>sí</td>
+</tr>
+<tr>
+<td>Glue Data Catalog</td>
+<td>2 tablas, sin crawler</td>
+<td>0,00</td>
+<td>sí</td>
+</tr>
+<tr>
+<td><strong>Subtotal declarado</strong></td>
+<td></td>
+<td><strong>8,36</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>EBS gp3</td>
+<td>8 GB de la instancia</td>
+<td>0,64</td>
+<td><strong>no</strong></td>
+</tr>
+<tr>
+<td>IPv4 pública</td>
+<td>730 h × US$0,005</td>
+<td>3,65</td>
+<td><strong>no</strong></td>
+</tr>
+<tr>
+<td><strong>Costo real</strong></td>
+<td></td>
+<td><strong>≈ 12,65</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Por qué el yaml declara US$8,36 y no US$12,65.</strong> R12 compara lo declarado con lo que el harness
+estima a partir de los recursos vivos, y su modelo (<code>pricing.yaml</code>) sólo pone precio a las horas de
+EC2, a las horas normalizadas de EMR, a Athena y a S3: <strong>no tiene línea para el EBS ni para la IPv4
+pública</strong>. Además cuenta las horas de EMR de los últimos 45 días, que se van cayendo de la ventana.
+Con los US$12,65 completos, la diferencia contra su estimación supera la tolerancia (25 % + US$2) en
+cuanto las corridas de octubre salen de la ventana, el 24/11. Por eso se declaró lo que el harness sabe
+medir y los US$4,29 restantes se explican acá; es una pregunta abierta al profesor (§6.4). De esos
+US$4,29, la IPv4 pública es el ítem más grande después de la EC2: con una Elastic IP o un dominio
+detrás de un balanceador costaría lo mismo o más, así que es un costo inevitable de exponer el panel.</p>
+<p><strong>Con ×10.</strong> <em>Datos ×10</em> (20 M reservas): el job tarda más y quizá pida un core más (~US$0,26 → ~0,52
+por corrida); el panel <strong>no cambia de costo</strong>, porque lee la tabla agregada (2.400 filas en vez de
+240) y sigue en el mínimo de 10 MB por consulta; S3 sube a centavos. <em>Consultas ×10</em> (100.000/mes):
+Athena pasa a ~US$5/mes, y ahí sí conviene la caché del punto 5.4, que lo devuelve a centavos. El
+costo dominante sigue siendo la EC2 24/7, el único recurso que cobra por existir: es lo primero a
+optimizar (<strong>COST</strong>) y lo que más energía consume sin uso (<strong>SUS</strong>).</p>
+<p><strong>Lo que se gastó de verdad.</strong> Todo el parcial en AWS costó menos de US$1: una corrida de EMR de un
+nodo que se trabó (§5.2), la corrida buena de dos nodos, la EC2 durante las sesiones, el S3 y unas
+decenas de consultas de Athena. El desarrollo se hizo en la laptop contra el oráculo del harness
+(<code>local/</code>), y AWS se usó sólo para lo que había que verificar ahí.</p>
+<h2 id="s16">5.8 Definición de <code>bookings</code></h2>
+<p>El contrato escrito (enunciado A.2 y <code>contract/DATA.md</code>) dice que <code>seats_sold</code> y <code>bookings</code> cuentan
+sólo las reservas <code>CONFIRMED</code>, lo que vuelve a <code>bookings</code> idéntica a <code>seats_sold</code>. El oráculo del
+harness (<code>airline_data/oracle.py</code>) la calcula como <strong>confirmadas + canceladas</strong>: en las 240 filas,
+<code>bookings = seats_sold + cancellations</code>. El harness no la verifica.</p>
+<p><strong>Decisión:</strong> se sigue el contrato escrito, que es la especificación, y se deja la otra lectura a un
+parámetro: <code>spark-submit curar_reservas.py … --bookings-incluye-canceladas</code>. Cambiarla es volver a
+correr el job (~10 min, ~US$0,26), sin tocar las tablas ni el endpoint. Está planteada como pregunta
+al profesor (§6.4).</p>
+<h1 id="s17">6. Ejecución del harness</h1>
+<h2 id="s18">6.1 Cómo se corrió</h2>
+<p>El harness es la copia entregada por el profesor, <strong>sin modificar</strong> (<code>harness/</code>); sólo se completó
+<code>config.yaml</code> (semilla 12345, URLs de la EC2, base de Athena) y se escribió <code>cost_projection.yaml</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fecha</td>
+<td>18/10/2026, 22:29 UTC</td>
+</tr>
+<tr>
+<td>Dónde</td>
+<td><strong>AWS CloudShell</strong> de la cuenta del lab: el harness consulta Glue, Athena, EMR, EC2 y S3 con boto3, y CloudShell ya tiene las credenciales temporales del Learner Lab. Así no tocan el disco de la laptop</td>
+</tr>
+<tr>
+<td>Contra qué</td>
+<td>La app en la EC2 <code>t3.micro</code> (<code>http://100.55.17.95:8000</code> ese día) y las tablas de <code>airline_analytics</code></td>
+</tr>
+<tr>
+<td>Navegador (R8, R9)</td>
+<td>Chromium de Playwright dentro de CloudShell. Le faltaban bibliotecas del sistema (<code>libnspr4</code> y otras), que se instalaron con <code>dnf</code> para esa sesión</td>
+</tr>
+<tr>
+<td>Corrida</td>
+<td><strong>Una sola</strong>, con los 23 tests, en 34 s</td>
+</tr>
+<tr>
+<td>Resultado</td>
+<td><strong>70,0 / 70,0</strong> · <code>evidencia/harness-2026-10-18/report.md</code> (Anexo C, sin editar)</td>
+</tr>
+</tbody>
+</table>
+<p>Antes de esa corrida, cada parte se probó por separado y gratis: el job de PySpark contra el oráculo
+en la laptop, con resultados idénticos fila por fila, y R1–R3 y R8 contra un backend local
+(<code>local/README.md</code>).</p>
+<h2 id="s19">6.2 Resultado por requisito</h2>
+<table>
+<thead>
+<tr>
+<th>Req</th>
+<th>Estado</th>
+<th>Puntos</th>
+<th>Evidencia del reporte</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td>passed</td>
+<td>4 / 4</td>
+<td>100 pedidos, 20 concurrentes: p50 = 0,014 s, <strong>p95 = 0,080 s</strong></td>
+</tr>
+<tr>
+<td>R2</td>
+<td>passed</td>
+<td>10 / 10</td>
+<td>5 rondas de 50 por el último asiento: <strong>201 = 1, 409 = 49</strong>; 5 rondas con K = 3: <strong>201 = 3</strong></td>
+</tr>
+<tr>
+<td>R3</td>
+<td>passed</td>
+<td>3 / 3</td>
+<td>lectura de la reserva creada y 404 para una inexistente</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>passed</td>
+<td>8 / 8</td>
+<td><strong>2.017.079</strong> filas curadas (esperadas 2.017.079); <strong>24/24</strong> Parquet escritos dentro de un step <code>COMPLETED</code></td>
+</tr>
+<tr>
+<td>R5</td>
+<td>passed</td>
+<td>6 / 6</td>
+<td>columnas y formato según contrato; partition projection habilitada</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>passed</td>
+<td>8 / 8</td>
+<td>top-10 igual al oráculo; un mes escaneó <strong>280.837 B</strong> (tope 1.827.162 B)</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>passed</td>
+<td>8 / 8</td>
+<td>5 pares ruta-mes correctos en 0,93–1,06 s; 8 consultas de Athena durante la prueba</td>
+</tr>
+<tr>
+<td>R8</td>
+<td>passed</td>
+<td>6 / 6</td>
+<td>reserva <code>R1D8F8FACA31A492</code> creada desde el navegador y leída del backend</td>
+</tr>
+<tr>
+<td>R9</td>
+<td>passed</td>
+<td>4 / 4</td>
+<td>PEI-CLO 2023-03: panel = endpoint = oráculo = <strong>0,8359</strong></td>
+</tr>
+<tr>
+<td>R10</td>
+<td>passed</td>
+<td>5 / 5</td>
+<td>0 clústeres activos; <strong>48</strong> horas normalizadas en 45 días (tope 150)</td>
+</tr>
+<tr>
+<td>R11</td>
+<td>passed</td>
+<td>4 / 4</td>
+<td>servicios: Athena, EC2, EMR, Glue, Lambda, S3 (6 de 8)</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>passed</td>
+<td>4 / 4</td>
+<td>declarado 12,65; estimado sobre lo vivo 9,03 (ver 6.3)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s20">6.3 Lo que hay detrás de algunos números</h2>
+<ul>
+<li><strong>R10 — las 48 horas normalizadas.</strong> El harness suma todos los clústeres de la cuenta de los últimos
+  45 días: 36 son del Taller Taxis del 10 y 13/10 (otra entrega del curso), 4 de la corrida de un
+  nodo que se trabó y 8 de la corrida buena. El propio job del parcial consume 8 por corrida.</li>
+<li><strong>R11 — Lambda y CloudFront.</strong> Lambda aparece porque la cuenta del Learner Lab trae funciones
+  propias; este proyecto no usa Lambda. CloudFront figura como <strong>"could not inspect"</strong>: el rol del lab
+  no puede listarlo, así que el harness no lo cuenta. Este proyecto no usa CloudFront; se declara como
+  pide la sección 6 del enunciado.</li>
+<li><strong>R12 — la proyección cambió después de la corrida.</strong> Ese día el yaml declaraba US$12,65 (incluía
+  EBS e IPv4). El 22/10 se dejó en <strong>US$8,36</strong> por lo explicado en §5.7. Las dos comprobaciones de
+  R12 con el yaml nuevo:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Momento</th>
+<th>Estimado del harness</th>
+<th>Diferencia</th>
+<th>Tolerancia (25 % + 2)</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hoy (48 h de EMR en la ventana)</td>
+<td>9,03</td>
+<td>0,67</td>
+<td>4,26</td>
+<td>pasa</td>
+</tr>
+<tr>
+<td>Desde el 24/11 (24 h)</td>
+<td>8,31</td>
+<td>0,05</td>
+<td>4,08</td>
+<td>pasa</td>
+</tr>
+<tr>
+<td>Desde el 02/12 (0 h)</td>
+<td>7,59</td>
+<td>0,77</td>
+<td>3,90</td>
+<td>pasa</td>
+</tr>
+</tbody>
+</table>
+<p>Con el yaml anterior (12,65) la segunda y la tercera fila fallaban. El tope por referencia
+  (<code>mín(1,5 × referencia, 50)</code>) se cumple mientras la referencia del profesor sea de al menos
+  US$5,57. Ese primer chequeo se volvió a correr en la laptop con el yaml nuevo, y pasa.</p>
+<h2 id="s21">6.4 Preguntas abiertas al profesor</h2>
+<ol>
+<li><strong><code>bookings</code>.</strong> El contrato dice "sólo CONFIRMED" y el oráculo calcula "confirmadas + canceladas".
+   Se implementó el contrato, con la otra lectura a un parámetro (§5.8). ¿Cuál es la correcta?</li>
+<li><strong>Referencia de R12.</strong> <code>thresholds.yaml</code> trae <code>reference_monthly_usd: 60</code> como valor provisorio.
+   ¿Cuál es el definitivo? ¿Y la proyección debe incluir costos que el harness no estima, como el EBS
+   y la IPv4 pública, o sólo los que modela <code>pricing.yaml</code>?</li>
+</ol>
+<h2 id="s22">6.5 Antes de la corrección</h2>
+<p>El Learner Lab detiene la EC2 al cerrar cada sesión y la vuelve a prender en la siguiente, <strong>con otra
+IP pública</strong>. Docker está habilitado al arranque y los contenedores tienen <code>restart: unless-stopped</code>,
+así que la app debería volver sin intervención (al 22/10 todavía no se había probado un reinicio);
+lo que cambia seguro es la dirección:</p>
+<ol>
+<li>Abrir el lab y esperar a que la EC2 <code>parcial2-app</code> esté <code>running</code> (2–3 min).</li>
+<li>Tomar la IP nueva (<code>aws ec2 describe-instances --filters Name=tag:Name,Values=parcial2-app</code>) y
+   ponerla en las dos URLs de <code>harness/config.yaml</code>.</li>
+<li>Verificar <code>http://&lt;IP&gt;:8000/health</code> y, si se quiere, volver a correr el harness como en 6.1.</li>
+</ol>
+<h2 id="s23">6.6 Lo que falló en el camino y cómo se resolvió</h2>
+<p>Ningún requisito quedó fallando, pero cuatro habrían fallado sin estos cambios:</p>
+<table>
+<thead>
+<tr>
+<th>Req</th>
+<th>Qué pasó</th>
+<th>Cambio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R4 / R10</td>
+<td>El job en un clúster de <strong>un solo nodo</strong> quedó trabado: <em>"waiting for resources to be assigned for AM"</em>. YARN no ubica el application master de Spark en el nodo primario, y como el step no terminaba, el clúster tampoco se apagaba solo</td>
+<td>Clúster de 1 primario + 1 core; el step terminó en ~2 min</td>
+</tr>
+<tr>
+<td>R1</td>
+<td>En las pruebas locales, p95 = 2,05 s con p50 = 7 ms: la URL <code>localhost</code> resolvía primero a IPv6 y cada conexión nueva esperaba ~2 s antes de reintentar por IPv4</td>
+<td>Usar la IP (<code>127.0.0.1</code> en local, la de la EC2 en AWS); p95 bajó a 18 ms</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>Si el <code>reservation_id</code> del path fuera numérico, un id inválido daría 422 y no 404</td>
+<td>Se declaró <code>str</code> desde el diseño</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>Si <code>route_month_metrics</code> se particionara por mes, el catálogo sacaría <code>month</code> de las columnas y el orden dejaría de coincidir con el contrato</td>
+<td>Tabla sin particionar desde el diseño</td>
+</tr>
+</tbody>
+</table>
+<h1 id="s24">Anexo A — Registro de prompts</h1>
+<p>El enunciado permite asistentes de IA con la regla del primer parcial: cada decisión tiene que poder
+explicarse y defenderse, y el registro de prompts es obligatorio. Lo que se registra no es el prompt
+perfecto sino <strong>la iteración</strong>: qué se pidió, qué devolvió la herramienta y qué hubo que corregirle o
+decidir.</p>
+<p><strong>Asistente utilizado:</strong> Claude (Claude Code, modelo Opus), con acceso al repositorio, a una terminal
+local y al navegador (Claude in Chrome) para operar la consola de AWS y CloudShell.</p>
+<hr>
+<h3>17/10 — Lectura del enunciado y del harness, y plan</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Objetivo</th>
+<th>Prompt (resumen)</th>
+<th>Qué devolvió</th>
+<th>Corrección / refinamiento aplicado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Entender qué se evalúa</td>
+<td>Se adjuntaron el enunciado y el <code>.zip</code> del harness: <em>"revisa estos 2 documentos … planea su desarrollo"</em></td>
+<td>Leyó los 30 archivos del harness, no sólo el enunciado, y sacó <strong>13 trampas</strong> que el enunciado no dice. Entre ellas: R10 suma las horas de EMR de 45 días (incluidas las del taller anterior), el Parquet tiene que escribirlo un <em>step</em> de EMR, la tabla de métricas no puede particionarse y R12 compara con lo que esté encendido</td>
+<td><strong>Leer el código de los tests fue lo que valió.</strong> Cada trampa se convirtió en una restricción de diseño antes de escribir código: <code>reservation_id</code> como texto, métricas sin particionar, el job siempre como <em>step</em>, el panel con 2 decimales</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Medir antes de diseñar</td>
+<td>(dentro del mismo pedido)</td>
+<td>Generó el dataset con la semilla de ejemplo en la laptop, sin AWS: 85 MB de CSV, 2,1 M de filas, 10 rutas, 24 meses. Y encontró que <strong>el contrato y el oráculo no coinciden en <code>bookings</code></strong></td>
+<td>La medición mostró que el dataset es chico, de ahí la idea de un clúster mínimo. La inconsistencia de <code>bookings</code> quedó como pregunta para el profesor, sin resolverla por mi cuenta</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Decidir la arquitectura</td>
+<td>El asistente presentó 6 decisiones (D1–D6) con alternativas, costo y recomendación</td>
+<td>Hosting, tamaño de la EC2, forma de correr EMR, registro de tablas, frontend y origen de los números del panel</td>
+<td><strong>Las decisiones las tomé yo con las alternativas a la vista:</strong> una EC2 con Docker en vez de RDS, EMR transitorio, DDL con partition projection en vez de crawler, y HTML servido por FastAPI. El tamaño de la EC2 (D2) quedó <strong>a medir, no a suponer</strong>. La recomendación de EMR de un nodo resultó equivocada (#11)</td>
+</tr>
+</tbody>
+</table>
+<h3>18/10 — Desarrollo en la laptop ($0)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Objetivo</th>
+<th>Prompt (resumen)</th>
+<th>Qué devolvió</th>
+<th>Corrección / refinamiento aplicado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>Arrancar sin depender de una cuenta</td>
+<td><em>"usa la misma semilla … individual … inicia el desarrollo; si nos quedamos sin créditos tengo otra cuenta, pero se perdería todo lo hecho"</em></td>
+<td>Scripts de infraestructura que derivan el ID de la cuenta (<code>aerolinea-p2-&lt;cuenta&gt;</code>) y todo el desarrollo en local primero</td>
+<td><strong>Reproducibilidad como requisito propio:</strong> si el presupuesto se agota, el sistema entero se recrea en otra cuenta con los mismos comandos. Lo único que se pierde es lo que vive en AWS</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Docker no arrancaba</td>
+<td><em>"docker falló: … dockerInference … The file cannot be accessed"</em></td>
+<td>Siguió el error más allá del mensaje: el socket trabado era el síntoma, y la causa real que la <strong>virtualización estaba desactivada</strong>, así que WSL2 no podía arrancar</td>
+<td>El asistente <strong>no tocó la configuración del sistema</strong>: me explicó cómo hacerlo. La desactivación era mía, de cuando usaba VirtualBox y VMware; borré las VMs y reactivé el hipervisor. Mientras tanto, siguió sin Docker, con un PostgreSQL nativo descartable</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Probar el job sin gastar</td>
+<td>Correr el PySpark en la laptop y compararlo con el oráculo del profesor</td>
+<td>Dos trampas de Windows: el hostname con guion bajo que Spark rechaza, y la escritura que exige <code>winutils.exe</code></td>
+<td>Se separó el job en <code>procesar()</code> y <code>escribir()</code>, para que <strong>el mismo código de transformación</strong> se valide contra el oráculo y sólo la escritura difiera. Resultado: <strong>2.017.079 filas idénticas fila por fila</strong> antes de tocar AWS</td>
+</tr>
+<tr>
+<td>7</td>
+<td>El harness contra el backend local</td>
+<td>Correr R1–R3 y R8 contra <code>localhost</code></td>
+<td>R1 falló: p95 = 2,05 s con p50 = 7 ms</td>
+<td><strong>La distribución delató la causa</strong>: no era lentitud de la app sino <code>localhost</code> resolviendo primero a IPv6, con 2 s de espera por conexión nueva. Con <code>127.0.0.1</code> bajó a 18 ms. Mirar sólo el número que falla habría llevado a "optimizar" algo que no estaba roto</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Dónde probar Docker</td>
+<td><em>"revisa si puedes hacerlo desde mi homelab"</em> y después <em>"dejemos el docker local para después, tengo 3 cuentas de AWS, corre todo lo que necesites ahí"</em></td>
+<td>Revisó el homelab sin cambiarle nada: tiene WSL y Hyper-V desactivados a propósito y no tiene Docker</td>
+<td><strong>Decisión propia: Docker se prueba directo en la EC2</strong>, que es Linux. Probarlo en local no agregaba nada a lo que la EC2 iba a demostrar</td>
+</tr>
+</tbody>
+</table>
+<h3>18/10 — Despliegue en AWS</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Objetivo</th>
+<th>Prompt (resumen)</th>
+<th>Qué devolvió</th>
+<th>Corrección / refinamiento aplicado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9</td>
+<td>Operar AWS desde el navegador</td>
+<td><em>"hazlo todo tú usando Chrome"</em></td>
+<td>Intentó abrir el Learner Lab desde el curso equivocado y no logró iniciar sesión en la consola</td>
+<td><strong>Le corregí el enlace</strong> (curso 179973). Con el lab abierto ahí, la sesión de la consola se compartió con sus pestañas y siguió por CloudShell</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Los crudos en S3</td>
+<td>(dentro del mismo pedido)</td>
+<td>Generó los CSV <strong>dentro de CloudShell</strong> en vez de subirlos desde la laptop, y comparó el MD5 con los locales</td>
+<td>Así las credenciales del lab no salieron de AWS. Los MD5 diferían, y en lugar de darlo por bueno encontró la causa: los <code>\r\n</code> de Windows. Sin ellos, <strong>idénticos byte a byte</strong></td>
+</tr>
+<tr>
+<td>11</td>
+<td>EMR trabado</td>
+<td>El job en el clúster de un nodo no avanzaba</td>
+<td>Leyó el log del step: <em>"waiting for resources to be assigned for AM"</em>; YARN no ubica el application master de Spark en el nodo primario. Paró y <strong>preguntó</strong>: terminar el clúster y cómo corregir</td>
+<td><strong>Era una decisión mía (D3) y un recurso a terminar</strong>: el asistente no hizo ninguna de las dos cosas solo. Elegí terminarlo y pasar a 1 primario + 1 core. El step nuevo terminó en ~2 min. El clúster trabado tardó ~25 min en apagarse, y el script se corrigió para no contarlo como vivo</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Una sola corrida con los 70 puntos</td>
+<td>Correr el harness completo contra lo desplegado</td>
+<td>Primero 60/70 en CloudShell, porque R8 y R9 necesitan un navegador. Instaló Chromium y sus bibliotecas en CloudShell y repitió: <strong>70/70</strong></td>
+<td>El <code>report.md</code> de la entrega sale de una sola corrida, no de pegar dos. Para traerlo a la laptop lo pasó en base64, porque la terminal corta las líneas largas, y lo reconstruyó byte a byte</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Cerrar la sesión</td>
+<td><em>"déjala abierta y termina el lab"</em></td>
+<td>End Lab desde el panel; la EC2 queda para la corrección</td>
+<td><strong>Decisión propia:</strong> la app tiene que estar arriba cuando corrija el profesor. Quedó anotado que el lab la reinicia con otra IP</td>
+</tr>
+</tbody>
+</table>
+<h3>22/10 — Documentación</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Objetivo</th>
+<th>Prompt (resumen)</th>
+<th>Qué devolvió</th>
+<th>Corrección / refinamiento aplicado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>14</td>
+<td>Saber qué falta</td>
+<td><em>"¿todo está listo para la presentación?"</em></td>
+<td>No dijo que sí: la app nunca se había probado tras un reinicio, la IP iba a cambiar y faltaba el documento</td>
+<td>Una respuesta honesta sobre lo no verificado vale más que un "todo listo"</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Las dudas para el profesor</td>
+<td><em>"realiza la documentación completa … y sobre las preguntas del profesor dime más en detalle"</em></td>
+<td>Calculó R12 en el tiempo: declarando el costo completo (US$12,65, con EBS e IPv4), <strong>R12 fallaría desde el 24/11</strong>, porque el harness no pone precio a esos dos ítems y las horas de EMR salen de su ventana de 45 días</td>
+<td><strong>Decidí declarar en el yaml sólo lo que el harness mide (US$8,36) y explicar los US$4,29 restantes en el documento</strong>, en vez de esconderlos o arriesgar el requisito. En <code>bookings</code>, seguir el contrato escrito con la otra lectura a un parámetro. Las dos quedan como preguntas al profesor</td>
+</tr>
+</tbody>
+</table>
+<h1 id="s25">Anexo B — Qué se toca si cambia algo</h1>
+<p>El enunciado (§8) anticipa que en la defensa se puede pedir un cambio en vivo —otra regla de
+limpieza, otra agregación— y preguntar qué partes del sistema, de los datos y de los tests se ven
+afectadas. El diseño apunta a que cada cambio toque <strong>un solo lugar</strong>: las reglas C1–C5 son funciones
+separadas (<code>c1_normalizar_ruta</code> … <code>c5_sin_duplicados</code>), las métricas se calculan en una sola función
+(<code>tabla_metricas</code>) y el endpoint sólo lee la tabla agregada.</p>
+<table>
+<thead>
+<tr>
+<th>Cambio pedido</th>
+<th>Código</th>
+<th>Datos</th>
+<th>Tests del harness</th>
+<th>Costo / tiempo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Otra regla de limpieza</strong> (p. ej. aceptar <code>PENDING</code>, o quedarse con la <em>última</em> aparición en C5)</td>
+<td>Una función en <code>spark/curar_reservas.py</code> (<code>c3_estados_validos</code> o el orden de <code>c5_sin_duplicados</code>)</td>
+<td>Volver a correr el job: reescribe <code>curated/</code> completo</td>
+<td>R4, R6, R7, R9 dejan de coincidir con el oráculo, que tiene las reglas fijas; R5 no cambia</td>
+<td>1 corrida de EMR: ~10 min, ~US$0,26</td>
+</tr>
+<tr>
+<td><strong>Las canceladas también ocupan asiento</strong></td>
+<td>Una línea de <code>tabla_metricas</code> (<code>seats_sold</code>)</td>
+<td>Re-correr el job</td>
+<td>R6, R7, R9 (cambia la ocupación)</td>
+<td>1 corrida de EMR</td>
+</tr>
+<tr>
+<td><strong><code>bookings</code> = confirmadas + canceladas</strong></td>
+<td>Ya existe: <code>--bookings-incluye-canceladas</code></td>
+<td>Re-correr el job</td>
+<td>Ninguno: el harness no la mira</td>
+<td>1 corrida de EMR</td>
+</tr>
+<tr>
+<td><strong>Otra agregación</strong> (por semana, o por clase tarifaria)</td>
+<td><code>tabla_metricas</code> (nueva clave), <code>sql/tablas_athena.sql</code> (columna nueva), la consulta del endpoint y los campos del panel</td>
+<td>Re-correr el job y recrear la tabla de métricas (DDL, gratis)</td>
+<td>R5 (columnas del contrato), R6, R7, R9</td>
+<td>1 corrida de EMR + 3 archivos</td>
+</tr>
+<tr>
+<td><strong>Más meses de historia</strong> (2025)</td>
+<td>Ampliar <code>projection.month.range</code> en el DDL</td>
+<td>Generar y subir los crudos; re-correr el job</td>
+<td>R4/R5 esperan exactamente 24 particiones</td>
+<td>DDL + 1 corrida</td>
+</tr>
+<tr>
+<td><strong>Datos ×10</strong></td>
+<td>Ninguno; quizá un core más (<code>infra/02-job-emr.sh</code>)</td>
+<td>Re-correr el job</td>
+<td>Ninguno</td>
+<td>Corrida ~2× más larga; el panel cuesta lo mismo (lee la tabla agregada)</td>
+</tr>
+<tr>
+<td><strong>Permitir sobreventa controlada</strong> (vender 105 % de la capacidad)</td>
+<td><code>crear_vuelo</code>: <code>seats_available = floor(capacity × factor)</code>; ajustar el <code>CHECK</code></td>
+<td>Ninguno (los vuelos nuevos)</td>
+<td>R2 espera exactamente K: con factor &gt; 1 falla, que es lo correcto si la regla cambió</td>
+<td>Cambio en la API + rebuild de la imagen</td>
+</tr>
+<tr>
+<td><strong>Base gestionada</strong> (pasar a RDS)</td>
+<td>Sólo <code>DATABASE_URL</code>; sacar el servicio <code>db</code> del compose</td>
+<td>Migrar con <code>pg_dump</code> / <code>pg_restore</code></td>
+<td>R11: RDS sólo <code>db.t3/t4g micro/small</code>, sin Multi-AZ; R12 suma ~US$12,41/mes</td>
+<td>~US$14,70/mes más</td>
+</tr>
+<tr>
+<td><strong>Que el panel no espere a Athena</strong></td>
+<td>Caché por (ruta, mes) en <code>ocupacion</code>, vencida al correr el job</td>
+<td>Ninguno</td>
+<td>R7 la permite si el primer pedido va a Athena</td>
+<td>Código del endpoint</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Regla general para responder en vivo:</strong> primero ubicar en qué capa vive el cambio (transaccional,
+batch o analítica), después qué tabla del contrato cambia, y recién ahí qué tests del harness lo van a
+notar. Un cambio de reglas de negocio en el batch nunca toca la base transaccional ni el frontend del
+cliente.</p>
+<h1 id="s26">Anexo C — Reporte del harness (sin editar)</h1>
+<p>Salida de <code>pytest</code> del 18/10/2026 contra lo desplegado, copiada sin cambios de <code>evidencia/harness-2026-10-18/report.md</code>. La proyección de costos que evaluó R12 ese día declaraba US$12,65; la versión entregada declara US$8,36 (ver §5.7 y §6.3).</p>
+<h2 id="s27">Harness report - andres-cespedes</h2>
+<p>Automated score: <strong>70.0 / 70.0</strong></p>
+<table>
+<thead>
+<tr>
+<th>Req</th>
+<th>Title</th>
+<th>Status</th>
+<th>Points</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td>Flight search latency</td>
+<td>passed</td>
+<td>4.0/4</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>No overselling under concurrency</td>
+<td>passed</td>
+<td>10.0/10</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>Reservation retrieval</td>
+<td>passed</td>
+<td>3.0/3</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>EMR job produces curated Parquet</td>
+<td>passed</td>
+<td>8.0/8</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>Glue Catalog tables per contract</td>
+<td>passed</td>
+<td>6.0/6</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>Athena correctness and partition pruning</td>
+<td>passed</td>
+<td>8.0/8</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>Analytics endpoint backed by Athena</td>
+<td>passed</td>
+<td>8.0/8</td>
+</tr>
+<tr>
+<td>R8</td>
+<td>Customer flow in browser</td>
+<td>passed</td>
+<td>6.0/6</td>
+</tr>
+<tr>
+<td>R9</td>
+<td>Manager panel matches endpoint</td>
+<td>passed</td>
+<td>4.0/4</td>
+</tr>
+<tr>
+<td>R10</td>
+<td>No leftover EMR / bounded EMR hours</td>
+<td>passed</td>
+<td>5.0/5</td>
+</tr>
+<tr>
+<td>R11</td>
+<td>Simple low-cost architecture</td>
+<td>passed</td>
+<td>4.0/4</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>Cost projection</td>
+<td>passed</td>
+<td>4.0/4</td>
+</tr>
+</tbody>
+</table>
+<h3>R1 Flight search latency - passed</h3>
+<ul>
+<li>passed: <code>test_search_p95</code> </li>
+<li>evidence: 100 requests, concurrency 20: p50=0.014s p95=0.080s</li>
+</ul>
+<h3>R2 No overselling under concurrency - passed</h3>
+<ul>
+<li>passed: <code>test_last_seat_exactly_one</code> </li>
+<li>passed: <code>test_k_seats_exactly_k</code> </li>
+<li>evidence: round 1: 201=1 409=49 other=0</li>
+<li>evidence: round 2: 201=1 409=49 other=0</li>
+<li>evidence: round 3: 201=1 409=49 other=0</li>
+<li>evidence: round 4: 201=1 409=49 other=0</li>
+<li>evidence: round 5: 201=1 409=49 other=0</li>
+<li>evidence: K=3 round 1: 201=3</li>
+<li>evidence: K=3 round 2: 201=3</li>
+<li>evidence: K=3 round 3: 201=3</li>
+<li>evidence: K=3 round 4: 201=3</li>
+<li>evidence: K=3 round 5: 201=3</li>
+</ul>
+<h3>R3 Reservation retrieval - passed</h3>
+<ul>
+<li>passed: <code>test_get_reservation</code> </li>
+<li>passed: <code>test_unknown_reservation_404</code> </li>
+</ul>
+<h3>R4 EMR job produces curated Parquet - passed</h3>
+<ul>
+<li>passed: <code>test_emr_run_completed</code> </li>
+<li>passed: <code>test_parquet_written_by_emr</code> </li>
+<li>passed: <code>test_cleaning_row_count_and_revenue</code> </li>
+<li>evidence: 2 COMPLETED EMR step/job runs found</li>
+<li>evidence: 24/24 parquet files were written inside a COMPLETED EMR run window</li>
+<li>evidence: curated rows: expected 2017079, got 2017079</li>
+</ul>
+<h3>R5 Glue Catalog tables per contract - passed</h3>
+<ul>
+<li>passed: <code>test_detail_table_contract</code> </li>
+<li>passed: <code>test_detail_partitions_registered</code> </li>
+<li>passed: <code>test_metrics_table_contract</code> </li>
+<li>evidence: partition projection enabled (partitions resolved by Athena, not the catalog)</li>
+</ul>
+<h3>R6 Athena correctness and partition pruning - passed</h3>
+<ul>
+<li>passed: <code>test_top10_routes</code> </li>
+<li>passed: <code>test_partition_pruning_scan</code> </li>
+<li>evidence: top-10 routes and occupancies match the oracle within tolerance</li>
+<li>evidence: one-month query scanned 280837 B; limit 1827162 B (avg partition 913581 B)</li>
+</ul>
+<h3>R7 Analytics endpoint backed by Athena - passed</h3>
+<ul>
+<li>passed: <code>test_endpoint_matches_oracle_and_uses_athena</code> </li>
+<li>passed: <code>test_endpoint_unknown_is_404</code> </li>
+<li>evidence: SMR-ADZ 2024-05: ok in 1.06s</li>
+<li>evidence: BAQ-CUC 2023-07: ok in 0.93s</li>
+<li>evidence: SMR-ADZ 2023-01: ok in 0.94s</li>
+<li>evidence: BAQ-PSO 2023-05: ok in 0.93s</li>
+<li>evidence: BGA-BOG 2024-11: ok in 0.93s</li>
+<li>evidence: 8 Athena queries submitted during the probes</li>
+</ul>
+<h3>R8 Customer flow in browser - passed</h3>
+<ul>
+<li>passed: <code>test_search_reserve_confirm</code> </li>
+<li>evidence: UI created reservation R1D8F8FACA31A492 for a flight; backend returns it</li>
+</ul>
+<h3>R9 Manager panel matches endpoint - passed</h3>
+<ul>
+<li>passed: <code>test_manager_panel_equals_endpoint</code> </li>
+<li>evidence: PEI-CLO 2023-03: panel=0.8359 endpoint=0.8359 truth=0.8359</li>
+</ul>
+<h3>R10 No leftover EMR / bounded EMR hours - passed</h3>
+<ul>
+<li>passed: <code>test_no_running_emr</code> </li>
+<li>passed: <code>test_emr_hours_cap</code> </li>
+<li>evidence: active clusters=[] started serverless apps=0</li>
+<li>evidence: normalized instance hours used: 48.0 (cap 150)</li>
+</ul>
+<h3>R11 Simple low-cost architecture - passed</h3>
+<ul>
+<li>passed: <code>test_instance_classes</code> </li>
+<li>passed: <code>test_no_nat_and_service_count</code> </li>
+<li>evidence: billable services in use: ['Athena', 'EC2', 'EMR', 'Glue', 'Lambda', 'S3']</li>
+<li>WARNING: could not inspect: ['CloudFront'] (not counted)</li>
+</ul>
+<h3>R12 Cost projection - passed</h3>
+<ul>
+<li>passed: <code>test_projection_file</code> </li>
+<li>passed: <code>test_projection_consistent_with_live</code> </li>
+<li>evidence: declared total 12.65 USD/month; limit 50.00 (min of 1.5x reference 60.0 and budget 50.0)</li>
+<li>evidence: cost estimated from live resources: 9.03 {'RDS': 0.0, 'EC2': 7.59, 'EMR': 1.44, 'Athena': 0.0, 'S3': 0.0}</li>
+</ul>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+  // Letra del ER más grande que la de fábrica: el diagrama se imprime a ancho de página y, con
+  // 14 entidades, a 12 px los nombres quedaban ilegibles en papel.
+  mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "strict",
+    er: { useMaxWidth: true, fontSize: 20, entityPadding: 10 },
+    sequence: { useMaxWidth: true } });
+</script>
+</body></html>

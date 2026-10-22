@@ -1,17 +1,19 @@
 # Proyección mensual 24/7 (contrato: harness/contract/COST_PROJECTION.md). El harness suma los
 # line_items (no se escribe total) y los compara con lo que encuentra prendido (R12).
-# 18/10: t3.micro confirmada midiendo R1 en la EC2 (p95 183 ms, decisión D2). Precios us-east-1 on-demand.
+# Precios us-east-1 on-demand. t3.micro confirmada midiendo R1 en la EC2 (p95 80 ms, decisión D2).
 #
-# Ojo con R12: el harness estima lo vivo como EC2 x 730 h + horas de EMR x US$0,03, y no cuenta
-# ni el EBS ni la IPv4 pública. Se declaran igual porque son costos reales; ver PLAN.md, sección 6.
+# Decisión del 22/10: acá van sólo los costos que el harness sabe estimar (EC2 por hora, EMR, Athena,
+# S3, Glue). Hay ~US$4,29/mes reales que su modelo de precios no contempla: el EBS de 8 GB
+# (US$0,64) y la IPv4 pública (US$3,65). Están declarados y explicados en el documento (§5.7);
+# si se sumaran acá, la comparación con lo "vivo" saldría de tolerancia en cuanto las horas de EMR
+# del taller salgan de la ventana de 45 días (desde el 24/11). Pregunta abierta al profesor.
 assumptions: >-
   Una aerolínea con ~200 usuarios/día: ~2.000 búsquedas y ~300 reservas por día en la web, y
   ~330 consultas/día al panel de gerencia (10.000/mes). Historial: 2 M reservas (85 MB de CSV
-  crudo, ~27 MB en Parquet). El job de EMR corre una vez por mes. Sistema arriba 24/7, single-AZ.
+  crudo, ~22 MB en Parquet). El job de EMR corre una vez por mes. Sistema arriba 24/7, single-AZ.
+  No incluye EBS (US$0,64) ni IPv4 pública (US$3,65): ver el documento, §5.7.
 line_items:
   - {service: "EC2", detail: "t3.micro 24/7 (FastAPI + PostgreSQL en Docker), 730 h x US$0,0104", monthly_usd: 7.59}
-  - {service: "EC2", detail: "EBS gp3 8 GB de la instancia", monthly_usd: 0.64}
-  - {service: "EC2", detail: "IPv4 pública de la instancia, 730 h x US$0,005", monthly_usd: 3.65}
   - {service: "S3", detail: "~0,15 GB: crudos, Parquet curado, resultados de Athena", monthly_usd: 0.01}
   - {service: "Athena", detail: "10.000 consultas/mes al panel x 10 MB mínimo facturable = 0,1 TB x US$5", monthly_usd: 0.50}
   - {service: "EMR", detail: "1 corrida/mes, 1 primario + 1 core m4.large, < 1 h (2 x (EC2 US$0,10 + EMR US$0,03))", monthly_usd: 0.26}

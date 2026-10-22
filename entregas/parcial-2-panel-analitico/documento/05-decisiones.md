@@ -1,9 +1,9 @@
 # 5. Decisiones y su justificación
 
-> Borrador (18/10/2026). Cada decisión cita el requisito que la motiva (R1–R12 del enunciado) y los
-> pilares del AWS Well-Architected Framework que pesan: **OE** Operational Excellence · **SEC**
-> Security · **REL** Reliability · **PERF** Performance Efficiency · **COST** Cost Optimization ·
-> **SUS** Sustainability. Los números entre corchetes son mediciones del harness sobre el sistema
+> Cada decisión cita el requisito que la motiva (R1–R12 del enunciado) y los pilares del AWS
+> Well-Architected Framework que pesan: **OE** Operational Excellence · **SEC** Security · **REL**
+> Reliability · **PERF** Performance Efficiency · **COST** Cost Optimization · **SUS**
+> Sustainability. Los números entre corchetes son mediciones del harness sobre el sistema
 > desplegado, no estimaciones.
 
 ## 5.0 Arquitectura
@@ -106,8 +106,9 @@ comprimida, y no las seis. **Particionado por mes** (`month=YYYY-MM`, el mes del
 filtro natural del panel y de las consultas de R6: Athena descarta las otras 23 carpetas sin leerlas.
 
 Sin eso, R6 fallaría: con CSV o sin particiones, cada consulta de un mes escanea el historial entero.
-Con el layout elegido, el promedio por partición es de ~1,1 MB y el tope de R6 para una consulta de
-un mes, ~2,2 MB. El job escribe **un archivo por mes** (`repartition("month")`): pocos archivos
+Con el layout elegido [18/10], el promedio por partición es de 913.581 bytes y el tope de R6 para una
+consulta de un mes, 1.827.162; la consulta del harness escaneó **280.837 bytes**: sólo las columnas
+que usa, de una sola carpeta. El job escribe **un archivo por mes** (`repartition("month")`): pocos archivos
 medianos en vez de cientos chicos, que es lo que Athena lee mejor (**PERF**, **COST**, **SUS**: se
 escanea —y se paga— sólo lo necesario).
 
@@ -159,19 +160,30 @@ Athena y sólo espera la respuesta.
 ## 5.7 Proyección de costos
 
 Ver `cost_projection.yaml`. Supuestos: ~200 usuarios/día, ~2.000 búsquedas y ~300 reservas diarias,
-10.000 consultas/mes al panel, 2 M reservas de historial (85 MB de CSV, ~27 MB de Parquet) y una
+10.000 consultas/mes al panel, 2 M reservas de historial (85 MB de CSV, ~22 MB de Parquet) y una
 corrida mensual del job. Sistema 24/7, single-AZ.
 
-| Servicio | US$/mes |
-|---|---|
-| EC2 `t3.micro` 24/7 | 7,59 |
-| EBS gp3 8 GB | 0,64 |
-| IPv4 pública | 3,65 |
-| S3 | 0,01 |
-| Athena | 0,50 |
-| EMR (1 corrida, 2 × m4.large, < 1 h) | 0,26 |
-| Glue Data Catalog | 0,00 |
-| **Total** | **≈ 12,65** |
+| Servicio | Detalle | US$/mes | En el yaml |
+|---|---|---|---|
+| EC2 | `t3.micro` 24/7, 730 h | 7,59 | sí |
+| S3 | ~0,15 GB | 0,01 | sí |
+| Athena | 10.000 consultas × 10 MB mínimo | 0,50 | sí |
+| EMR | 1 corrida/mes, 2 × `m4.large`, < 1 h | 0,26 | sí |
+| Glue Data Catalog | 2 tablas, sin crawler | 0,00 | sí |
+| **Subtotal declarado** | | **8,36** | |
+| EBS gp3 | 8 GB de la instancia | 0,64 | **no** |
+| IPv4 pública | 730 h × US$0,005 | 3,65 | **no** |
+| **Costo real** | | **≈ 12,65** | |
+
+**Por qué el yaml declara US$8,36 y no US$12,65.** R12 compara lo declarado con lo que el harness
+estima a partir de los recursos vivos, y su modelo (`pricing.yaml`) sólo pone precio a las horas de
+EC2, a las horas normalizadas de EMR, a Athena y a S3: **no tiene línea para el EBS ni para la IPv4
+pública**. Además cuenta las horas de EMR de los últimos 45 días, que se van cayendo de la ventana.
+Con los US$12,65 completos, la diferencia contra su estimación supera la tolerancia (25 % + US$2) en
+cuanto las corridas de octubre salen de la ventana, el 24/11. Por eso se declaró lo que el harness sabe
+medir y los US$4,29 restantes se explican acá; es una pregunta abierta al profesor (§6.4). De esos
+US$4,29, la IPv4 pública es el ítem más grande después de la EC2: con una Elastic IP o un dominio
+detrás de un balanceador costaría lo mismo o más, así que es un costo inevitable de exponer el panel.
 
 **Con ×10.** *Datos ×10* (20 M reservas): el job tarda más y quizá pida un core más (~US$0,26 → ~0,52
 por corrida); el panel **no cambia de costo**, porque lee la tabla agregada (2.400 filas en vez de
@@ -179,3 +191,20 @@ por corrida); el panel **no cambia de costo**, porque lee la tabla agregada (2.4
 Athena pasa a ~US$5/mes, y ahí sí conviene la caché del punto 5.4, que lo devuelve a centavos. El
 costo dominante sigue siendo la EC2 24/7, el único recurso que cobra por existir: es lo primero a
 optimizar (**COST**) y lo que más energía consume sin uso (**SUS**).
+
+**Lo que se gastó de verdad.** Todo el parcial en AWS costó menos de US$1: una corrida de EMR de un
+nodo que se trabó (§5.2), la corrida buena de dos nodos, la EC2 durante las sesiones, el S3 y unas
+decenas de consultas de Athena. El desarrollo se hizo en la laptop contra el oráculo del harness
+(`local/`), y AWS se usó sólo para lo que había que verificar ahí.
+
+## 5.8 Definición de `bookings`
+
+El contrato escrito (enunciado A.2 y `contract/DATA.md`) dice que `seats_sold` y `bookings` cuentan
+sólo las reservas `CONFIRMED`, lo que vuelve a `bookings` idéntica a `seats_sold`. El oráculo del
+harness (`airline_data/oracle.py`) la calcula como **confirmadas + canceladas**: en las 240 filas,
+`bookings = seats_sold + cancellations`. El harness no la verifica.
+
+**Decisión:** se sigue el contrato escrito, que es la especificación, y se deja la otra lectura a un
+parámetro: `spark-submit curar_reservas.py … --bookings-incluye-canceladas`. Cambiarla es volver a
+correr el job (~10 min, ~US$0,26), sin tocar las tablas ni el endpoint. Está planteada como pregunta
+al profesor (§6.4).

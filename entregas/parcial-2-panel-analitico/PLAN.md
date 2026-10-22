@@ -133,7 +133,7 @@ fase, no para depurar.
 | F2 | ✅ **18/10** — backend + frontend (`app/`): **R1, R2, R3 y R8 en verde** con el harness, contra el backend local | [`local/README.md`](local/README.md) |
 | F3 | ✅ **18/10** — crudos generados en CloudShell (idénticos a los locales), job en EMR transitorio, tablas en Athena | [`evidencia/harness-2026-10-18/`](evidencia/harness-2026-10-18/README.md) |
 | F4 | ✅ **18/10** — app en EC2 `t3.micro` con Docker. **Harness completo: 70,0 / 70,0** en una sola corrida | [`report.md`](evidencia/harness-2026-10-18/report.md) |
-| F5 | 🟡 sección 5 en borrador ([`documento/05-decisiones.md`](documento/05-decisiones.md)); falta la 6, el registro de prompts y armar el entregable | — |
+| F5 | ✅ **22/10** — documento final: introducción con trazabilidad, §5, §6, anexos A (prompts), B (impacto de cambios) y C (reporte). PDF de 17 páginas con `entrega/construir_documento.py`. Proyección bajada a US$8,36 (decisión del alumno) | [`entrega/Parcial2-Panel-Analitico-Aerolinea.pdf`](entrega/Parcial2-Panel-Analitico-Aerolinea.pdf) |
 | F6 | pendiente (defensa) | — |
 
 **Cambio de diseño del 18/10 (decidido por el alumno):** D3 pasó de 1 nodo a **1 primario + 1 core**.
