@@ -53,8 +53,8 @@ cumplen igual con PostgreSQL en la misma máquina —es el mismo motor y la mism
 transaccional—, y RDS agregaba ~US$14,70/mes (instancia + 20 GB) y un servicio facturable más. Con
 un presupuesto de US$50 y R12 premiando la arquitectura más barata, el costo manda (**COST**). Lo
 que se resigna es **REL**: sin backups gestionados ni Multi-AZ, perder la instancia es perder las
-reservas. Se compensa con un `pg_dump` periódico a S3; para una aerolínea real, ésa sería la primera
-línea a cambiar (pasar a RDS).
+reservas. Se compensaría con un `pg_dump` periódico a S3, que en esta entrega no está automatizado;
+para una aerolínea real, ésa sería la primera línea a cambiar (pasar a RDS).
 
 **Por qué no algo menos gestionado (SQLite).** Con 50 reservas simultáneas por el último asiento
 (R2), SQLite serializa todas las escrituras y devuelve *database is locked* si se agota la espera: un

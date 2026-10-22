@@ -349,8 +349,8 @@ cumplen igual con PostgreSQL en la misma máquina —es el mismo motor y la mism
 transaccional—, y RDS agregaba ~US$14,70/mes (instancia + 20 GB) y un servicio facturable más. Con
 un presupuesto de US$50 y R12 premiando la arquitectura más barata, el costo manda (<strong>COST</strong>). Lo
 que se resigna es <strong>REL</strong>: sin backups gestionados ni Multi-AZ, perder la instancia es perder las
-reservas. Se compensa con un <code>pg_dump</code> periódico a S3; para una aerolínea real, ésa sería la primera
-línea a cambiar (pasar a RDS).</p>
+reservas. Se compensaría con un <code>pg_dump</code> periódico a S3, que en esta entrega no está automatizado;
+para una aerolínea real, ésa sería la primera línea a cambiar (pasar a RDS).</p>
 <p><strong>Por qué no algo menos gestionado (SQLite).</strong> Con 50 reservas simultáneas por el último asiento
 (R2), SQLite serializa todas las escrituras y devuelve <em>database is locked</em> si se agota la espera: un
 5xx, que R2 prohíbe. PostgreSQL resuelve la concurrencia con bloqueo por fila.</p>
@@ -611,6 +611,11 @@ al profesor (§6.4).</p>
 </tr>
 </tbody>
 </table>
+<p><strong>Segunda corrida, 22/10/2026</strong>, también en CloudShell y ya con la proyección entregada (US$8,36):
+<strong>70,0 / 70,0</strong>, 23 tests en 40 s, con la EC2 en otra IP después del reinicio del lab. R1 dio p95 =
+0,069 s; R6, 280.837 B escaneados (igual que el 18/10); R10, 48 h normalizadas; R12, 8,36 declarado
+contra 9,03 estimado. Desde entonces la corrida es un solo comando: <code>infra/05-correr-harness.sh</code> busca la
+IP actual de la EC2, reinstala en <code>/tmp</code> lo que CloudShell borra entre sesiones y corre <code>pytest</code>.</p>
 <p>Antes de esa corrida, cada parte se probó por separado y gratis: el job de PySpark contra el oráculo
 en la laptop, con resultados idénticos fila por fila, y R1–R3 y R8 contra un backend local
 (<code>local/README.md</code>).</p>
@@ -748,7 +753,8 @@ en la laptop, con resultados idénticos fila por fila, y R1–R3 y R8 contra un 
 </table>
 <p>Con el yaml anterior (12,65) la segunda y la tercera fila fallaban. El tope por referencia
   (<code>mín(1,5 × referencia, 50)</code>) se cumple mientras la referencia del profesor sea de al menos
-  US$5,57. Ese primer chequeo se volvió a correr en la laptop con el yaml nuevo, y pasa.</p>
+  US$5,57. El 22/10 se corrió el harness completo con el yaml nuevo (§6.1) y R12 pasa en sus dos
+  comprobaciones.</p>
 <h2 id="s21">6.4 Preguntas abiertas al profesor</h2>
 <ol>
 <li><strong><code>bookings</code>.</strong> El contrato dice "sólo CONFIRMED" y el oráculo calcula "confirmadas + canceladas".
@@ -760,13 +766,14 @@ en la laptop, con resultados idénticos fila por fila, y R1–R3 y R8 contra un 
 <h2 id="s22">6.5 Antes de la corrección</h2>
 <p>El Learner Lab detiene la EC2 al cerrar cada sesión y la vuelve a prender en la siguiente, <strong>con otra
 IP pública</strong>. Docker está habilitado al arranque y los contenedores tienen <code>restart: unless-stopped</code>,
-así que la app debería volver sin intervención (al 22/10 todavía no se había probado un reinicio);
-lo que cambia seguro es la dirección:</p>
+así que la app vuelve sola: <strong>se comprobó el 22/10</strong>, tras el reinicio que hizo el lab, sin tocar
+nada. Lo único que cambia es la dirección:</p>
 <ol>
 <li>Abrir el lab y esperar a que la EC2 <code>parcial2-app</code> esté <code>running</code> (2–3 min).</li>
 <li>Tomar la IP nueva (<code>aws ec2 describe-instances --filters Name=tag:Name,Values=parcial2-app</code>) y
    ponerla en las dos URLs de <code>harness/config.yaml</code>.</li>
-<li>Verificar <code>http://&lt;IP&gt;:8000/health</code> y, si se quiere, volver a correr el harness como en 6.1.</li>
+<li>Verificar <code>http://&lt;IP&gt;:8000/health</code> y, si se quiere, volver a correr el harness con
+   <code>infra/05-correr-harness.sh</code>, que hace el paso 2 solo.</li>
 </ol>
 <h2 id="s23">6.6 Lo que falló en el camino y cómo se resolvió</h2>
 <p>Ningún requisito quedó fallando, pero cuatro habrían fallado sin estos cambios:</p>
@@ -967,6 +974,48 @@ local y al navegador (Claude in Chrome) para operar la consola de AWS y CloudShe
 <td><em>"realiza la documentación completa … y sobre las preguntas del profesor dime más en detalle"</em></td>
 <td>Calculó R12 en el tiempo: declarando el costo completo (US$12,65, con EBS e IPv4), <strong>R12 fallaría desde el 24/11</strong>, porque el harness no pone precio a esos dos ítems y las horas de EMR salen de su ventana de 45 días</td>
 <td><strong>Decidí declarar en el yaml sólo lo que el harness mide (US$8,36) y explicar los US$4,29 restantes en el documento</strong>, en vez de esconderlos o arriesgar el requisito. En <code>bookings</code>, seguir el contrato escrito con la otra lectura a un parámetro. Las dos quedan como preguntas al profesor</td>
+</tr>
+</tbody>
+</table>
+<h3>22/10 — Preparación de la presentación</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Objetivo</th>
+<th>Prompt (resumen)</th>
+<th>Qué devolvió</th>
+<th>Corrección / refinamiento aplicado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16</td>
+<td>Levantar todo para la clase</td>
+<td><em>"inicia todo y abre todas las ventanas necesarias"</em></td>
+<td>Abrió el lab, confirmó que <strong>la app volvió sola</strong> tras el reinicio (lo único sin probar), actualizó la IP y abrió las consolas. Al mirar la página del cliente vio que el recuadro de confirmación y el campo de pasajero <strong>se mostraban antes de buscar</strong>: el <code>display: flex</code> de <code>section</code> le ganaba al atributo <code>hidden</code></td>
+<td>Una línea de CSS (<code>[hidden] { display: none !important; }</code>), aplicada en la EC2 <strong>por SSM</strong> sin reiniciar nada (la app lee el HTML en cada pedido). Antes de aplicarla verificó en el código del harness que el recorrido de R8 no cambiaba, y después volvió a pasar R8</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Los vuelos para la demo</td>
+<td><em>"dime cuáles son las ciudades y fechas que hay para los viajes"</em></td>
+<td>La API no lista vuelos, así que los consultó en PostgreSQL por SSM. En el camino cargó vuelos de demo con un precio en centavos de peso (la página mostraba US$ 320.000)</td>
+<td>Corrigió esos registros a US$ 320 y 450. Lección: un dato de prueba también se revisa en pantalla</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Correr el harness desde AWS</td>
+<td><em>"¿y puedo hacer las pruebas desde AWS?"</em></td>
+<td>Encontró que CloudShell tenía la proyección <strong>vieja</strong> (US$12,65): R12 habría medido algo distinto de lo entregado. La reemplazó (MD5 verificado) y escribió <code>infra/05-correr-harness.sh</code>. <strong>70,0 / 70,0</strong> con el yaml entregado</td>
+<td>Un solo comando para la defensa, que busca la IP sola</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Un resumen para la sustentación</td>
+<td><em>"crea un documento resumen … más corto y simple"</em></td>
+<td>4 páginas (<code>entrega/Parcial2-Resumen-Sustentacion.pdf</code>). Al verificar cada afirmación contra el repo encontró que §5.1 decía que la falta de backups "se compensa con un <code>pg_dump</code> a S3", <strong>que no existe</strong></td>
+<td>§5.1 corregida: es una propuesta, no algo implementado. Una afirmación que no se puede mostrar es un riesgo en una defensa en vivo</td>
 </tr>
 </tbody>
 </table>

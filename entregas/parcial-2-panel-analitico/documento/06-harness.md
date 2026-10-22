@@ -14,6 +14,12 @@ El harness es la copia entregada por el profesor, **sin modificar** (`harness/`)
 | Corrida | **Una sola**, con los 23 tests, en 34 s |
 | Resultado | **70,0 / 70,0** · `evidencia/harness-2026-10-18/report.md` (Anexo C, sin editar) |
 
+**Segunda corrida, 22/10/2026**, también en CloudShell y ya con la proyección entregada (US$8,36):
+**70,0 / 70,0**, 23 tests en 40 s, con la EC2 en otra IP después del reinicio del lab. R1 dio p95 =
+0,069 s; R6, 280.837 B escaneados (igual que el 18/10); R10, 48 h normalizadas; R12, 8,36 declarado
+contra 9,03 estimado. Desde entonces la corrida es un solo comando: `infra/05-correr-harness.sh` busca la
+IP actual de la EC2, reinstala en `/tmp` lo que CloudShell borra entre sesiones y corre `pytest`.
+
 Antes de esa corrida, cada parte se probó por separado y gratis: el job de PySpark contra el oráculo
 en la laptop, con resultados idénticos fila por fila, y R1–R3 y R8 contra un backend local
 (`local/README.md`).
@@ -56,7 +62,8 @@ en la laptop, con resultados idénticos fila por fila, y R1–R3 y R8 contra un 
 
   Con el yaml anterior (12,65) la segunda y la tercera fila fallaban. El tope por referencia
   (`mín(1,5 × referencia, 50)`) se cumple mientras la referencia del profesor sea de al menos
-  US$5,57. Ese primer chequeo se volvió a correr en la laptop con el yaml nuevo, y pasa.
+  US$5,57. El 22/10 se corrió el harness completo con el yaml nuevo (§6.1) y R12 pasa en sus dos
+  comprobaciones.
 
 ## 6.4 Preguntas abiertas al profesor
 
@@ -70,13 +77,14 @@ en la laptop, con resultados idénticos fila por fila, y R1–R3 y R8 contra un 
 
 El Learner Lab detiene la EC2 al cerrar cada sesión y la vuelve a prender en la siguiente, **con otra
 IP pública**. Docker está habilitado al arranque y los contenedores tienen `restart: unless-stopped`,
-así que la app debería volver sin intervención (al 22/10 todavía no se había probado un reinicio);
-lo que cambia seguro es la dirección:
+así que la app vuelve sola: **se comprobó el 22/10**, tras el reinicio que hizo el lab, sin tocar
+nada. Lo único que cambia es la dirección:
 
 1. Abrir el lab y esperar a que la EC2 `parcial2-app` esté `running` (2–3 min).
 2. Tomar la IP nueva (`aws ec2 describe-instances --filters Name=tag:Name,Values=parcial2-app`) y
    ponerla en las dos URLs de `harness/config.yaml`.
-3. Verificar `http://<IP>:8000/health` y, si se quiere, volver a correr el harness como en 6.1.
+3. Verificar `http://<IP>:8000/health` y, si se quiere, volver a correr el harness con
+   `infra/05-correr-harness.sh`, que hace el paso 2 solo.
 
 ## 6.6 Lo que falló en el camino y cómo se resolvió
 

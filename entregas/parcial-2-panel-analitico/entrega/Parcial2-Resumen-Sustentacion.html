@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parcial 2 — Resumen para la sustentación</title>
+<style>
+@page { size: A4; margin: 15mm 15mm 16mm 15mm;
+        @bottom-center { content: counter(page); font: 8.5pt 'Segoe UI', sans-serif; color: #777; } }
+@page :first { @bottom-center { content: none; } }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font: 10pt/1.45 'Segoe UI', system-ui, -apple-system, Arial, sans-serif; color: #1f2328;
+       background: #fff; margin: 0 auto; max-width: 190mm; padding: 0 2mm; }
+h1, h2, h3, h4 { color: #0f3a66; line-height: 1.25; page-break-after: avoid; break-after: avoid; }
+h1 { font-size: 19pt; border-bottom: 2px solid #0f3a66; padding-bottom: 4px; margin: 0 0 12px;
+     page-break-before: always; break-before: page; }
+h2 { font-size: 13.5pt; margin: 17px 0 7px; border-bottom: 1px solid #d0d7de; padding-bottom: 2px; }
+h3 { font-size: 11.5pt; margin: 16px 0 6px; }
+h4 { font-size: 10.5pt; margin: 14px 0 6px; }
+p { margin: 6px 0; }
+a { color: #0b5cad; text-decoration: none; }
+code { font-family: Consolas, 'Cascadia Mono', monospace; font-size: 0.88em; background: #f2f4f7;
+       padding: 0 3px; border-radius: 3px; overflow-wrap: break-word; }
+pre { background: #f6f8fa; border: 1px solid #e1e4e8; border-radius: 4px; padding: 7px 9px;
+      font-size: 7.8pt; line-height: 1.35; white-space: pre-wrap; overflow-wrap: break-word;
+      page-break-inside: avoid; break-inside: avoid; }
+pre code { background: none; padding: 0; font-size: 1em; }
+pre.mermaid { background: none; border: none; text-align: center; font-size: 10pt; white-space: pre; }
+pre.mermaid svg { width: 100%; max-width: 100% !important; max-height: 225mm; height: auto; }
+blockquote { margin: 8px 0; padding: 4px 11px; border-left: 3px solid #8fb0d8; background: #f4f8fc;
+             color: #2d333b; page-break-inside: avoid; break-inside: avoid; }
+blockquote p { margin: 4px 0; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0 10px; font-size: 8.6pt; line-height: 1.35; }
+thead { display: table-header-group; }
+tr { page-break-inside: avoid; break-inside: avoid; }
+th, td { border: 1px solid #c8d1dc; padding: 3px 5px; vertical-align: top; text-align: left; }
+th { background: #e9eff6; color: #0f3a66; }
+td code, th code { font-size: 0.92em; }
+img { width: 100%; max-width: 100%; display: block; margin: 8px auto; }   /* sólo hay diagramas */
+ul, ol { margin: 5px 0; padding-left: 22px; }
+li { margin: 2px 0; }
+hr { border: none; border-top: 1px solid #d0d7de; margin: 14px 0; }
+
+.portada { height: 255mm; display: flex; flex-direction: column; justify-content: center;
+           text-align: center; page-break-after: always; break-after: page; }
+.portada .institucion { font-size: 12pt; letter-spacing: .5px; color: #555; margin-bottom: 36mm; }
+.portada .materia { font-size: 12pt; color: #0f3a66; font-weight: 600; }
+.portada .titulo { font-size: 26pt; color: #0f3a66; font-weight: 700; margin: 8mm 0 3mm; line-height: 1.2; }
+.portada .subtitulo { font-size: 12pt; color: #444; max-width: 140mm; margin: 0 auto; }
+.portada .datos { margin-top: 40mm; font-size: 11pt; line-height: 1.8; }
+.portada .datos code { font-size: 0.85em; }
+.indice h2 { border: none; font-size: 16pt; margin-top: 0; }
+.indice ol { column-count: 2; column-gap: 9mm; padding-left: 0; list-style: none; margin: 0; font-size: 9.5pt; }
+.indice > ol > li { break-inside: avoid; margin-bottom: 7px; }
+.indice > ol > li > a { font-weight: 600; color: #0f3a66; }
+.indice ol ol { column-count: 1; padding-left: 12px; margin: 2px 0 0; font-size: 8.8pt; }
+.indice ol ol li { margin: 1px 0; }
+.indice ol ol a { color: #333; }
+
+h1 { page-break-before: auto; break-before: auto; font-size: 15pt; margin: 18px 0 8px; }
+pre.mermaid svg { max-height: 85mm; }
+.cabecera { border-bottom: 3px solid #0f3a66; padding-bottom: 8px; margin-bottom: 6px; }
+.cabecera .materia { font-size: 9pt; color: #555; letter-spacing: .3px; }
+.cabecera .titulo { font-size: 21pt; font-weight: 700; color: #0f3a66; margin: 2px 0; }
+.cabecera .datos { font-size: 9pt; color: #333; }
+</style>
+</head><body>
+
+<header class="cabecera">
+  <div class="materia">UNIVERSIDAD SERGIO ARBOLEDA · Big Data e Ingeniería de Datos (PCIA 5010)</div>
+  <div class="titulo">Parcial 2 — Panel analítico de la aerolínea · Resumen</div>
+  <div class="datos"><strong>Andres Felipe Cespedes Rondon</strong> · individual · semilla 12345 · 22 de octubre de 2026 ·
+    harness <strong>70,0 / 70,0</strong> · github.com/Pipelol0723/bigdata-ing-datos</div>
+</header>
+<h1>1. Qué se construyó</h1>
+<p>Un sistema de reservas para una aerolínea con un <strong>panel analítico para la gerencia</strong>, desplegado en
+AWS y evaluado por el harness automático del profesor. Tiene tres caminos:</p>
+<table>
+<thead>
+<tr>
+<th>Camino</th>
+<th>Qué hace</th>
+<th>Con qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transaccional</strong></td>
+<td>El cliente busca vuelos y reserva. Nunca se vende un asiento dos veces</td>
+<td>FastAPI + PostgreSQL en una EC2</td>
+</tr>
+<tr>
+<td><strong>Batch</strong></td>
+<td>Limpia dos años de reservas sucias (≈ 2,1 M) y las guarda ordenadas por mes</td>
+<td>PySpark en EMR → Parquet en S3</td>
+</tr>
+<tr>
+<td><strong>Analítico</strong></td>
+<td>El gerente consulta la ocupación de una ruta en un mes</td>
+<td>Glue Data Catalog + Athena</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Regla del enunciado:</strong> lo más barato que cumpla es lo mejor. Cada pieza es la versión mínima que
+pasa su requisito, y todas se midieron en AWS.</p>
+<p><strong>Resultado:</strong> harness <strong>70,0 / 70,0</strong> en una sola corrida (18/10/2026, 23 tests en 34 s).</p>
+<h1>2. Arquitectura</h1>
+<pre class="mermaid">flowchart LR
+    C[Cliente] -- &quot;:8000&quot; --&gt; API
+    G[Gerente] -- &quot;:8000&quot; --&gt; API
+    subgraph EC2[&quot;EC2 t3.micro · Docker&quot;]
+        API[&quot;FastAPI&lt;br/&gt;API + páginas&quot;] --&gt; PG[(&quot;PostgreSQL&lt;br/&gt;vuelos y reservas&quot;)]
+    end
+    RAW[(&quot;S3 raw/&lt;br/&gt;CSV sucios&quot;)] --&gt; EMR[&quot;EMR transitorio&lt;br/&gt;PySpark C1–C5&lt;br/&gt;se apaga solo&quot;] --&gt; CUR[(&quot;S3 curated/&lt;br/&gt;Parquet por mes&quot;)]
+    API -- &quot;consulta parametrizada&quot; --&gt; ATH[Athena]
+    ATH --&gt; CAT[&quot;Glue Data Catalog&lt;br/&gt;2 tablas&quot;]
+    CAT -.-&gt; CUR
+</pre>
+<table>
+<thead>
+<tr>
+<th>Servicio</th>
+<th>Para qué</th>
+<th>Alternativa descartada y por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>EC2</strong> <code>t3.micro</code></td>
+<td>API, páginas web y PostgreSQL, en Docker</td>
+<td><strong>RDS</strong>: +US$14,70/mes por la misma garantía transaccional</td>
+</tr>
+<tr>
+<td><strong>S3</strong></td>
+<td>CSV crudos, Parquet curado, resultados de Athena</td>
+<td>Disco del clúster: muere con el clúster</td>
+</tr>
+<tr>
+<td><strong>EMR</strong> (transitorio)</td>
+<td>Job de limpieza C1–C5 y métricas</td>
+<td><strong>Glue job</strong>: el curso exige EMR. <strong>Athena CTAS</strong>: no resuelve C5</td>
+</tr>
+<tr>
+<td><strong>Glue Data Catalog</strong></td>
+<td>Esquema de las 2 tablas, creado con DDL</td>
+<td><strong>Crawler</strong>: cobra por corrida y no garantiza el orden de columnas</td>
+</tr>
+<tr>
+<td><strong>Athena</strong></td>
+<td>Consultas del panel, pago por consulta</td>
+<td><strong>Redshift</strong>: cobra prendido 24/7</td>
+</tr>
+</tbody>
+</table>
+<p>Son <strong>5 servicios facturables</strong> (el máximo permitido es 8). IAM no cobra: la EC2 usa el rol del lab
+(<code>LabInstanceProfile</code>) para llamar a Athena <strong>sin claves guardadas en ningún archivo</strong>.</p>
+<h1>3. Cómo se cumple cada requisito</h1>
+<table>
+<thead>
+<tr>
+<th>Req</th>
+<th>Qué pide</th>
+<th>Cómo se cumple</th>
+<th>Medición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td>Búsqueda en ≤ 1 s (p95)</td>
+<td>Índice <code>(route, flight_date)</code> y pool de conexiones</td>
+<td>p95 = <strong>0,080 s</strong></td>
+</tr>
+<tr>
+<td>R2</td>
+<td>Sin sobreventa</td>
+<td><code>UPDATE … WHERE seats_available &gt; 0</code> y la reserva en <strong>una transacción</strong></td>
+<td><strong>1 de 50</strong> por el último asiento</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>Consultar una reserva</td>
+<td>Id como texto: uno inválido da 404</td>
+<td>200 y 404 correctos</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>Job de EMR → Parquet</td>
+<td>Step de PySpark en un clúster que se apaga solo</td>
+<td><strong>2.017.079</strong> filas = oráculo</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>Tablas en Glue</td>
+<td>DDL con <em>partition projection</em></td>
+<td>Columnas y orden del contrato</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>Athena correcto y barato</td>
+<td>Parquet + una carpeta por mes</td>
+<td>Un mes escanea <strong>280 KB</strong> (tope 1,8 MB)</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>Endpoint lee de Athena</td>
+<td>Consulta a Athena en cada pedido</td>
+<td>5 casos correctos en ~1 s</td>
+</tr>
+<tr>
+<td>R8</td>
+<td>Flujo del cliente en navegador</td>
+<td>HTML + JS servido por FastAPI</td>
+<td>Reserva creada desde Chromium</td>
+</tr>
+<tr>
+<td>R9</td>
+<td>Panel = endpoint</td>
+<td>El panel llama al mismo endpoint</td>
+<td>0,8359 = 0,8359 = 0,8359</td>
+</tr>
+<tr>
+<td>R10</td>
+<td>EMR acotado</td>
+<td><code>--auto-terminate</code></td>
+<td>0 clústeres vivos</td>
+</tr>
+<tr>
+<td>R11</td>
+<td>Simple y barato</td>
+<td><code>t3.micro</code>, <code>m4.large</code>, sin NAT ni balanceador</td>
+<td>5 servicios propios</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>Proyección de costos</td>
+<td><code>cost_projection.yaml</code></td>
+<td>Dentro del tope y la tolerancia</td>
+</tr>
+</tbody>
+</table>
+<h1>4. Las reglas de limpieza (job de EMR)</h1>
+<table>
+<thead>
+<tr>
+<th>Regla</th>
+<th>Qué hace</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td>Ruta sin espacios y en mayúsculas</td>
+<td><code>bog - mde</code> → <code>BOG-MDE</code></td>
+</tr>
+<tr>
+<td>C2</td>
+<td>Estado sin espacios y en mayúsculas</td>
+<td><code>confirmed</code> → <code>CONFIRMED</code></td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Sólo <code>CONFIRMED</code> o <code>CANCELLED</code></td>
+<td><code>PENDING</code> se descarta</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>Precio presente y mayor que 0</td>
+<td><code>-500</code> o vacío se descarta</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>Un <code>reservation_id</code> repetido: se queda el <strong>primero</strong></td>
+<td>2.ª aparición se descarta</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Por qué Spark y no SQL:</strong> C5 exige saber qué fila vino <em>primero</em>, y un CSV en S3 no tiene orden para
+Athena. Spark numera cada fila al leerla y se queda con la de menor número.</p>
+<p>Después de limpiar, el job cruza las reservas con los vuelos (para sacar la ruta y el mes), escribe
+<strong>un Parquet por mes</strong> (24 carpetas <code>month=2023-01 … 2024-12</code>) y calcula la tabla de métricas
+(240 filas: 10 rutas × 24 meses).</p>
+<h1>5. Decisiones clave</h1>
+<table>
+<thead>
+<tr>
+<th>Decisión</th>
+<th>Alternativa descartada</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Una EC2 con Docker</strong> (API + base)</td>
+<td>RDS + EC2; Lambda + API Gateway</td>
+<td>Mismo motor y misma garantía, mucho más barato</td>
+</tr>
+<tr>
+<td><strong><code>t3.micro</code>, medida, no supuesta</strong></td>
+<td>Empezar más grande</td>
+<td>R1 dio p95 de 80 ms: no hizo falta subir</td>
+</tr>
+<tr>
+<td><strong>EMR transitorio, 1 primario + 1 core</strong></td>
+<td>Clúster fijo; 1 solo nodo</td>
+<td>Fijo cobra todo el día. Con 1 nodo el job se trabó</td>
+</tr>
+<tr>
+<td><strong>Tablas por DDL + <em>partition projection</em></strong></td>
+<td>Crawler; <code>MSCK REPAIR</code></td>
+<td>Gratis, exacto y sin volver a registrar particiones</td>
+</tr>
+<tr>
+<td><strong>Páginas servidas por el mismo FastAPI</strong></td>
+<td>SPA aparte (React/Vite) en otro puerto</td>
+<td>Mismo origen: sin CORS, sin build, sin otro proceso</td>
+</tr>
+<tr>
+<td><strong>Athena en cada consulta, sin caché</strong></td>
+<td>Caché en memoria</td>
+<td>R7 lo exige; 10.000 consultas/mes cuestan US$0,50</td>
+</tr>
+<tr>
+<td><strong><code>bookings</code> = sólo confirmadas</strong></td>
+<td>Confirmadas + canceladas (el oráculo)</td>
+<td>Es lo que dice el contrato; la otra es un parámetro del job</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Separación de cargas:</strong> los 2 millones de reservas históricas <strong>nunca entran a PostgreSQL</strong>. Viven en
+S3 y sólo las leen EMR y Athena. Un análisis pesado no puede frenar una reserva.</p>
+<h1>6. Costos</h1>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>US$/mes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EC2 <code>t3.micro</code> 24/7</td>
+<td>7,59</td>
+</tr>
+<tr>
+<td>Athena (10.000 consultas)</td>
+<td>0,50</td>
+</tr>
+<tr>
+<td>EMR (1 corrida mensual)</td>
+<td>0,26</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>0,01</td>
+</tr>
+<tr>
+<td><strong>Declarado en <code>cost_projection.yaml</code></strong></td>
+<td><strong>8,36</strong></td>
+</tr>
+<tr>
+<td>Disco EBS 8 GB + IPv4 pública (el harness no los estima)</td>
+<td>4,29</td>
+</tr>
+<tr>
+<td><strong>Costo real</strong></td>
+<td><strong>≈ 12,65</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Se declara lo que el harness sabe medir; con US$12,65, R12 fallaría desde el 24/11. Los US$4,29
+  restantes están explicados en el documento y consultados con el profesor.</li>
+<li><strong>Lo gastado de verdad en todo el parcial: menos de US$1.</strong> Se desarrolló en la laptop contra el
+  oráculo y AWS se usó sólo para verificar.</li>
+<li><strong>Con ×10 datos</strong>, el panel cuesta lo mismo (lee la tabla agregada). <strong>Con ×10 consultas</strong>, Athena
+  sube a ~US$5/mes y ahí conviene la caché.</li>
+</ul>
+<h1>7. Lo que falló y lo que se evitó</h1>
+<p>Ningún requisito quedó fallando, pero cuatro habrían fallado sin estos cambios:</p>
+<table>
+<thead>
+<tr>
+<th>Qué</th>
+<th>Causa</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Falló:</strong> el job de EMR quedó trabado</td>
+<td>Con un solo nodo, YARN no ubica el proceso principal de Spark</td>
+<td>1 primario + 1 core: terminó en ~2 min</td>
+</tr>
+<tr>
+<td><strong>Falló:</strong> búsqueda local con p95 de 2 s</td>
+<td><code>localhost</code> probaba IPv6 primero y esperaba ~2 s</td>
+<td>Usar la IP; bajó a 18 ms</td>
+</tr>
+<tr>
+<td><strong>Se evitó:</strong> id inválido → 422 en vez de 404</td>
+<td>Con un id numérico, FastAPI rechaza el formato antes de buscar</td>
+<td>Declararlo como texto desde el diseño</td>
+</tr>
+<tr>
+<td><strong>Se evitó:</strong> columnas fuera de orden</td>
+<td>Particionar la tabla de métricas saca <code>month</code> de las columnas</td>
+<td>Dejarla sin particionar (240 filas)</td>
+</tr>
+</tbody>
+</table>
+<h1>8. Si el profesor pide un cambio en vivo</h1>
+<p><strong>Regla para responder:</strong> primero en qué camino vive el cambio (transaccional, batch o analítico),
+después qué tabla cambia y recién ahí qué tests lo notan. Cada regla es una función separada, así que
+cada cambio toca <strong>un solo lugar</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Cambio</th>
+<th>Qué se toca</th>
+<th>Costo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Otra regla de limpieza</td>
+<td>Una función del job (<code>c3_…</code>, <code>c5_…</code>) y volver a correrlo</td>
+<td>~10 min, ~US$0,26</td>
+</tr>
+<tr>
+<td>Las canceladas también ocupan asiento</td>
+<td>Una línea de <code>tabla_metricas</code></td>
+<td>1 corrida de EMR</td>
+</tr>
+<tr>
+<td>Otra agregación (por semana, por clase)</td>
+<td>Job, DDL de la tabla, consulta del endpoint y panel</td>
+<td>1 corrida + 3 archivos</td>
+</tr>
+<tr>
+<td>Más meses (2025)</td>
+<td>Ampliar el rango de <em>partition projection</em></td>
+<td>DDL + 1 corrida</td>
+</tr>
+<tr>
+<td>Datos ×10</td>
+<td>Quizá un nodo core más</td>
+<td>Corrida ~2× más larga</td>
+</tr>
+<tr>
+<td>Pasar a RDS</td>
+<td>Sólo la cadena de conexión; migrar con <code>pg_dump</code></td>
+<td>+US$14,70/mes</td>
+</tr>
+<tr>
+<td>Que el panel muestre las reservas de hoy</td>
+<td>Exportar PostgreSQL a <code>raw/</code> cada noche y correr el job</td>
+<td>1 corrida diaria</td>
+</tr>
+<tr>
+<td>Que el panel no espere a Athena</td>
+<td>Caché por (ruta, mes) que vence al correr el job</td>
+<td>Código del endpoint</td>
+</tr>
+</tbody>
+</table>
+<h1>9. Preguntas probables</h1>
+<p><strong>¿Cómo evitás la sobreventa?</strong> El descuento del asiento es un <code>UPDATE</code> condicionado a que quede
+alguno, en la misma transacción que la reserva. PostgreSQL bloquea la fila del vuelo: los pedidos se
+ordenan solos y, cuando llega a 0, el <code>UPDATE</code> no toca nada → 409. Un <code>CHECK</code> en la tabla es la
+segunda red.</p>
+<p><strong>¿Por qué EMR transitorio?</strong> El job dura minutos; un clúster prendido cobra por hora sin hacer nada.
+Con <code>--auto-terminate</code> se paga sólo lo que dura, y R10 se cumple por diseño, no por acordarse de
+apagarlo.</p>
+<p><strong>¿Por qué Parquet particionado por mes?</strong> Parquet es columnar: se lee sólo la columna que se usa.
+Con la partición, Athena salta las otras 23 carpetas. Se escanea —y se paga— sólo lo necesario.</p>
+<p><strong>¿Qué es <em>partition projection</em>?</strong> Athena calcula las 24 particiones a partir del rango declarado
+(<code>2023-01</code> a <code>2024-12</code>), sin crawler y sin registrarlas cada vez que corre el job.</p>
+<p><strong>¿Y la inyección SQL en Athena?</strong> Doble defensa: la ruta y el mes se validan con expresiones
+regulares (si no coinciden, 422) y viajan como <strong>parámetros</strong> de Athena, nunca pegados al SQL.</p>
+<p><strong>¿Por qué no aparecen en el panel las reservas de hoy?</strong> Porque el panel lee el histórico que limpió
+EMR, no PostgreSQL. Es la separación de cargas a propósito; para incluirlas haría falta un export
+nocturno a S3 (sección 8).</p>
+<p><strong>¿Qué pasa si se cae la EC2?</strong> Se pierden las reservas vivas: es lo que se resigna por no usar RDS
+(sin backups gestionados). Se cubriría con un <code>pg_dump</code> periódico a S3, que hoy no está automatizado;
+en una aerolínea real, pasar a RDS sería lo primero a cambiar.</p>
+<h1>10. Demo en vivo</h1>
+<p>La EC2 cambia de IP cada vez que se abre el lab. El 22/10: <strong><code>54.147.173.30</code></strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Página</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cliente</td>
+<td><code>http://&lt;IP&gt;:8000/</code></td>
+</tr>
+<tr>
+<td>Panel de gerencia</td>
+<td><code>http://&lt;IP&gt;:8000/manager</code></td>
+</tr>
+<tr>
+<td>API documentada</td>
+<td><code>http://&lt;IP&gt;:8000/docs</code></td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><strong>Reservar:</strong> PEI → CLO, 15/12/2026 → Reservar → nombre → número de reserva.</li>
+<li><strong>Sobreventa:</strong> 30 pedidos simultáneos por un vuelo de 1 asiento → <strong>1 aceptado, 29 rechazados</strong>
+   (el comando está en <code>RESUMEN-PRESENTACION.md</code>).</li>
+<li><strong>Panel:</strong> PEI-CLO, 2023-03 → <strong>83,59 %</strong> (el mismo caso que verificó el harness).</li>
+<li><strong>EMR:</strong> el clúster <code>parcial2-curar</code> en <em>Terminado</em>, "todos los pasos completados", 11 min.</li>
+<li><strong>S3:</strong> las 24 carpetas <code>month=</code> en <code>curated/reservations_curated/</code>.</li>
+<li><strong>Athena:</strong> una consulta de un mes y el dato de <em>bytes escaneados</em>.</li>
+<li><strong>Harness en vivo (CloudShell):</strong> <code>bash ~/p2h/05-correr-harness.sh</code> → <strong>70,0 / 70,0</strong> en ~40 s
+   (corrida del 22/10, ya con la proyección entregada).</li>
+</ol>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "strict",
+    flowchart: { useMaxWidth: true } });
+</script>
+</body></html>
