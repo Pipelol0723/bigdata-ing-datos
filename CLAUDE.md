@@ -224,6 +224,7 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 | 2026-10-09 | **$18.80 / $50** | ~64 días de curso · **$13.90 desde el 01/09**: ~$2,70 fue el trabajo del parcial y **~$11 (estimado) las RDS y la EC2 olvidadas** del 10/09 al 21/09. Quedan **$31,20** |
 | 2026-10-18 | **$20 / $50** | Al abrir la sesión del parcial 2 (incluye el Taller Taxis). La sesión del 18/10 suma ~US$0,60 (2 EMR + EC2). Quedan **~$29** |
 | 2026-10-22 | **$20.3 / $50** | Al abrir la sesión de la presentación del parcial 2. Quedan **~$29,70** |
+| 2026-11-03 | **$20.6 / $50** | Al abrir la sesión de Kinesis + German Credit. ⚠️ Los streams de Kinesis quedaron vivos para la clase: ~US$0,21/h hasta la baja |
 
 Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el piso diario baja de ~$0.11 a **casi cero** entre clases.
 
@@ -337,6 +338,21 @@ Total de las dos pasadas: **~$0,64**.
 > 📌 **Aplica directo al parcial:** si las RDS nuevas se hacen públicamente accesibles, es exactamente la misma deuda. Es una decisión a tomar y justificar en `NFR-SEG-` (sección 5.2).
 
 ### Recursos AWS
+
+### 🔴 VIVOS al 03/11 — Kinesis (dejados a pedido del alumno para mostrarlos en clase; COBRAN POR HORA)
+
+| Recurso | Cobra | Baja |
+|---|---|---|
+| Streams `taller-kinesis-sensores` (1), `taller-kinesis-3shards` (3), `ej-compite` (1, con 2 consumidores EFO), `ej-reparto` (3), `ej-reshard` (4 abiertos) = **12 shards** | ~US$0,18/h + EFO ~US$0,03/h ≈ **US$5/día, aunque el lab esté cerrado** | **apenas termine la clase**: `bash ~/k/infra/90-limpieza.sh` (audita) y `--confirmo` (borra), con confirmación del alumno |
+| Firehose `taller-kinesis-a-s3`, Lambdas `procesar-sensores` y `contar-alertas`, tabla DynamoDB `kinesis-leases`, base Glue `taller_kinesis`, bucket `taller-kinesis-ac-936980625651` | centavos / nada en reposo | con el mismo script |
+| Bucket `german-credit-936980625651` + base Glue `german_credit` (Athena German Credit) | centavos | después de la corrección |
+
+Entregado en Moodle el 03/11: taller Kinesis (atrasado), ejercicios adicionales, German Credit, M12 y Parcial 1.
+Código y resultados en `entregas/semana-11-kinesis/` y `entregas/athena-german-credit/`. Lecciones: un trigger
+de Lambda con `LATEST` tarda más de un minuto en empezar a leer; boto3 reintenta solo
+`ProvisionedThroughputExceededException` en `GetRecords` (la app casi no ve errores; CloudWatch sí);
+CloudShell sube archivos con su `input type=file` (Acciones → Cargar archivo) sin pasar por el selector de Windows
+y baja con Acciones → Descargar archivo; `pgrep -f X` dentro de `bash -c '...X...'` se encuentra a sí mismo.
 
 ### 🟢 VIVOS al 18/10 — Parcial 2 (desplegado, tiene que estar arriba para la corrección)
 

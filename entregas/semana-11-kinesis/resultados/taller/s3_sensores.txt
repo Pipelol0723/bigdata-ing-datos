@@ -1,0 +1,3 @@
+2026-11-03 15:19:03      45994 sensores/anio=2026/mes=11/dia=03/taller-kinesis-a-s3-1-2026-11-03-15-17-25-59e572c4-ffba-446a-baf7-0cbc45924cf4
+2026-11-03 15:23:29      22995 sensores/anio=2026/mes=11/dia=03/taller-kinesis-a-s3-1-2026-11-03-15-22-21-33f2d172-d209-46a0-85ea-32418f7570b3
+2026-11-03 15:26:39      23000 sensores/anio=2026/mes=11/dia=03/taller-kinesis-a-s3-1-2026-11-03-15-25-32-e019f714-653a-434f-935a-dc9cfeaa6cf9

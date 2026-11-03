@@ -1,0 +1,6 @@
+consumidores vivos: A
+shard                  propietario vence en  checkpoint
+shardId-000000000002   A                12s  ...73109026
+shardId-000000000003   A                12s  ...07909170
+shardId-000000000004   A                12s  ...51548994
+shardId-000000000005   A                12s  ...71941970

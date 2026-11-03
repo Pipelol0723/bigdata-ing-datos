@@ -1,5 +1,7 @@
 # Plan de solución — todas las actividades pendientes de Moodle
 
+> ⚠️ **Histórico (semanas 1–4).** El plan vigente es [`plan-pendientes-2026-11-03.md`](plan-pendientes-2026-11-03.md).
+
 > **Verificado en el campus el 2026-09-07** (no es un plan sobre recuerdos: entré a cada tarea).
 > Curso `CC-IA-02` · [campus](https://campusvirtual.usergioarboleda.edu.co/course/view.php?id=3167)
 

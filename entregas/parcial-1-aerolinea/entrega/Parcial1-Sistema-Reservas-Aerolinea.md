@@ -2,7 +2,7 @@
 
 **Big Data e Ingeniería de Datos (PCIA 5010)** · Universidad Sergio Arboleda
 
-**Estudiante:** (nombre del estudiante) · **Modalidad:** individual · **Fecha:** 10 de septiembre de 2026
+**Estudiante:** Andres Felipe Cespedes Rondon · **Modalidad:** individual · **Fecha:** 10 de septiembre de 2026
 
 **Repositorio:** <https://github.com/Pipelol0723/bigdata-ing-datos> — carpeta `entregas/parcial-1-aerolinea/`
 
