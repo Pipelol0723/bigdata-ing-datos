@@ -1,0 +1,5 @@
+politica,malos_aprobados,buenos_rechazados,costo_total
+A. aprobar a todos,300,0,1500
+B. rechazar a todos,0,700,700
+C. rechazar si la cuenta tiene < 200 DM,60,303,603
+D. aprobar sólo sin cuenta corriente (p < 1/6),46,352,582

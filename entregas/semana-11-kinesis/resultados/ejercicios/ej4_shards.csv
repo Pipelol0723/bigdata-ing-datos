@@ -1,0 +1,7 @@
+corrida,shard,registros,porcentaje,claves_distintas,clave_top,registros_clave_top
+sesgo=0,shardId-000000000000,3624,40.3,12,CT-015,316
+sesgo=0,shardId-000000000001,1503,16.7,5,CT-003,328
+sesgo=0,shardId-000000000002,3873,43.0,13,CT-005,342
+sesgo=0.8,shardId-000000000000,7878,87.5,12,CT-001,7213
+sesgo=0.8,shardId-000000000001,316,3.5,5,CT-003,73
+sesgo=0.8,shardId-000000000002,806,9.0,13,CT-013,79

@@ -1,0 +1,10 @@
+corrida,shard,registros,porcentaje,claves_distintas,clave_top,registros_clave_top
+contenedor,shardId-000000000000,98,32.7,3,CT-001,38
+contenedor,shardId-000000000001,31,10.3,1,CT-003,31
+contenedor,shardId-000000000002,171,57.0,4,CT-004,53
+constante,shardId-000000000000,0,0.0,0,-,0
+constante,shardId-000000000001,300,100.0,1,SIEMPRE-LA-MISMA,300
+constante,shardId-000000000002,0,0.0,0,-,0
+aleatoria,shardId-000000000000,91,30.3,91,4cb7e4704f8d4083863d016b9ffaeb41,1
+aleatoria,shardId-000000000001,102,34.0,102,fb21b1fb3d9440af981c9b3559f5ebe3,1
+aleatoria,shardId-000000000002,107,35.7,107,906bc4a0e6c047e09ca264e6374c67dc,1

@@ -1,0 +1,12 @@
+[ok] 2 consumidores ACTIVE
+RESUMEN efo-1: registros=12200 (203.3/s) eventos push=68 errores=0
+RESUMEN efo-2: registros=12200 (203.3/s) eventos push=68 errores=0
+Exception ignored in: <urllib3.response.HTTPResponse object at 0x7f4ad2e85060>
+Traceback (most recent call last):
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/urllib3/response.py", line 1313, in close
+    self._fp.close()
+  File "/usr/lib64/python3.13/http/client.py", line 447, in close
+    super().close() # set "closed" flag
+  File "/usr/lib64/python3.13/http/client.py", line 460, in flush
+    self.fp.flush()
+ValueError: I/O operation on closed file.

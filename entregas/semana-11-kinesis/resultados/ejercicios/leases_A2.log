@@ -1,0 +1,5 @@
+[15:25:41] A: tomó shardId-000000000002 (cuota 4, desde checkpoint ...05411618)
+[15:25:42] A: tomó shardId-000000000003 (cuota 4, desde checkpoint ...11875122)
+[15:25:42] A: tomó shardId-000000000004 (cuota 4, desde checkpoint ...10868546)
+[15:25:42] A: tomó shardId-000000000005 (cuota 4, desde checkpoint ...95499346)
+[15:26:26] A: terminó con ['shardId-000000000002', 'shardId-000000000003', 'shardId-000000000004', 'shardId-000000000005']

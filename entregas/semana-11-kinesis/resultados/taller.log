@@ -1,0 +1,148 @@
+nohup: ignoring input
+
+=================== L0 preparación (15:10:52 UTC)
+{
+    "cuenta": "936980625651",
+    "rol": "arn:aws:sts::936980625651:assumed-role/voclabs/user5289683=pipelol0723@gmail.com"
+}
+boto3 1.43.83
+
+=================== L1 crear el stream (provisionado, 1 shard) (15:10:54 UTC)
+[ok] stream taller-kinesis-sensores creado con 1 shard(s)
+{
+    "estado": "ACTIVE",
+    "shards_abiertos": 1,
+    "retencion_horas": 24,
+    "modo": "PROVISIONED"
+}
+
+=================== L2 productor de la guía: 200 eventos, después otros 200 (15:11:01 UTC)
+Enviados: 190 | Fallidos en este lote: 0
+Enviados: 200 | Fallidos en este lote: 0
+Enviados: 200 | Fallidos en este lote: 0
+-- IncomingRecords por minuto (CloudWatch, la métrica tarda ~1 min)
+2026-11-03T15:11:00+00:00	400.0
+
+=================== L3 tipos de iterador (400 registros en el stream; la segunda tanda empezó a las 2026-11-03T15:11:22+00:00) (15:13:01 UTC)
+RESUMEN,trim_horizon,TRIM_HORIZON,400,2026-11-03T15:11:02.023482+00:00,2026-11-03T15:11:44.270283+00:00
+RESUMEN,at_timestamp,AT_TIMESTAMP,200,2026-11-03T15:11:24.902199+00:00,2026-11-03T15:11:44.270283+00:00
+-- LATEST: se abre el iterador y DESPUÉS se producen 100 registros
+RESUMEN,latest,LATEST,100,2026-11-03T15:13:31.134975+00:00,2026-11-03T15:13:40.381776+00:00
+
+=================== L3 dos consumidores a la vez sobre el mismo shard (15:13:54 UTC)
+RESUMEN,consumidor_1,TRIM_HORIZON,500,2026-11-03T15:11:02.023482+00:00,2026-11-03T15:13:40.381776+00:00
+RESUMEN,consumidor_2,TRIM_HORIZON,500,2026-11-03T15:11:02.023482+00:00,2026-11-03T15:13:40.381776+00:00
+
+=================== L4 Lambda procesar-sensores (LabRole) con trigger del stream (15:14:12 UTC)
+{
+    "funcion": "procesar-sensores",
+    "rol": "arn:aws:iam::936980625651:role/LabRole"
+}
+trigger d58f90cc-f7f0-4297-a56f-6eda7cd682cb: Enabled
+Traceback (most recent call last):
+  File "/home/cloudshell-user/k/codigo/logs_lambda.py", line 24, in <module>
+    r = logs.filter_log_events(**kw)
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/client.py", line 606, in _api_call
+    return self._make_api_call(operation_name, kwargs)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/context.py", line 123, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/client.py", line 1094, in _make_api_call
+    raise error_class(parsed_response, operation_name)
+botocore.errorfactory.ResourceNotFoundException: An error occurred (ResourceNotFoundException) when calling the FilterLogEvents operation: The specified log group does not exist.
+
+=================== L4 batch size 5 y ventana 0 (15:15:48 UTC)
+{
+    "batch": 5,
+    "ventana": 0
+}
+trigger d58f90cc-f7f0-4297-a56f-6eda7cd682cb: Enabled
+RESUMEN batch=5,ventana=0s: invocaciones=40 registros=200 alertas=26 ok=174
+   ALERTA CT-002: 8.3 °C
+   ALERTA CT-007: 9.16 °C
+   ALERTA CT-008: 9.41 °C
+   ALERTA CT-004: 8.45 °C
+   ALERTA CT-004: 8.27 °C
+
+=================== L5 bucket y Firehose (fuente: el stream; destino: S3 particionado por fecha) (15:17:22 UTC)
+make_bucket: taller-kinesis-ac-936980625651
+{
+    "DeliveryStreamARN": "arn:aws:firehose:us-east-1:936980625651:deliverystream/taller-kinesis-a-s3"
+}
+Firehose: ACTIVE
+plan usado: firehose
+-- esperando el buffer de 60 s
+2026-11-03 15:19:03      45994 sensores/anio=2026/mes=11/dia=03/taller-kinesis-a-s3-1-2026-11-03-15-17-25-59e572c4-ffba-446a-baf7-0cbc45924cf4
+-- líneas entregadas: 400
+{
+    "prefijo": "sensores/anio=!{timestamp:yyyy}/mes=!{timestamp:MM}/dia=!{timestamp:dd}/",
+    "buffer": {
+        "SizeInMBs": 1,
+        "IntervalInSeconds": 60
+    }
+}
+
+=================== L5 extensión: Athena sobre lo que llegó a S3 (15:19:49 UTC)
+
+### 01 CREATE DATABASE IF NOT EXISTS taller_kinesis   [0 bytes escaneados]
+
+### 01 -- tabla externa sobre el JSON que dejó la entrega   [0 bytes escaneados]
+
+### 02 -- temperatura promedio por contenedor   [45,994 bytes escaneados]
+  contenedor_id  temp_prom  n   alertas
+  CT-007         5.76       45  10     
+  CT-001         5.2        48  9      
+  CT-008         5.13       40  6      
+  CT-003         5.04       65  14     
+  CT-004         4.74       48  5      
+  CT-005         4.55       51  7      
+  CT-006         4.49       49  7      
+  CT-002         4.1        54  5      
+
+=================== RETO 1: 3 shards y tres partition keys distintas (15:19:53 UTC)
+[ok] stream taller-kinesis-3shards creado con 3 shard(s)
+corrida  shard                  registros      % claves  clave más frecuente
+contenedor shardId-000000000000          98   32.7      3  CT-001 (38)
+contenedor shardId-000000000001          31   10.3      1  CT-003 (31)
+contenedor shardId-000000000002         171   57.0      4  CT-004 (53)
+TOTAL 300
+corrida  shard                  registros      % claves  clave más frecuente
+constante shardId-000000000000           0    0.0      0  - (0)
+constante shardId-000000000001         300  100.0      1  SIEMPRE-LA-MISMA (300)
+constante shardId-000000000002           0    0.0      0  - (0)
+TOTAL 300
+corrida  shard                  registros      % claves  clave más frecuente
+aleatoria shardId-000000000000          91   30.3     91  4cb7e4704f8d4083863d016b9ffaeb41 (1)
+aleatoria shardId-000000000001         102   34.0    102  fb21b1fb3d9440af981c9b3559f5ebe3 (1)
+aleatoria shardId-000000000002         107   35.7    107  906bc4a0e6c047e09ca264e6374c67dc (1)
+TOTAL 300
+
+=================== RETO 2: segunda Lambda que cuenta alertas por contenedor y escribe el resumen en S3 (15:21:44 UTC)
+"contar-alertas"
+trigger d23706b9-5da2-457c-bf3d-c4dd7e969b99: Enabled
+trigger d58f90cc-f7f0-4297-a56f-6eda7cd682cb: Enabled
+RESUMEN procesar-sensores (misma tanda): invocaciones=5 registros=200 alertas=33 ok=167
+   ALERTA CT-002: 9.04 °C
+   ALERTA CT-003: 9.13 °C
+   ALERTA CT-008: 9.45 °C
+   ALERTA CT-002: 9.08 °C
+   ALERTA CT-005: 9.02 °C
+RESUMEN contar-alertas: lotes=0 registros=0 alertas=0
+alertas por contenedor: {}
+
+=================== Inventario de lo creado (para la limpieza) (15:23:29 UTC)
+[
+    "ej-compite",
+    "ej-reparto",
+    "ej-reshard",
+    "taller-kinesis-3shards",
+    "taller-kinesis-sensores"
+]
+[
+    "contar-alertas",
+    "procesar-sensores"
+]
+[
+    "taller-kinesis-a-s3"
+]
+FIN-TALLER

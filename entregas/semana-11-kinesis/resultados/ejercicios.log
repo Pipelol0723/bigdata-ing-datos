@@ -1,0 +1,151 @@
+nohup: ignoring input
+
+=================== Ej1 productor parametrizable: 1500 registros/s contra 1 shard (límite: 1000/s) (15:10:49 UTC)
+[ok] stream ej-compite creado con 1 shard(s)
+[   1s] enviados=1500 reintentados=0 fallidos=0
+[   2s] enviados=1500 reintentados=0 fallidos=0
+[   3s] enviados=1500 reintentados=0 fallidos=0
+[   4s] enviados=1500 reintentados=0 fallidos=0
+[   5s] enviados=1500 reintentados=0 fallidos=0
+[   6s] enviados=1500 reintentados=0 fallidos=0
+[   7s] enviados=1500 reintentados=0 fallidos=0
+[   8s] enviados=1500 reintentados=0 fallidos=0
+[   9s] enviados=1500 reintentados=0 fallidos=0
+[  10s] enviados=1500 reintentados=0 fallidos=0
+[  11s] enviados=1500 reintentados=0 fallidos=0
+[  12s] enviados=1500 reintentados=0 fallidos=0
+[  13s] enviados=1500 reintentados=0 fallidos=0
+[  14s] enviados=1500 reintentados=0 fallidos=0
+[  15s] enviados=1500 reintentados=0 fallidos=0
+[  16s] enviados=1500 reintentados=0 fallidos=0
+[  17s] enviados=1500 reintentados=0 fallidos=0
+[  18s] enviados=1500 reintentados=0 fallidos=0
+[  19s] enviados=1500 reintentados=0 fallidos=0
+[  20s] enviados=1500 reintentados=0 fallidos=0
+TOTAL enviados=30000 reintentados=0 fallidos=0
+
+=================== Ej2 consumidores que compiten por un shard (productor: 200/s, 8 claves, 300 s) (15:11:17 UTC)
+-- corrida A: 1 consumidor, pausa 1.0
+RESUMEN A-c1: shard=shardId-000000000000 registros=11800 (196.7/s) errores=0 llamadas=59 (0.98/s)
+-- corrida B: 3 consumidores, pausa 1.0
+RESUMEN B-c1: shard=shardId-000000000000 registros=11800 (196.7/s) errores=0 llamadas=59 (0.98/s)
+RESUMEN B-c2: shard=shardId-000000000000 registros=12000 (200.0/s) errores=0 llamadas=58 (0.97/s)
+RESUMEN B-c3: shard=shardId-000000000000 registros=12000 (200.0/s) errores=0 llamadas=59 (0.98/s)
+-- corrida C: 3 consumidores, pausa 0.4
+RESUMEN C-c1: shard=shardId-000000000000 registros=11800 (196.7/s) errores=0 llamadas=114 (1.90/s)
+RESUMEN C-c2: shard=shardId-000000000000 registros=12200 (203.3/s) errores=0 llamadas=95 (1.58/s)
+RESUMEN C-c3: shard=shardId-000000000000 registros=12000 (200.0/s) errores=0 llamadas=104 (1.73/s)
+-- métrica ReadProvisionedThroughputExceeded del stream (CloudWatch, por minuto)
+2026-11-03T15:11:00+00:00	0.0
+2026-11-03T15:12:00+00:00	0.0
+2026-11-03T15:13:00+00:00	30.0
+2026-11-03T15:14:00+00:00	40.0
+
+=================== Ej3 un shard por consumidor (ej-reparto: 3 shards; productor 300/s, 30 claves) (15:15:29 UTC)
+[ok] stream ej-reparto creado con 3 shard(s)
+RESUMEN D-shard0: shard=shardId-000000000000 registros=7168 (119.5/s) errores=0 llamadas=144 (2.40/s)
+RESUMEN D-shard1: shard=shardId-000000000001 registros=2996 (49.9/s) errores=0 llamadas=144 (2.40/s)
+RESUMEN D-shard2: shard=shardId-000000000002 registros=7596 (126.6/s) errores=0 llamadas=141 (2.35/s)
+
+=================== Ej4 shard caliente (ej-reparto, 30 claves): sesgo 0 contra sesgo 0.8 (15:17:05 UTC)
+corrida  shard                  registros      % claves  clave más frecuente
+sesgo=0  shardId-000000000000        3624   40.3     12  CT-015 (316)
+sesgo=0  shardId-000000000001        1503   16.7      5  CT-003 (328)
+sesgo=0  shardId-000000000002        3873   43.0     13  CT-005 (342)
+TOTAL 9000
+corrida  shard                  registros      % claves  clave más frecuente
+sesgo=0.8 shardId-000000000000        7878   87.5     12  CT-001 (7213)
+sesgo=0.8 shardId-000000000001         316    3.5      5  CT-003 (73)
+sesgo=0.8 shardId-000000000002         806    9.0     13  CT-013 (79)
+TOTAL 9000
+
+=================== Ej5 reshard en caliente (ej-reshard: 2 → 4 shards con datos entrando) (15:18:19 UTC)
+[ok] stream ej-reshard creado con 2 shard(s)
+update_shard_count: 2 -> 4
+ACTIVE otra vez
+TOTAL enviados=12000 reintentados=0 fallidos=0 en 240.1 s reales (tasa real 50/s)
+shard                  estado   padre                  padre adyacente       
+shardId-000000000000   cerrado  -                      -                     
+shardId-000000000001   cerrado  -                      -                     
+shardId-000000000002   abierto  shardId-000000000000   -                     
+shardId-000000000003   abierto  shardId-000000000000   -                     
+shardId-000000000004   abierto  shardId-000000000001   -                     
+shardId-000000000005   abierto  shardId-000000000001   -                     
+leído shardId-000000000000 (cerrado): 2466 registros
+leído shardId-000000000001 (cerrado): 3884 registros
+leído shardId-000000000002 (abierto): 1468 registros
+leído shardId-000000000003 (abierto): 612 registros
+leído shardId-000000000004 (abierto): 2158 registros
+leído shardId-000000000005 (abierto): 1412 registros
+
+Leídos: 12000 · únicos: 12000 · duplicados: 0 · registros fuera de orden por clave: 0
+Enviados según el productor: 12000 · faltantes: 0
+
+=================== Ej6 (opcional) enhanced fan-out: 2 consumidores dedicados sobre ej-compite (productor 200/s) (15:22:29 UTC)
+    self._fp.close()
+  File "/usr/lib64/python3.13/http/client.py", line 447, in close
+    super().close() # set "closed" flag
+  File "/usr/lib64/python3.13/http/client.py", line 460, in flush
+    self.fp.flush()
+ValueError: I/O operation on closed file.
+
+=================== RETO leases en DynamoDB: 4 shards abiertos de ej-reshard, 2 consumidores (15:24:09 UTC)
+[ok] tabla kinesis-leases lista
+-- estado 1 (2 consumidores vivos)
+consumidores vivos: A, B
+shard                  propietario vence en  checkpoint
+shardId-000000000002   A                12s  ...40744738
+shardId-000000000003   A                12s  ...65400370
+shardId-000000000004   B                15s  ...88367938
+shardId-000000000005   B                15s  ...12943954
+-- kill -9 de B a las 15:25:07
+/home/cloudshell-user/k/infra/20-ejercicios.sh: line 117:   849 Killed                  python3 leases.py --stream ej-reshard --nombre B --segundos 170 --log "$OUT/leases_B.csv" > "$OUT/leases_B.log" 2>&1
+-- estado 2 (B muerto hace 30 s)
+consumidores vivos: A
+shard                  propietario vence en  checkpoint
+shardId-000000000002   A                15s  ...05411618
+shardId-000000000003   A                15s  ...11875122
+shardId-000000000004   A                15s  ...10868546
+shardId-000000000005   A                15s  ...95499346
+-- kill -9 de A a las 15:25:37; se reinicia con el mismo nombre
+/home/cloudshell-user/k/infra/20-ejercicios.sh: line 120:   845 Killed                  python3 leases.py --stream ej-reshard --nombre A --segundos 170 --log "$OUT/leases_A.csv" > "$OUT/leases_A.log" 2>&1
+-- estado 3 (A reiniciado y terminado)
+consumidores vivos: A
+shard                  propietario vence en  checkpoint
+shardId-000000000002   A                12s  ...73109026
+shardId-000000000003   A                12s  ...07909170
+shardId-000000000004   A                12s  ...51548994
+shardId-000000000005   A                12s  ...71941970
+-- eventos de cada consumidor
+[15:24:30] A: tomó shardId-000000000002 (cuota 4, desde el principio)
+[15:24:31] A: tomó shardId-000000000003 (cuota 4, desde el principio)
+[15:24:31] A: tomó shardId-000000000004 (cuota 4, desde el principio)
+[15:24:32] A: tomó shardId-000000000005 (cuota 4, desde el principio)
+[15:24:36] A: liberó shardId-000000000004 (cuota 2 con 2 vivos)
+[15:24:36] A: liberó shardId-000000000005 (cuota 2 con 2 vivos)
+[15:25:25] A: tomó shardId-000000000004 (cuota 4, desde checkpoint ...88367938)
+[15:25:25] A: tomó shardId-000000000005 (cuota 4, desde checkpoint ...12943954)
+[15:24:40] B: tomó shardId-000000000004 (cuota 2, desde checkpoint ...38609986)
+[15:24:41] B: tomó shardId-000000000005 (cuota 2, desde checkpoint ...85462610)
+[15:25:41] A: tomó shardId-000000000002 (cuota 4, desde checkpoint ...05411618)
+[15:25:42] A: tomó shardId-000000000003 (cuota 4, desde checkpoint ...11875122)
+[15:25:42] A: tomó shardId-000000000004 (cuota 4, desde checkpoint ...10868546)
+[15:25:42] A: tomó shardId-000000000005 (cuota 4, desde checkpoint ...95499346)
+[15:26:26] A: terminó con ['shardId-000000000002', 'shardId-000000000003', 'shardId-000000000004', 'shardId-000000000005']
+RESUMEN leases: procesados=10388 únicos=10264 duplicados=124
+  A: 4674 registros en 4 shards
+  B: 3674 registros en 2 shards
+  A2: 2040 registros en 4 shards
+
+=================== Inventario de lo creado (para la limpieza) (15:28:01 UTC)
+[
+    "ej-compite",
+    "ej-reparto",
+    "ej-reshard",
+    "taller-kinesis-3shards",
+    "taller-kinesis-sensores"
+]
+[
+    "kinesis-leases"
+]
+FIN-EJERCICIOS

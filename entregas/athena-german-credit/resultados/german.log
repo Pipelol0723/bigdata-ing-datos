@@ -1,0 +1,135 @@
+nohup: ignoring input
+
+=================== datos: bucket y archivo original de la UCI (15:10:51 UTC)
+make_bucket: german-credit-936980625651
+1000 /tmp/german/uci/german.data
+2026-11-03 15:10:56      79793 german.data
+
+=================== tablas: externa sobre el texto, vista legible y CTAS a Parquet (15:10:56 UTC)
+
+### 01 -- base de datos del ejercicio   [0 bytes escaneados]
+
+### 02 -- tabla externa sobre german.data tal como lo publica la UCI: separado por espacios y codificado   [0 bytes escaneados]
+
+### 03 -- vista con los códigos traducidos (no ocupa espacio ni cuesta: se resuelve en cada consulta)   [0 bytes escaneados]
+
+### 04 -- copia columnar: misma información, en Parquet comprimido (para comparar lo que escanea Athena)   [79,793 bytes escaneados]
+Total Objects: 1
+   Total Size: 14543
+
+=================== las 13 consultas (15:11:03 UTC)
+
+### 01 -- Q01 Tamaño del dataset y balance de clases   [79,793 bytes escaneados]
+  riesgo  solicitudes  pct 
+  bueno   700          70.0
+  malo    300          30.0
+
+### 02 -- Q02 Tasa de malos según el estado de la cuenta corriente   [79,793 bytes escaneados]
+  cuenta         solicitudes  pct_malos
+  1. < 0 DM      274          49.3     
+  2. 0 a 200 DM  269          39.0     
+  3. >= 200 DM   63           22.2     
+  4. sin cuenta  394          11.7     
+
+### 03 -- Q03 Tasa de malos según el historial de crédito   [79,793 bytes escaneados]
+  historial                                  solicitudes  pct_malos
+  sin créditos o todos pagados               40           62.5     
+  todo pagado en este banco                  49           57.1     
+  créditos al día                            530          31.9     
+  atrasos en el pasado                       88           31.8     
+  cuenta crítica / créditos en otros bancos  293          17.1     
+
+### 04 -- Q04 Propósito del crédito: volumen, monto promedio y tasa de malos   [79,793 bytes escaneados]
+  proposito             solicitudes  monto_promedio_dm  pct_malos
+  radio/TV              280          2488.0             22.1     
+  auto nuevo            234          3063.0             38.0     
+  muebles/equipamiento  181          3067.0             32.0     
+  auto usado            103          5370.0             16.5     
+  negocio               97           4158.0             35.1     
+  educación             50           3180.0             44.0     
+  reparaciones          22           2728.0             36.4     
+  otros                 12           8209.0             41.7     
+  electrodomésticos     12           1498.0             33.3     
+  capacitación          9            1206.0             11.1     
+
+### 05 -- Q05 Plazo del crédito en tramos   [79,793 bytes escaneados]
+  plazo               solicitudes  pct_malos
+  1. hasta 12 meses   359          21.2     
+  2. 13 a 24 meses    411          29.7     
+  3. 25 a 36 meses    143          39.9     
+  4. más de 36 meses  87           51.7     
+
+### 06 -- Q06 Monto del crédito por cuartiles   [79,793 bytes escaneados]
+  cuartil  desde_dm  hasta_dm  solicitudes  pct_malos
+  1        250       1364      250          30.8     
+  2        1366      2319      250          24.8     
+  3        2320      3972      250          22.4     
+  4        3973      18424     250          42.0     
+
+### 07 -- Q07 Edad en tramos   [79,793 bytes escaneados]
+  edad_tramo    solicitudes  pct_malos
+  1. 19 a 25    190          42.1     
+  2. 26 a 35    398          29.6     
+  3. 36 a 50    299          23.7     
+  4. más de 50  113          27.4     
+
+### 08 -- Q08 Ahorros   [79,793 bytes escaneados]
+  ahorros                       solicitudes  pct_malos
+  1. < 100 DM                   603          36.0     
+  2. 100 a 500 DM               103          33.0     
+  3. 500 a 1000 DM              63           17.5     
+  4. >= 1000 DM                 48           12.5     
+  5. sin ahorros / desconocido  183          17.5     
+
+### 09 -- Q09 Antigüedad en el empleo   [79,793 bytes escaneados]
+  antiguedad_empleo  solicitudes  pct_malos
+  1. desempleado     62           37.1     
+  2. < 1 año         172          40.7     
+  3. 1 a 4 años      339          30.7     
+  4. 4 a 7 años      174          22.4     
+  5. >= 7 años       253          25.3     
+
+### 10 -- Q10 Vivienda y propiedad   [79,793 bytes escaneados]
+  vivienda  propiedad               solicitudes  pct_malos
+  propia    sin propiedad conocida  32           50.0     
+  alquila   auto u otro             60           48.3     
+  gratuita  sin propiedad conocida  104          40.4     
+  alquila   ahorro/seguro de vida   46           37.0     
+  propia    ahorro/seguro de vida   184          28.8     
+  alquila   inmueble                55           27.3     
+  propia    auto u otro             271          26.9     
+  propia    inmueble                226          19.5     
+
+### 11 -- Q11 Perfil numérico promedio de buenos y malos pagadores   [79,793 bytes escaneados]
+  riesgo  plazo_meses  monto_dm  edad  cuota_pct_ingreso  creditos_en_el_banco
+  bueno   19.2         2985.0    36.2  2.92               1.42                
+  malo    24.9         3938.0    34.0  3.1                1.37                
+
+### 12 -- Q12 Perfil de mayor riesgo: saldo negativo o bajo en la cuenta corriente y plazo mayor a 24 meses   [79,793 bytes escaneados]
+  perfil                         solicitudes  pct_malos
+  saldo bajo y plazo > 24 meses  144          59.7     
+  resto                          856          25.0     
+
+### 13 -- Q13 Matriz de costos de la UCI (aprobar a un malo cuesta 5, rechazar a un bueno cuesta 1): cuatro políticas   [319,172 bytes escaneados]
+  politica                                        malos_aprobados  buenos_rechazados  costo_total
+  A. aprobar a todos                              300              0                  1500       
+  B. rechazar a todos                             0                700                700        
+  C. rechazar si la cuenta tiene < 200 DM         60               303                603        
+  D. aprobar sólo sin cuenta corriente (p < 1/6)  46               352                582        
+
+=================== costo por formato: la misma consulta sobre texto y sobre Parquet (15:11:20 UTC)
+
+### 01 -- tasa de malos por cuenta corriente, leyendo solicitudes   [79,793 bytes escaneados]
+  cuenta         pct_malos
+  1. < 0 DM      49.3     
+  2. 0 a 200 DM  39.0     
+  3. >= 200 DM   22.2     
+  4. sin cuenta  11.7     
+
+### 01 -- tasa de malos por cuenta corriente, leyendo solicitudes_parquet   [562 bytes escaneados]
+  cuenta         pct_malos
+  1. < 0 DM      49.3     
+  2. 0 a 200 DM  39.0     
+  3. >= 200 DM   22.2     
+  4. sin cuenta  11.7     
+FIN-GERMAN

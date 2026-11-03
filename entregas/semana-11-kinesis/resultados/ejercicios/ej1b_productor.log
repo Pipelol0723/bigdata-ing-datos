@@ -1,0 +1,21 @@
+[   1s] enviados=5000 reintentados=0 fallidos=0
+[   2s] enviados=5000 reintentados=656 fallidos=0
+[   3s] enviados=5000 reintentados=3145 fallidos=0
+[   4s] enviados=5000 reintentados=4576 fallidos=0
+[   5s] enviados=5000 reintentados=3000 fallidos=0
+[   6s] enviados=5000 reintentados=3500 fallidos=0
+[   7s] enviados=5000 reintentados=3500 fallidos=0
+[   8s] enviados=5000 reintentados=3500 fallidos=0
+[   9s] enviados=5000 reintentados=3500 fallidos=0
+[  10s] enviados=5000 reintentados=3500 fallidos=0
+[  11s] enviados=5000 reintentados=3500 fallidos=0
+[  12s] enviados=5000 reintentados=3500 fallidos=0
+[  13s] enviados=5000 reintentados=3500 fallidos=0
+[  14s] enviados=5000 reintentados=3500 fallidos=0
+[  15s] enviados=5000 reintentados=3500 fallidos=0
+[  16s] enviados=5000 reintentados=3500 fallidos=0
+[  17s] enviados=5000 reintentados=3000 fallidos=0
+[  18s] enviados=5000 reintentados=3500 fallidos=0
+[  19s] enviados=5000 reintentados=3500 fallidos=0
+[  20s] enviados=5000 reintentados=3000 fallidos=0
+TOTAL enviados=100000 reintentados=62877 fallidos=0 en 86.3 s reales (tasa real 1159/s)

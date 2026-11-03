@@ -1,0 +1,4 @@
+corrida,consumidor,shard,pausa,segundos,registros,registros_por_s,errores_limite,llamadas_por_s
+D,D-shard1,shardId-000000000001,0.4,60,2996,49.9,0,2.4
+D,D-shard2,shardId-000000000002,0.4,60,7596,126.6,0,2.35
+D,D-shard0,shardId-000000000000,0.4,60,7168,119.5,0,2.4

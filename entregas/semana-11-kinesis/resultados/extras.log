@@ -1,0 +1,119 @@
+nohup: ignoring input
+
+=================== Ej1b productor a 5000 registros/s contra 1 shard (límite de escritura: 1000/s) (15:29:08 UTC)
+[   1s] enviados=5000 reintentados=0 fallidos=0
+[   2s] enviados=5000 reintentados=656 fallidos=0
+[   3s] enviados=5000 reintentados=3145 fallidos=0
+[   4s] enviados=5000 reintentados=4576 fallidos=0
+[   5s] enviados=5000 reintentados=3000 fallidos=0
+[   6s] enviados=5000 reintentados=3500 fallidos=0
+[   7s] enviados=5000 reintentados=3500 fallidos=0
+[   8s] enviados=5000 reintentados=3500 fallidos=0
+[   9s] enviados=5000 reintentados=3500 fallidos=0
+[  10s] enviados=5000 reintentados=3500 fallidos=0
+[  11s] enviados=5000 reintentados=3500 fallidos=0
+[  12s] enviados=5000 reintentados=3500 fallidos=0
+[  13s] enviados=5000 reintentados=3500 fallidos=0
+[  14s] enviados=5000 reintentados=3500 fallidos=0
+[  15s] enviados=5000 reintentados=3500 fallidos=0
+[  16s] enviados=5000 reintentados=3500 fallidos=0
+[  17s] enviados=5000 reintentados=3000 fallidos=0
+[  18s] enviados=5000 reintentados=3500 fallidos=0
+[  19s] enviados=5000 reintentados=3500 fallidos=0
+[  20s] enviados=5000 reintentados=3000 fallidos=0
+TOTAL enviados=100000 reintentados=62877 fallidos=0 en 86.3 s reales (tasa real 1159/s)
+
+=================== Ej2 corridas extra: 3 consumidores con pausa 0,1 (C2) y sin pausa (C3), productor 200/s (15:30:34 UTC)
+RESUMEN C2-c1: shard=shardId-000000000000 registros=12200 (203.3/s) errores=0 llamadas=81 (1.35/s)
+RESUMEN C2-c2: shard=shardId-000000000000 registros=12396 (206.6/s) errores=1 llamadas=109 (1.82/s)
+RESUMEN C2-c3: shard=shardId-000000000000 registros=12000 (200.0/s) errores=0 llamadas=127 (2.12/s)
+Traceback (most recent call last):
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/credentials.py", line 2127, in fetch_creds
+    response = self._fetcher.retrieve_full_uri(
+        full_uri, headers=headers
+    )
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/utils.py", line 3098, in retrieve_full_uri
+    return self._retrieve_credentials(full_url, headers)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/utils.py", line 3145, in _retrieve_credentials
+    return self._get_response(
+           ~~~~~~~~~~~~~~~~~~^
+        full_url, headers, self.TIMEOUT_SECONDS
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/utils.py", line 3167, in _get_response
+    raise MetadataRetrievalError(
+    ...<4 lines>...
+    )
+botocore.exceptions.MetadataRetrievalError: Error retrieving metadata: Received non 200 response 429 from container metadata: 
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/cloudshell-user/k/codigo/productor_param.py", line 113, in <module>
+    Productor(parsear()).correr()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/cloudshell-user/k/codigo/productor_param.py", line 92, in correr
+    ok, rein, fall = self.enviar_lote(eventos[i:i + LOTE_MAXIMO])
+                     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/cloudshell-user/k/codigo/productor_param.py", line 65, in enviar_lote
+    r = kinesis.put_records(StreamName=self.a.stream, Records=pendientes)
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/client.py", line 606, in _api_call
+    return self._make_api_call(operation_name, kwargs)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/context.py", line 123, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/client.py", line 1044, in _make_api_call
+    ) = self._resolve_endpoint_ruleset(
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        operation_model, api_params, request_context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/client.py", line 1188, in _resolve_endpoint_ruleset
+    endpoint_info = self._ruleset_resolver.construct_endpoint(
+        operation_model=operation_model,
+        call_args=params,
+        request_context=request_context,
+    )
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/regions.py", line 519, in construct_endpoint
+    provider_params = self._get_provider_params(
+        operation_model, call_args, request_context
+    )
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/regions.py", line 584, in _get_provider_params
+    param_val = self._resolve_param_as_builtin(
+        builtin_name=param_def.builtin,
+        builtins=customized_builtins,
+    )
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/regions.py", line 649, in _resolve_param_as_builtin
+    return builtin()
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/credentials.py", line 383, in get_property
+    return getattr(self, property_name, None)
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/credentials.py", line 517, in account_id
+    self._refresh()
+    ~~~~~~~~~~~~~^^
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/credentials.py", line 584, in _refresh
+    self._protected_refresh(is_mandatory=is_mandatory_refresh)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/credentials.py", line 600, in _protected_refresh
+    metadata = self._refresh_using()
+  File "/usr/local/python3.13/lib64/python3.13/site-packages/botocore/credentials.py", line 2135, in fetch_creds
+    raise CredentialRetrievalError(
+        provider=self.METHOD, error_msg=str(e)
+    )
+botocore.exceptions.CredentialRetrievalError: Error when retrieving credentials from container-role: Error retrieving metadata: Received non 200 response 429 from container metadata: 
+RESUMEN C3-c1: shard=shardId-000000000000 registros=1600 (26.7/s) errores=1 llamadas=84 (1.40/s)
+RESUMEN C3-c2: shard=shardId-000000000000 registros=1400 (23.3/s) errores=0 llamadas=100 (1.67/s)
+RESUMEN C3-c3: shard=shardId-000000000000 registros=1400 (23.3/s) errores=0 llamadas=132 (2.20/s)
+
+=================== CloudWatch: límites excedidos en ej-compite (lectura y escritura, por minuto) (15:32:47 UTC)
+-- WriteProvisionedThroughputExceeded
+2026-11-03T15:29:00+00:00	16755877.0
+2026-11-03T15:30:00+00:00	11750000.0
+2026-11-03T15:31:00+00:00	0.0
+-- ReadProvisionedThroughputExceeded
+2026-11-03T15:30:00+00:00	49.0
+2026-11-03T15:31:00+00:00	132.0
+2026-11-03T15:32:00+00:00	132.0
+FIN-EXTRAS

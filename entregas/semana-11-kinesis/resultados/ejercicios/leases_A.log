@@ -1,0 +1,8 @@
+[15:24:30] A: tomó shardId-000000000002 (cuota 4, desde el principio)
+[15:24:31] A: tomó shardId-000000000003 (cuota 4, desde el principio)
+[15:24:31] A: tomó shardId-000000000004 (cuota 4, desde el principio)
+[15:24:32] A: tomó shardId-000000000005 (cuota 4, desde el principio)
+[15:24:36] A: liberó shardId-000000000004 (cuota 2 con 2 vivos)
+[15:24:36] A: liberó shardId-000000000005 (cuota 2 con 2 vivos)
+[15:25:25] A: tomó shardId-000000000004 (cuota 4, desde checkpoint ...88367938)
+[15:25:25] A: tomó shardId-000000000005 (cuota 4, desde checkpoint ...12943954)

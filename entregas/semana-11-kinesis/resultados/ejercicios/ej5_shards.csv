@@ -1,0 +1,7 @@
+shard,estado,padre,registros
+shardId-000000000000,cerrado,,2466
+shardId-000000000001,cerrado,,3884
+shardId-000000000002,abierto,shardId-000000000000,1468
+shardId-000000000003,abierto,shardId-000000000000,612
+shardId-000000000004,abierto,shardId-000000000001,2158
+shardId-000000000005,abierto,shardId-000000000001,1412
