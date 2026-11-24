@@ -1,0 +1,4 @@
+# Copiar a .env (que git ignora) y completar. Nunca poner credenciales de AWS acá.
+DB_PASSWORD=
+ATHENA_DATABASE=airline_analytics
+ATHENA_OUTPUT=s3://aerolinea-p2-<cuenta>/athena-results/

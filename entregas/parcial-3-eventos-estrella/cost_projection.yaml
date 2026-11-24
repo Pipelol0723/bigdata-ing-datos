@@ -1,0 +1,17 @@
+# Parcial 3 · proyección mensual de costos (contrato: harness/contract/COST_PROJECTION.md).
+# El harness suma line_items; acá NO va el total. Precios on-demand de us-east-1.
+# Perfil elegido (decisión D9): el stream existe sólo mientras se prueba (lo crea y lo borra un
+# script), la EC2 está prendida todo el mes. EBS (8 GB) e IPv4 pública (~US$4,3/mes) se explican en
+# la narrativa del documento (§5.8), junto con el escenario de producción 24x7 (~US$23/mes).
+assumptions: >-
+  Perfil de prueba: ~10 corridas del harness al mes, ~20.500 eventos cada una (~6.800 por día:
+  ~5.700 búsquedas y ~1.100 eventos de reserva/cancelación); el stream de 1 shard existe ~200 h al
+  mes (sólo durante las sesiones de prueba); retención de 24 h; EC2 t3.micro 24x7; refresh cada
+  10 min sólo si llegaron datos nuevos (~150 refrescos de ~8 consultas al mes).
+line_items:
+  - {service: "Kinesis Data Streams", detail: "1 shard provisionado x 200 h x US$0,015 + ~205 mil PUT units (US$0,014/millón); sólo mientras se prueba", monthly_usd: 3.01}
+  - {service: "EC2", detail: "t3.micro 730 h x US$0,0104: API + PostgreSQL + consumidor de la vista en vivo + orquestación del refresh", monthly_usd: 7.59}
+  - {service: "Amazon Data Firehose", detail: "~205 mil registros redondeados a 5 KB = ~1 GB x US$0,029/GB", monthly_usd: 0.03}
+  - {service: "S3", detail: "landing JSON gzip + estrella Parquet + ref + resultados de Athena: < 1 GB x US$0,023, más requests", monthly_usd: 0.05}
+  - {service: "Athena", detail: "~150 refrescos x 8 consultas + ~300 consultas del harness, a 10 MB mínimo cada una = ~15 GB x US$5/TB", monthly_usd: 0.08}
+  - {service: "Glue Data Catalog", detail: "~8 tablas y ~10 particiones: dentro del millón de objetos y requests gratis", monthly_usd: 0.0}

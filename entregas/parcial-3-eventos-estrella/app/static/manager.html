@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de gerencia · Aerolínea</title>
+<style>
+  :root { --azul: #0f3a66; --gris: #5b6670; --borde: #d0d7de; }
+  body { font: 15px/1.5 system-ui, "Segoe UI", sans-serif; margin: 0 auto; max-width: 760px; padding: 24px 16px; color: #1f2328; }
+  h1 { color: var(--azul); margin: 0 0 4px; } nav a { color: var(--gris); font-size: 13px; }
+  form { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin: 16px 0; }
+  label { display: flex; flex-direction: column; font-size: 12px; color: var(--gris); gap: 2px; }
+  input { font: inherit; padding: 6px 8px; border: 1px solid var(--borde); border-radius: 6px; }
+  button { font: inherit; padding: 7px 14px; border: 0; border-radius: 6px; background: var(--azul); color: #fff; cursor: pointer; }
+  #resultado { border: 1px solid var(--borde); border-radius: 10px; padding: 16px 20px; }
+  .cifra { font-size: 44px; font-weight: 700; color: var(--azul); line-height: 1.1; }
+  #estado { color: var(--gris); min-height: 1.5em; } .error { color: #b42318; }
+  .pie { color: var(--gris); font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>Ocupación por ruta</h1>
+<nav><a href="/">← Reservas</a></nav>
+
+<form id="consulta">
+  <label>Ruta <input data-testid="manager-route" placeholder="BOG-MDE" required></label>
+  <label>Mes <input data-testid="manager-month" placeholder="2024-03" pattern="\d{4}-\d{2}" required></label>
+  <button data-testid="manager-load" type="submit">Consultar</button>
+</form>
+<p id="estado"></p>
+
+<div id="resultado" hidden>
+  <div class="cifra" data-testid="occupancy-value"></div>
+  <div id="detalle"></div>
+  <p class="pie">Calculado con Amazon Athena sobre la tabla <code>route_month_metrics</code>, que genera el job de EMR.</p>
+</div>
+
+<script>
+const $ = (id) => document.querySelector(`[data-testid="${id}"]`);
+const estado = document.getElementById("estado");
+
+document.getElementById("consulta").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  document.getElementById("resultado").hidden = true;
+  $("occupancy-value").textContent = "";
+  estado.className = ""; estado.textContent = "Consultando Athena…";
+  const q = new URLSearchParams({ route: $("manager-route").value.trim().toUpperCase(),
+                                  month: $("manager-month").value.trim() });
+  const t0 = performance.now();
+  const r = await fetch(`/analytics/occupancy?${q}`);
+  if (r.status === 404) { estado.className = "error"; estado.textContent = "No hay datos para esa ruta y ese mes."; return; }
+  if (!r.ok) { estado.className = "error"; estado.textContent = `Error ${r.status}`; return; }
+  const m = await r.json();
+  // Dos decimales: R9 compara con tolerancia 0,001 (0,1 puntos porcentuales)
+  $("occupancy-value").textContent = `${(m.occupancy * 100).toFixed(2)}%`;
+  document.getElementById("detalle").textContent =
+    `${m.route} · ${m.month}: ${m.seats_sold.toLocaleString("es-CO")} asientos vendidos de ${m.seats_capacity.toLocaleString("es-CO")}`;
+  document.getElementById("resultado").hidden = false;
+  estado.textContent = `Respuesta en ${((performance.now() - t0) / 1000).toFixed(1)} s`;
+});
+</script>
+</body>
+</html>

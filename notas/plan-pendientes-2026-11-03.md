@@ -1,5 +1,28 @@
 # Plan de pendientes — corte al 03/11/2026
 
+> 🔎 **Revisión del 19/11:**
+> - **Moodle:** sin actividades nuevas (las mismas 53) y foros vacíos. La tarea **Parcial 3** ahora trae
+>   las fechas: **examen teórico y defensa el jue 26/11** (el alumno es del g01). Los adjuntos son idénticos
+>   a los recibidos el 12/11; el plan está en `entregas/parcial-3-eventos-estrella/PLAN.md`. La Session 27
+>   y la Session 28 siguen como plantilla vacía, sin nota.
+> - **AWS Academy (Canvas):** sin módulos, tareas ni anuncios nuevos.
+>   - **Data Engineering (180877):** 22 módulos. Faltan el **Course assessment** (≥ 70 %, desbloquea
+>     el badge; lo rinde el alumno) y los KC de M2 a M6, que son opcionales. Los KC de M7 a M12 tienen 100.
+>   - **Capstone:** no tiene tarea en Canvas: se califica en el lab de Vocareum. La tarea de Moodle cierra
+>     el sáb 28/11.
+>   - **Learner Labs (179973, 180879 y 184159):** sólo tienen el quiz de compliance, sin nota.
+>   - Hay un módulo "AWS T&C Resources" con acceso gratis a AWS Skill Builder: opcional, sin nota.
+
+> 🔎 **Revisión del 09/11:** en Moodle **no hay actividades nuevas**: las mismas 56, foros vacíos y las
+> Sessions siguen como `[PLACEHOLDER]`. Las 6 entregas del 03/11 figuran "Enviado para calificar", sin
+> nota todavía. Lo que corre: **M13** (abierto, cierra vie 13/11: leer la guía en Canvas + evidencia)
+> y el **Capstone** (16–28/11). Se leyó el enunciado del Capstone en Canvas y se planificó en
+> [`../entregas/capstone-aws-academy/PLAN.md`](../entregas/capstone-aws-academy/PLAN.md).
+>
+> ✅ **M13 entregado el 09/11 a las 09:54** ("Enviado para calificar"). Guía leída en Canvas, 20/20 páginas.
+> Se subió `entregas/modulos-aws-academy/modulo-13-bridging-to-certification.pdf` + `modulo-13-evidencia.jpg`.
+> El **Course assessment** de Canvas lo rinde el alumno: es el examen final del badge.
+
 > ✅ **Hecho el mismo 03/11** y subido a Moodle ("Enviado para calificar"): taller de Kinesis (con 10 h de
 > atraso), ejercicios adicionales de Kinesis (incluidos el 6 opcional y el reto), Athena German Credit,
 > evidencia del módulo 12 y el PDF del Parcial 1. **Falta:** que el alumno mande el correo del Parcial 2

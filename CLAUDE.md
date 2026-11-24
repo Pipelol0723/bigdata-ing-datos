@@ -238,6 +238,31 @@ ahora: **la baja se hace en la misma sesión en que termina el uso**, nunca "des
 
 *(Mantener actualizado: es lo que le da contexto al asistente al abrir una sesión nueva.)*
 
+- 📋 **(12/11): Parcial 3 recibido y organizado.** El tema: eventos a Kinesis, vista en vivo y modelo estrella con SCD 2 en Athena. Hay harness automático (70 %) y defensa eliminatoria por bloque. El enunciado y el harness llegaron por fuera de Moodle. La tarea de Moodle abre el 19/11 y cierra el 26/11 00:00.
+  - Todo está en `entregas/parcial-3-eventos-estrella/`: `PLAN.md`, `enunciado.md` y `harness/`, este último **intacto: no editarlo**.
+  - **Trampa n.º 1:** el replay de la defensa reutiliza los mismos `event_id` con otro contenido, por el `probe_salt` del profesor. Hay que llegar con la landing zone y la estrella vacías de `rp-`.
+  - **Trampa n.º 2:** Firehose concatena los JSON sin `\n`.
+  - `harness/airline_data/holidays_co.csv` lo ignora el `.gitignore`: va con `git add -f`.
+  - Confirmado: semilla **12345** (las mismas 10 rutas del P2), **individual**, y el **P2 ya está calificado**. Eso habilita la baja del bucket `aerolinea-p2-*` y de la base `airline_analytics`. La EC2 puede reutilizarse (D1).
+  - **Fechas (Moodle, 19/11):** **examen teórico y defensa el jue 26/11 para el g01** (el 27/11 para el g02). El alumno es del **g01** (confirmado). La entrega cierra el 25/11 a la medianoche.
+  - Los adjuntos de Moodle son idénticos a los recibidos el 12/11.
+  - Pendiente: fecha de la entrega parcial (no figura) y qué cubre el examen teórico.
+  - **Decidido el 19/11 (D1–D12, todas las recomendadas; detalle en `PLAN.md` §5):**
+    - **Base y eventos:** se reutiliza la EC2 del P2. La API publica con una cola en memoria y `PutRecords` en lotes.
+    - **Vista en vivo:** un hilo consumidor dentro de la API.
+    - **Landing:** Firehose con `\n` → S3.
+    - **Estrella:** la construye Athena con CTAS orquestado por la API, rebuild completo y miembro `UNKNOWN`. El refresh corre cada 10 min sólo si hay datos nuevos. Workgroup propio `parcial3` con límite de 1 GB. Dimensiones por SQL, una sola vez.
+    - **Costos:** stream sólo en pruebas y EC2 24×7, ~US$11.
+    - **Antes de la defensa:** archivar la landing y reconstruir.
+  - ✅ **(23/11) F1 y F2 hechas en local, US$0: 63 de 70 puntos verificados con los tests originales del harness.**
+    - Estrella: DuckDB con el mismo SQL de `app/sql`, vía `local/sim_local.py` (R5–R10 y R12).
+    - API: moto + PostgreSQL local, vía `local/sim_api.py` (R1–R3).
+    - Trampa 1 medida: sin archivar la landing, la estrella baja de 41 a 20 puntos.
+    - Faltan R4 y R11, que sólo se ven en AWS.
+  - Para la sesión de AWS:
+    - Subir `p3.tgz` (lo arma `infra/empaquetar.sh`) a CloudShell → `bash ~/p3/infra/10-levantar-sesion.sh` → `20-correr-harness.sh` con nohup.
+    - **Al terminar: `90-bajar-stream.sh --confirmo`**, que lo corre el alumno.
+
 - ✅ **(18/10): Parcial 2 desplegado en AWS — harness 70,0 / 70,0** en una sola corrida (`evidencia/harness-2026-10-18/`). App en EC2 `t3.micro` `i-02fec020612e00ad5` (**queda prendida para la corrección**; el lab la detiene al cerrar sesión y la reinicia en la siguiente, con IP nueva → actualizar `harness/config.yaml`). EMR pasó a 1 primario + 1 core (con 1 nodo se traba). **End Lab hecho el 18/10 ~22:45 UTC**; la EC2 se deja a propósito (decisión del alumno). **22/10: documento final listo** (`entrega/Parcial2-Panel-Analitico-Aerolinea.pdf`, 18 págs., se regenera con `entrega/construir_documento.py`). Decisiones del alumno del 22/10: documento en español, nombre "Andres Felipe Cespedes Rondon"; `cost_projection.yaml` declara **US$8,36** (sólo lo que el harness mide; EBS + IPv4 = US$4,29 explicados en §5.7, porque con US$12,65 R12 fallaba desde el 24/11); `bookings` = sólo confirmadas. Mensaje al profesor redactado en `entrega/preguntas-al-profesor.md` (bookings, referencia de R12, fecha). Falta: enviarlo y la fecha. **22/10 (sesión de la presentación): la app volvió sola tras el reinicio del lab ✅** (IP de ese día `54.147.173.30`); **harness 70/70 otra vez** desde CloudShell, ya con el yaml de US$8,36 (`evidencia/harness-2026-10-22/`); se corre con un comando: `infra/05-correr-harness.sh` (copia en `~/p2h` de CloudShell, busca la IP sola); guía de la demo en `RESUMEN-PRESENTACION.md` y resumen de 4 págs. en `entrega/Parcial2-Resumen-Sustentacion.pdf`. **End Lab del 22/10 ~10:50 hora local**; la EC2 sigue (se reinicia con la próxima sesión). Ese día se corrigió el CSS de `index.html` (`[hidden]` no ocultaba las `section`) y se aplicó en caliente por **SSM** (`aws ssm send-command`: la EC2 está registrada, sirve para operar sin SSH; ojo, `docker compose exec` se come el stdin de un script pasado por pipe → guardarlo en un archivo antes). Vuelos `DEMO-*` cargados para la demo.
 - 📋 **(17/10): Parcial 2 recibido y planificado** — panel analítico de la aerolínea, evaluado por un **harness automático** (70 %) contra el sistema desplegado. Plan, trampas del harness y decisiones D1–D6 en `entregas/parcial-2-panel-analitico/PLAN.md`; harness intacto en `harness/` (**no editarlo**). ⚠️ R10 suma las horas normalizadas de EMR de **45 días**: las 36 del Taller cuentan hasta el 27/11. **Decidido (17/10):** una EC2 con Docker (FastAPI + PostgreSQL, frontend servido por el mismo FastAPI), EMR transitorio de **1 nodo** `m4.large` con step y auto-terminate, tablas por DDL en Athena con *partition projection*. Semilla **12345**, individual, sin fechas. **18/10: F1 y F2 hechas en local, $0** — el job de PySpark coincide con el oráculo fila por fila, y el backend + frontend pasan R1, R2, R3 y R8 con el harness. Sigue F3 (primera sesión de AWS: `infra/01` a `03`). Si se agota el presupuesto hay otra cuenta: todo `infra/` deriva el ID de la cuenta.
 - ✅ **(13/10): Taller Taxis NYC entregado.** Notebook corrido de nuevo en un clúster nuevo (`j-0504795HQHEQRH1YLXQ`, mismos números que el ensayo) y subido a Moodle (*CC-IA-02: Taxis workshop*, "Enviado para calificar" 10:12) junto con `entrega/Taller-Taxis-NYC-respuestas.pdf` (se regenera con `entrega/construir_pdf.py`). Clúster **terminado a pedido del alumno** tras 1 h 1 min (~$0,40). Falta: **End Lab** (lo hace el alumno) y, **después de la corrección**, la baja del bucket, el Studio y Glue.

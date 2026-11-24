@@ -1,0 +1,17 @@
+# Parcial 3 · config del harness (SIN credenciales: usa las del entorno, como la AWS CLI).
+# La IP de la EC2 cambia en cada sesión del lab: la reescribe infra/20-correr-harness.sh.
+team_id: "andres-cespedes"
+seed: 12345              # semilla del parcial (individual)
+
+backend:
+  base_url: "http://34.228.161.170:8000"
+
+aws:
+  region: us-east-1
+  kinesis_stream: airline-events
+  raw_events_uri: "s3://aerolinea-p3-936980625651/raw/events/"
+  athena_workgroup: parcial3
+  athena_database: airline_star
+  athena_output: "s3://aerolinea-p3-936980625651/athena-results/"
+
+cost_projection_file: ../cost_projection.yaml
