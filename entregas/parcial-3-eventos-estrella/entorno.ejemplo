@@ -1,4 +1,12 @@
 # Copiar a .env (que git ignora) y completar. Nunca poner credenciales de AWS acá.
+# En la EC2 lo completa infra/03-desplegar-app.sh (agrega las variables del P3 al .env del P2).
 DB_PASSWORD=
+# Parcial 2 (endpoint /analytics/occupancy)
 ATHENA_DATABASE=airline_analytics
 ATHENA_OUTPUT=s3://aerolinea-p2-<cuenta>/athena-results/
+# Parcial 3
+STAR_BUCKET=aerolinea-p3-<cuenta>
+KINESIS_STREAM=airline-events
+STAR_DB=airline_star
+STAR_WORKGROUP=parcial3
+REFRESH_CADA_MIN=10
