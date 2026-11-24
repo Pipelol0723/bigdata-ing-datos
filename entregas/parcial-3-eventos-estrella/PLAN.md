@@ -190,7 +190,22 @@ API FastAPI (EC2 del P2, Docker)
 | Scripts de AWS | `infra/01` a `03` (levantar), `20` (harness), `80` (archivar), `90` (bajar el stream), `99` (auditar) | ✍️ escritos, falta correrlos en AWS |
 | **Trampa 1, medida** | `local/reportes/reporte-sim-trampa1-*.md` | Sin archivar, el bloque de la estrella baja de 41 a **20** puntos |
 
-Faltan F3 (sesión de AWS: R4 y R11 sólo se ven ahí) y F4 (documento).
+**24/11 — F3 y F4 hechas: harness 70,0 / 70,0 en AWS, documento entregado en Moodle.**
+- **AWS (sesión de ~1 h):**
+  - Primera corrida completa del harness: 29 tests en 2 min 46 s (`evidencia/harness-2026-11-24_0632/`, también copiada en el bucket).
+  - Hallazgo: un workgroup con *enforce* rechaza el CTAS con `external_location`; se pasó a `false`.
+  - Stream y Firehose **dados de baja** al terminar, a pedido del alumno, y auditoría limpia.
+- **Moodle:** "Enviado para calificar" el 24/11 a la 01:44, con 3 archivos: el PDF de 21 páginas, `Parcial3-repositorio.zip` y `report.md`.
+- **GitHub:** commits `b3b5ef9` y `3e08319`.
+
+### ✅ Checklist del jueves 26/11 (examen teórico y defensa, g01)
+
+1. Abrir el Learner Lab y esperar el verde. Anotar el presupuesto (el 24/11 marcaba US$21,2).
+2. En CloudShell: si `~/p3` no está, subir `p3.tgz` con `bash infra/empaquetar.sh`. Después correr `bash ~/p3/infra/10-levantar-sesion.sh`, que recrea el stream y Firehose y redespliega la API (~3 min).
+3. **`bash ~/p3/infra/80-archivar-landing.sh --confirmo`** (trampa 1): mueve `raw/events/` a `archive/` y reconstruye la estrella con la landing vacía.
+4. **NO volver a correr nuestro harness después del paso 3**: metería otra vez nuestros `rp-` en la landing. Para mostrar que todo anda alcanza con la API, `/analytics/live` y una consulta en Athena.
+5. Pasarle al profesor la IP del día (`ip_ec2` en `00-comun.sh`) para su `config.yaml`: el stream, la landing, la base y el workgroup no cambian.
+6. Al terminar: `bash ~/p3/infra/90-bajar-stream.sh --confirmo` y End Lab.
 
 ## 6. Fases
 
