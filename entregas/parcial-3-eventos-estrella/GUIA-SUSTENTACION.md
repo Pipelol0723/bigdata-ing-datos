@@ -11,7 +11,7 @@ se sostiene, se pierden también sus puntos del harness.
 | 1 | Abrir el Learner Lab → **Start Lab** → esperar el verde. Anotar el presupuesto (el 25/11 marcaba US$21,3) | Canvas, curso 179973 | 1-2 min |
 | 2 | Botón **AWS** → abrir CloudShell (`us-east-1`) | consola | 1 min |
 | 3 | Subir el `p3.tgz` **nuevo**: lo arma `bash infra/empaquetar.sh` y queda en `C:\Users\pipel\datos-parcial3\p3.tgz`. Antes, `rm -f ~/p3.tgz` (CloudShell no pisa un archivo con el mismo nombre). Después: `rm -rf ~/p3 && mkdir ~/p3 && tar xzf ~/p3.tgz -C ~/p3 && cd ~/p3` | CloudShell, Acciones → Cargar archivo | 1 min |
-| 4 | `bash infra/10-levantar-sesion.sh`: recrea el stream y Firehose y redespliega la API en la EC2 (vuelve sola con IP nueva) | CloudShell | 3-4 min |
+| 4 | `bash infra/10-levantar-sesion.sh && bash infra/31-consultas-guardadas.sh`: recrea el stream y Firehose, redespliega la API en la EC2 (vuelve sola con IP nueva) y guarda en Athena las consultas de la demo (P3-1 a P3-8; si ya existen, no las duplica) | CloudShell | 3-4 min |
 | 5 | **`bash infra/80-archivar-landing.sh --confirmo`**: mueve `raw/events/` a `archive/` y reconstruye la estrella vacía. **Imprescindible** (trampa 1, §4) | CloudShell | 30 s |
 | 6 | Opcional: `bash infra/30-demo.sh` para probar todo de punta a punta con tráfico real. No afecta al harness del profesor | CloudShell | 3 min |
 | 7 | Anotar la **IP** que imprimió el paso 4. El profesor la pone en su `config.yaml`; el resto de los valores no cambia | — | — |
@@ -58,7 +58,10 @@ aws:
    `409` al cancelar dos veces.
 3. **Camino analítico:** el mismo script espera a Firehose, pide el refresh y consulta la estrella:
    2 bookings, 1 cancellation y neto de +350.000.
-4. **La estrella en Athena** (workgroup `parcial3`, base `airline_star`), después del harness del profesor:
+4. **La estrella en Athena** (workgroup `parcial3`, base `airline_star`), después del harness del profesor.
+   Están en la pestaña **Consultas guardadas**: P3-1 (SCD 2), P3-2 (Q5), P3-3 (conversión), P3-4 (Q1),
+   P3-5 (festivos y puentes), P3-6 (`dim_date`), P3-7 (R10: mirar "Datos escaneados") y P3-8 (grano).
+   Las principales:
 
 ```sql
 -- SCD 2: tres rutas con dos versiones
