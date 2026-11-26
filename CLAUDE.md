@@ -227,6 +227,7 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 | 2026-11-03 | **$20.6 / $50** | Al abrir la sesión de Kinesis + German Credit (todo lo de Kinesis se dio de baja en la misma sesión) |
 | 2026-11-24 | **$21.2 / $50** | Al abrir la sesión del Parcial 3. La sesión suma ~US$0,10 (stream ~1 h, Firehose, Athena y la EC2). El stream se dio de baja en la misma sesión. Quedan **~$28,7** |
 | 2026-11-25 | **$21.3 / $50** | Revisión previa a la defensa del P3 (lab apagado; sólo cobran el bucket y el EBS). Quedan **~$28,7** |
+| 2026-11-26 | **$21.4 / $50** | Al abrir la sesión de la defensa del P3: harness 70/70 a las 14:21 UTC, después landing archivada. Quedan **~$28,6** |
 
 Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el piso diario baja de ~$0.11 a **casi cero** entre clases.
 

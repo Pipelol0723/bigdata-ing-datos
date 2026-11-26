@@ -207,6 +207,12 @@ API FastAPI (EC2 del P2, Docker)
 5. Pasarle al profesor la IP del día (`ip_ec2` en `00-comun.sh`) para su `config.yaml`: el stream, la landing, la base y el workgroup no cambian.
 6. Al terminar: `bash ~/p3/infra/90-bajar-stream.sh --confirmo` y End Lab.
 
+**Ejecutado el 26/11 a la mañana (09:15–09:30 hora local):**
+- Lab arrancado (US$21,4 al abrir). `10-levantar-sesion.sh` y `31` OK. IP del día: **54.227.170.70**.
+- **Harness 70,0/70,0** a las 14:21 UTC: 29 passed en 2 min 40 s. Evidencia en `evidencia/harness-2026-11-26_1424/`.
+- Después, **`80-archivar-landing.sh --confirmo`**: la landing quedó en 0 objetos (movida a `archive/20261126T1424/`). La estrella se reconstruyó vacía (refresh SUCCEEDED a las 14:24:47 UTC, 1.296 bytes escaneados).
+- **Si se vuelve a correr nuestro harness delante del profe, hay que repetir el 80 antes de que él corra el suyo.**
+
 ## 6. Fases
 
 | Fase | Qué | Dónde | Costo |
