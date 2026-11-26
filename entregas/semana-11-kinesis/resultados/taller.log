@@ -3,7 +3,7 @@ nohup: ignoring input
 =================== L0 preparación (15:10:52 UTC)
 {
     "cuenta": "936980625651",
-    "rol": "arn:aws:sts::936980625651:assumed-role/voclabs/user5289683=pipelol0723@gmail.com"
+    "rol": "arn:aws:sts::936980625651:assumed-role/voclabs/user5289683=<correo>"
 }
 boto3 1.43.83
 
