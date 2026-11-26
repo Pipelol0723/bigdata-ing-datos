@@ -212,6 +212,11 @@ API FastAPI (EC2 del P2, Docker)
 - **Harness 70,0/70,0** a las 14:21 UTC: 29 passed en 2 min 40 s. Evidencia en `evidencia/harness-2026-11-26_1424/`.
 - Después, **`80-archivar-landing.sh --confirmo`**: la landing quedó en 0 objetos (movida a `archive/20261126T1424/`). La estrella se reconstruyó vacía (refresh SUCCEEDED a las 14:24:47 UTC, 1.296 bytes escaneados).
 - **Si se vuelve a correr nuestro harness delante del profe, hay que repetir el 80 antes de que él corra el suyo.**
+- Se agregaron P3-9 (Q2), P3-10 (Q3) y P3-11 (Q4) a las consultas guardadas (`31`).
+- Se corrió `30-demo.sh`:
+  - vista en vivo en 2 s;
+  - estrella con 3 filas de hoy (BGA-BOG, neto 3.500,00).
+  - Son eventos que no empiezan con `rp-`, así que el replay del profe no choca con ellos.
 
 ## 6. Fases
 

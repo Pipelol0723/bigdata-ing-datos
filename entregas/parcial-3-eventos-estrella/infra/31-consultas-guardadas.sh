@@ -66,4 +66,20 @@ SELECT 'fact_search' AS tabla, COUNT(*) AS filas, COUNT(DISTINCT event_id) AS ev
 UNION ALL
 SELECT 'fact_booking_event', COUNT(*), COUNT(DISTINCT event_id) FROM fact_booking_event;
 SQL
+guardar "P3-9 Q2 cancelacion por ruta" "Reservas, cancelaciones y tasa de cancelacion por ruta (Q2)" <<'SQL'
+SELECT r.route, SUM(f.bookings) AS reservas, SUM(f.cancellations) AS cancelaciones,
+       ROUND(100.0 * SUM(f.cancellations) / NULLIF(SUM(f.bookings), 0), 1) AS tasa_cancelacion_pct
+FROM fact_booking_event f JOIN dim_route r ON f.route_key = r.route_key
+GROUP BY r.route ORDER BY tasa_cancelacion_pct DESC;
+SQL
+guardar "P3-10 Q3 reservas por dia de la semana" "Reservas por nombre del dia (Q3)" <<'SQL'
+SELECT d.weekday_name, SUM(f.bookings) AS reservas
+FROM fact_booking_event f JOIN dim_date d ON f.date_key = d.date_key
+GROUP BY d.weekday_name ORDER BY reservas DESC;
+SQL
+guardar "P3-11 Q4 top 10 rutas por ingreso" "Las 10 rutas con mas ingreso neto (Q4)" <<'SQL'
+SELECT r.route, SUM(f.revenue_cents) / 100.0 AS ingreso_neto
+FROM fact_booking_event f JOIN dim_route r ON f.route_key = r.route_key
+GROUP BY r.route ORDER BY ingreso_neto DESC LIMIT 10;
+SQL
 echo "Listo: Athena → workgroup $WG → Saved queries"
