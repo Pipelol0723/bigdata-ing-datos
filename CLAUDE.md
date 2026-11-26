@@ -285,7 +285,8 @@ ahora: **la baja se hace en la misma sesión en que termina el uso**, nunca "des
   - Moodle: "Enviado para calificar" el 25/11 a las 23:43, con `Capstone-evidencia-25-de-25.pdf`.
   - ✅ **Course assessment: 100/100**, rendido por el alumno el 25/11 a las 23:51.
   - **Revisión de Moodle del 25/11:** las 34 tareas están entregadas o ya cerradas. No queda ninguna abierta sin entregar.
-  - En Canvas siguen sin hacer los KC de M2 a M6 (sin fecha). Sus tareas de Moodle ya cerraron.
+  - ✅ (26/11) KC de M2 a M6 en 100/100. **AWS Academy completo:** KC M2–M12, Course assessment y Capstone, todo en 100.
+    Las tareas de Moodle de esos módulos ya habían cerrado: la evidencia va en el correo al profesor y en el README.
 
 - ✅ **(26/11) Parcial 3 defendido.** Al cerrar: stream y Firehose dados de baja, auditoría guardada y End Lab.
   - **Pendiente para cuando salga la nota** (comandos en `infra/99-auditar-y-baja.sh`, siempre con confirmación):

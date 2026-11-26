@@ -33,6 +33,7 @@ Todo corrió en el **AWS Academy Learner Lab** (presupuesto de US$50). Se usaron
 |---|---|---|---|---|---|
 | 6 | AWS Athena: German Credit | — | Enviado (03/11) | Consultas e informe (03/11) | [`entregas/athena-german-credit/`](entregas/athena-german-credit/) |
 | 7 | AWS Athena partitioned data exercise | 25/09 | No entregado | Moodle no tiene enunciado; el particionado con Athena está aplicado y medido en el Parcial 1 (08/09) y el Parcial 2 (18/10) | [`entregas/parcial-1-aerolinea/`](entregas/parcial-1-aerolinea/) |
+| 6–9 | Modules 5 y 6 (seguridad y escalado; ingesta y preparación) | — | — | Knowledge checks 100/100 (26/11) | Canvas, curso 180877 |
 | 7–9 | Modules 7 y 9 (Glue; EMR y Hudi) | — | — | Knowledge checks 100/100 (09/10) | Canvas, curso 180877 |
 | 8 | Module 8: Storing and Organizing Data | 02/10 | No entregado | **Knowledge check 100/100** el **01/10** (antes del cierre) | Canvas, curso 180877 |
 | 8 | Taller Taxis NYC (EMR + PySpark, 102 M de viajes) | 08/10 | Enviado (13/10) | Notebook ejecutado en EMR + PDF de respuestas (10/10 y 13/10) | [`entregas/semana-08/taller-taxis-nyc-emr/`](entregas/semana-08/taller-taxis-nyc-emr/) |
@@ -45,7 +46,7 @@ Todo corrió en el **AWS Academy Learner Lab** (presupuesto de US$50). Se usaron
 | — | EC2 + Apache + FastAPI (práctica en clase) | — | — | Desplegado en AWS (06/08) | [`entregas/ec2-apache/`](entregas/ec2-apache/) |
 | 1 | Session 1: las cinco V y los roles | 03/08 | No entregado | Documento (07/09) | [`entregas/semana-01/`](entregas/semana-01/) |
 | 1 | Session 2 | 06/08 | Enviado (06/08) | — | — |
-| 1–4 | Modules 1 a 4 (AWS Academy) | 07/08 a 28/08 | No entregado | Un documento por módulo, aplicado al proyecto (07/09) | [`entregas/modulos-aws-academy/`](entregas/modulos-aws-academy/) |
+| 1–4 | Modules 1 a 4 (AWS Academy) | 07/08 a 28/08 | No entregado | Un documento por módulo, aplicado al proyecto (07/09); knowledge checks de M2 a M4 en 100/100 (26/11) | [`entregas/modulos-aws-academy/`](entregas/modulos-aws-academy/) |
 | 2 | Sessions 3 y 4: diagramación, ADR, setup y alternativas | 10/08 y 13/08 | No entregado | Documentos y diagramas (07/09–08/09) | [`entregas/semana-02/`](entregas/semana-02/) |
 | 3 | Session 5 (ADR #1: particionado) y Session 6 (clases de S3, versionado y lifecycle) | 17/08 y 20/08 | No entregado | Documentos; la política de lifecycle está aplicada en AWS (07/09–08/09) | [`entregas/semana-03/`](entregas/semana-03/) |
 | 4 | Session 7 (Glue Catalog y crawlers) y Checkpoint 1 (data lake) | 24/08 y 27/08 | No entregado | Ejecutado en AWS con evidencia (07/09–08/09) | [`entregas/semana-04/`](entregas/semana-04/) |
