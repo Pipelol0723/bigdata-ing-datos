@@ -227,7 +227,7 @@ bigdata e ing de datos/          ← repo git, sincronizado a OneDrive
 | 2026-11-03 | **$20.6 / $50** | Al abrir la sesión de Kinesis + German Credit (todo lo de Kinesis se dio de baja en la misma sesión) |
 | 2026-11-24 | **$21.2 / $50** | Al abrir la sesión del Parcial 3. La sesión suma ~US$0,10 (stream ~1 h, Firehose, Athena y la EC2). El stream se dio de baja en la misma sesión. Quedan **~$28,7** |
 | 2026-11-25 | **$21.3 / $50** | Revisión previa a la defensa del P3 (lab apagado; sólo cobran el bucket y el EBS). Quedan **~$28,7** |
-| 2026-11-26 | **$21.4 / $50** | Al abrir la sesión de la defensa del P3: harness 70/70 a las 14:21 UTC, después landing archivada. Quedan **~$28,6** |
+| 2026-11-26 | **$21.4 / $50** | Sesión de la defensa del P3: harness 70/70 a las 14:21 UTC, después landing archivada. **Defensa hecha**; stream y Firehose dados de baja y End Lab a las 15:42 UTC. Quedan **~$28,6** |
 
 Ritmo actual: **sano**. Con Cloud9 y `db-service` dados de baja el 01/09, el piso diario baja de ~$0.11 a **casi cero** entre clases.
 
@@ -287,6 +287,13 @@ ahora: **la baja se hace en la misma sesión en que termina el uso**, nunca "des
   - **Revisión de Moodle del 25/11:** las 34 tareas están entregadas o ya cerradas. No queda ninguna abierta sin entregar.
   - En Canvas siguen sin hacer los KC de M2 a M6 (sin fecha). Sus tareas de Moodle ya cerraron.
 
+- ✅ **(26/11) Parcial 3 defendido.** Al cerrar: stream y Firehose dados de baja, auditoría guardada y End Lab.
+  - **Pendiente para cuando salga la nota** (comandos en `infra/99-auditar-y-baja.sh`, siempre con confirmación):
+    - terminar la EC2 `i-02fec020612e00ad5` y borrar su SG `sg-0aed72ab437513545`;
+    - borrar los buckets `aerolinea-p2-*` y `aerolinea-p3-*`;
+    - borrar las bases de Glue `airline_analytics` y `airline_star`, y el workgroup `parcial3`;
+    - borrar los restos del Taller Taxis y de German Credit.
+  - Mientras tanto, **la EC2 se reinicia sola en cada sesión nueva del lab**: abrir el lab sólo si hace falta.
 - 🔓 **(26/11) El repo `Pipelol0723/bigdata-ing-datos` es PÚBLICO**, a pedido del alumno, para mandarle el enlace al profesor.
   - **Volverlo privado al terminar el semestre o cuando el profesor responda:** `gh repo edit Pipelol0723/bigdata-ing-datos --visibility private --accept-visibility-change-consequences`.
   - Antes de publicarlo se revisó el historial completo: no hay credenciales ni llaves (`vockey.pem` está en `.gitignore`).

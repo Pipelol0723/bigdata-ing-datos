@@ -217,6 +217,17 @@ API FastAPI (EC2 del P2, Docker)
   - vista en vivo en 2 s;
   - estrella con 3 filas de hoy (BGA-BOG, neto 3.500,00).
   - Son eventos que no empiezan con `rp-`, así que el replay del profe no choca con ellos.
+- Durante la defensa, la vista en vivo quedó a la vista en una consola con `watch` cada 2 s. El lector llegó a 20.772 registros, sin errores.
+- ✅ **Defensa hecha.** Al cerrar, a las 15:42 UTC:
+  - `90-bajar-stream.sh --confirmo`: el stream quedó borrado y Firehose en DELETING;
+  - la auditoría (`99`) quedó en `evidencia/harness-2026-11-26_1424/auditoria-cierre-defensa.png`;
+  - **End Lab** (US$21,4 de 50).
+- **Queda vivo, sin cobro por hora:**
+  - la EC2 `i-02fec020612e00ad5`, que se reinicia sola en la próxima sesión;
+  - los buckets del P3 (1,2 MB) y del P2 (106 MB);
+  - las bases de Glue y el workgroup `parcial3`.
+
+  Se dan de baja después de la nota, con los comandos que imprime `99`.
 
 ## 6. Fases
 

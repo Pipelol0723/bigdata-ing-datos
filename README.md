@@ -22,7 +22,7 @@ Todo corrió en el **AWS Academy Learner Lab** (presupuesto de US$50). Se usaron
 | 11 | AWS Kinesis: ejercicios adicionales | 05/11 | Enviado (03/11) | Informe con resultados medidos (03/11) | [`entregas/semana-11-kinesis/`](entregas/semana-11-kinesis/) |
 | 12 | Module 12: Automating the Pipeline | 06/11 | Enviado | Knowledge check 100/100 (17/10) + evidencia | [`entregas/modulos-aws-academy/`](entregas/modulos-aws-academy/) |
 | 13 | Module 13: Bridging to Certification | 13/11 | Enviado | Documento + evidencia | [`entregas/modulos-aws-academy/`](entregas/modulos-aws-academy/) |
-| 13 | **Parcial 3** (eventos a Kinesis, vista en vivo y modelo estrella con SCD 2) | 26/11 | Enviado (24/11) | **Harness 70,0/70,0 en AWS** el 24/11 y otra vez el 26/11; documento de 21 páginas | [`entregas/parcial-3-eventos-estrella/`](entregas/parcial-3-eventos-estrella/) |
+| 13 | **Parcial 3** (eventos a Kinesis, vista en vivo y modelo estrella con SCD 2) | 26/11 | Enviado (24/11) | **Harness 70,0/70,0 en AWS** el 24/11 y otra vez el 26/11; documento de 21 páginas; **defendido el 26/11** | [`entregas/parcial-3-eventos-estrella/`](entregas/parcial-3-eventos-estrella/) |
 | 14 | **Capstone Project** (AWS Academy Data Engineering) | 28/11 | Enviado (25/11) | **25/25** en el corrector de AWS Academy (25/11) | [`entregas/capstone-aws-academy/`](entregas/capstone-aws-academy/) |
 | 14 | **Course assessment** (AWS Academy) | — | — | **100/100** (25/11) | Canvas, curso 180877 |
 | 10–14 | Sessions 19 a 28 y Checkpoints de las semanas 11 y 14 | 19/10 a 19/11 | No entregado | Moodle no tiene enunciado; el trabajo de esas semanas está en las filas de arriba | — |
