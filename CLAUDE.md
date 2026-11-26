@@ -292,7 +292,8 @@ ahora: **la baja se hace en la misma sesión en que termina el uso**, nunca "des
   - Antes de publicarlo se revisó el historial completo: no hay credenciales ni llaves (`vockey.pem` está en `.gitignore`).
   - El Gmail del alumno se tapó en `semana-11-kinesis/resultados/taller.log`, pero sigue en commits viejos.
   - `README.md` de la raíz: índice de todas las actividades por corte, con sus fechas.
-  - Notas del alumno: 1,7 (corte 1) y 1,9 (corte 2). Con 30/30/40 necesita 4,8 en el tercer corte.
+  - Notas del alumno: 1,7 (corte 1) y 1,9 (corte 2). Se aprueba con 3,0 y la plataforma redondea desde 2,95.
+  - Con 30/30/40 necesita **4,675 en el tercer corte**; en la práctica, **4,7** (1,08 + 0,40 × 4,7 = 2,96 → 3,0).
   - Borrador en el Outlook de la universidad para el profesor Camilo Rodríguez (`camilo.rodriguezt@usa.edu.co`), **sin enviar**.
   - Ojo: el 18/09 el profesor avisó por correo que había subido mal las notas del corte 1 de todo el g01 y que las iba a corregir.
 
